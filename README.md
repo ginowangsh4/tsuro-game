@@ -46,7 +46,6 @@ bool hasDragon()
 ```
 void placeToken(Token, Location)
 void placeTile(Tile)
-
 ```
 ### Tile
 ```
