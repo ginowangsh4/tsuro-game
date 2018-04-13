@@ -34,8 +34,8 @@ int[][] map // map[0] = 1 indicates there is a path connecting 0th point and 1st
 ```
 Tile[][] remainingTiles
 ```
-
 ### Card
+
 ### DragonCard
 ```
 Player player
