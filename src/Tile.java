@@ -28,7 +28,7 @@ public class Tile {
         return (this.paths.equals(tile.paths)) ? true : false;
     }
 
-    // Return which side of the tile a orientation index lies on
+    // Return which side of the tile a orientation Int lies on
     public String getSide(int orientationInt)
     {
         int i = 0;

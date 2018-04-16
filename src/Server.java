@@ -77,11 +77,11 @@ public class Server {
             int startPathInt = tileToPlace.getPathInt(adjacentSide, index);
             int endPathInt = tileToPlace.getPathEndInt(startPathInt);
 
-            int endOrientationInt = tileToPlace.pathToOrient(endPathInt); //new endpoint of the token
+            orientationInt = tileToPlace.pathToOrient(endPathInt); //new endpoint of the token
             posn = lookAhead(current);                                    //new position of the token
 
-            Token next = new Token(endOrientationInt, posn);              // 'fake' token with no player and color assigned
-            simulateMove(next, board.getTile(lookAhead(current)[0], lookAhead(current)[1]), posn, endOrientationInt); // see if the path continues
+            Token next = new Token(orientationInt, posn);              // 'fake' token with no player and color assigned
+            simulateMove(next, board.getTile(lookAhead(current)[0], lookAhead(current)[1]), posn, orientationInt); // see if the path continues
         }
     }
 
