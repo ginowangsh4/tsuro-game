@@ -24,72 +24,113 @@ public class Server {
         the possible moves are elimination moves)
      */
     public boolean legalPlay(Player p, Board b, Tile t) {
+
+        // this.board = b <- do we need this?
+        // this.inPlayer.add(p) <- do we need this?
         for (Tile playerTile : p.hand) {
-            if (!checkRotation(playerTile, t)) return false;
+            if (!t.isSameTile(playerTile)) return false;
         }
-        int[] result = new int[2]; // (x,y) of final tile on board
-        int finalTileIndex;        // index on final tile
-        String finalTileSide;         // side index on final tile
-        finalTileIndex = forwardPath(p, t, result);
-        finalTileSide = findSide(result, finalTileIndex);
-        if (finalTileSide == "TOP" && result[1] == 0 || finalTileSide == "RIGHT" && result[0] == 5 ||
-                finalTileSide == "BOTTOM" && result[1] == 5 || finalTileSide == "LEFT" && result[0] == 0) {
+
+        int[] resultPosn = new int[2]; // initializing, update in simulateMove()
+        int resultOrientationInt = 0; // initializing, update in simulateMove()
+        simulateMove(p.token, t, resultPosn, resultOrientationInt);
+
+        String side = t.getSide(resultOrientationInt);
+        if (side == "T" && resultPosn[1] == 0 || side == "R" && resultPosn[0] == 5 ||
+                side == "B" && resultPosn[1] == 5 || side == "L" && resultPosn[0] == 0) {
             return false;
         }
         return true;
     }
 
-    private boolean checkRotation(Tile real, Tile expected) {
-        return (real.paths.equals(expected.paths)) ? true : false;
-    }
 
-    private String findSide(int[] result, int index) {
-        Tile tile = this.board.getTile(result[0], result[1]);
-        int i = 0;
-        for (int[] array: tile.orientations)
-        {
-            if (index == array[0] || index == array[1]) break;
-            i++;
+    /* Moved this function to Tile Class, see Tile.getSide()
+
+        private String findSide(int[] result, int index) {
+            Tile tile = this.board.getTile(result[0], result[1]);
+            int i = 0;
+            for (int[] array: tile.orientations)
+            {
+                if (index == array[0] || index == array[1]) break;
+                i++;
+            }
+            if (i == 0) return "TOP";
+            else if (i == 1) return "RIGHT";
+            else if (i == 2) return "BOTTOM";
+            else return "LEFT";
         }
-        if (i == 0) return "TOP";
-        else if (i == 1) return "RIGHT";
-        else if (i == 2) return "BOTTOM";
-        else return "LEFT";
+    */
+
+
+    // Simulate a move using recursion
+    private void simulateMove(Token current, Tile tileToPlace, int[] posn, int orientationInt) {
+
+        if (tileToPlace == null &&
+                board.getTile(lookAhead(current)[0], lookAhead(current)[1]) == null) posn = posn; //stop when no tile to place and no tile in front
+        else
+        {
+            Tile currentTile = board.getTile(current.getPosition()[0], current.getPosition()[1]);
+            String adjacentSide = getAdjacentSide(currentTile.getSide(current.getEndPint()));
+            int index;
+            if (current.getEndPint()%2 == 0) index = 0; // even number is the first element
+            else index = 1;                             // odd number is the second element
+            int startPathInt = tileToPlace.getPathInt(adjacentSide, index);
+            int endPathInt = tileToPlace.getPathEndInt(startPathInt);
+
+            int endOrientationInt = tileToPlace.pathToOrient(endPathInt); //new endpoint of the token
+            posn = lookAhead(current);                                    //new position of the token
+
+            Token next = new Token(endOrientationInt, posn);              // 'fake' token with no player and color assigned
+            simulateMove(next, board.getTile(lookAhead(current)[0], lookAhead(current)[1]), posn, endOrientationInt); // see if the path continues
+        }
     }
 
-    private int forwardPath(Player p, Tile t, int[] result) {
-        int[] current = p.token.getPosition();
-        int endPoint = p.token.getEndPint();
+    // Return the side that is adjacent to inSide.
+    public String getAdjacentSide (String inSide){
+
+        if (inSide.equals("T")) return "B";
+        else if (inSide.equals("R")) return "L";
+        else if (inSide.equals("B")) return "T";
+        else return "R";
+    }
+
+    /*
+        Token looks ahead according to its own position.
+        Returns the [x,y] position of the block in front of it.
+    */
+
+    private int[] lookAhead(Token token){
+
         int[] next = new int[2];
-        int i = 0;
-        for (int[] array: t.orientations)
+
+        int currentX = token.getPosition()[0];
+        int currentY = token.getPosition()[1];
+        Tile currentTile = board.getTile(currentX, currentY);
+        String currentSide = currentTile.getSide(token.getEndPint());
+
+        if (currentSide.equals('T'))
         {
-            if (endPoint == array[0] || endPoint == array[1]) break;
-            i++;
+            next[0] = currentX;
+            next[1] = currentY - 1;
         }
-        if (i == 0)
+        else if (currentSide.equals('R'))
         {
-            next[0] = current[0];
-            next[1] = current[1] - 1;
+            next[0] = currentX + 1;
+            next[1] = currentY;
         }
-        else if (i == 1)
+        else if (currentSide.equals('B'))
         {
-            next[0] = current[0] + 1;
-            next[1] = current[1];
-        }
-        else if (i == 2)
-        {
-            next[0] = current[0];
-            next[1] = current[1] + 1;
+            next[0] = currentX;
+            next[1] = currentY + 1;
         }
         else
         {
-            next[0] = current[0] - 1;
-            next[1] = current[1];
+            next[0] = currentX - 1;
+            next[1] = currentY;
         }
 
-        int startPoint;
-    }
+        return next;
 
+    }
 
 }
