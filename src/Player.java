@@ -11,6 +11,8 @@ public class Player {
     }
     public Token getToken(){ return this.token; }
 
+    public Token setToken(Token token){ this.token = token; }
+
     public void draw(Tile t){ hand.add(t); }
 
     public ArrayList<Tile> getHand() { return this.hand; }

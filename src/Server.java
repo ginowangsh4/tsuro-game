@@ -88,6 +88,9 @@ public class Server {
             currentT.setIndex(pathEnd);
             location = getAdjacentLocation(currentT);
         }
+        // update player map on board -> physically move the token forward to the final location and index
+        currentP.setToken(currentT);
+        b.getPlayerMap().put(currentP, new int[] {currentT.getPosition()[0], currentT.getPosition()[1], currentT.getIndex()});
         // eliminate current player & recycle tiles in hand
         if (outOfBoard(currentT)) {
             for (Tile tile : currentP.getHand()) {
@@ -134,7 +137,7 @@ public class Server {
     }
 
     /**
-     *
+     * Check whether a player's token is on tile at the location and the index
      * @param b
      * @param location
      * @param indexOnTile
