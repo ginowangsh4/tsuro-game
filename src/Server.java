@@ -127,13 +127,13 @@ public class Server {
     }
 
     private Token simulateMove(Token token, Tile nextTile, Board board) {
-        // next location the token can go
+        // next location the token can go on
         int[] location = getAdjacentLocation(token);
         // return if reach the end of path
         if (nextTile == null && board.getTile(location[0], location[1]) == null) {
             return token;
         }
-        // simulate placing tile & get path indices
+        // simulate moving token & get new token index
         int pathStart = nextTile.neighborIndex.get(token.getIndex());
         int pathEnd = nextTile.getPathEnd(pathStart);
         // recursion
@@ -257,6 +257,32 @@ public class Server {
         p.draw(tile1);
     }
 
+    // Illegal 2: this rotation of the tile leads to elimination while others do not
+    static public void createExample5() {
+        b = new Board();
+        token = new Token(0, 4,new int[] {0,0});
+        Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
+        b.placeTile(tile1, 0, 0);
+        tile = new Tile(new int[][] {{0,2}, {1,7}, {3,4}, {5,6}});
+        ArrayList<Tile> hand = new ArrayList<>();
+        p = new Player(token, hand);
+        p.draw(tile);
+    }
+
+    // Illegal 3: all rotation of this tile leads to elimination but other tiles do not
+    static public void createExample6() {
+        b = new Board();
+        token = new Token(0, 1,new int[] {0,1});
+        Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
+        b.placeTile(tile1, 0, 1);
+        tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
+        Tile tile2 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
+        ArrayList<Tile> hand = new ArrayList<>();
+        p = new Player(token, hand);
+        p.draw(tile);
+        p.draw(tile2);
+    }
+
     public static void main(String argv[]) {
         createExample1();
         Tester.check(server.legalPlay(p, b, tile) == true, "Legal 1");
@@ -266,5 +292,9 @@ public class Server {
         Tester.check(server.legalPlay(p, b, tile) == true, "Legal 3");
         createExample4();
         Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 1");
+        createExample5();
+        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 2");
+        createExample6();
+        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 3");
     }
 }

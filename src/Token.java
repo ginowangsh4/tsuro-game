@@ -2,6 +2,7 @@ public class Token {
     private int color;
     private int indexOnTile; //orientation int, not path int
     private int[] position;
+    private Player owner;
 
     Token (int color, int indexOnTile, int[] position) {
         this.color = color;
@@ -29,5 +30,7 @@ public class Token {
     }
 
     public int[] getPosition() { return position; }
+
+    public Player getOwner() {return owner;}
 
 }
