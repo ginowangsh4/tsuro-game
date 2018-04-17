@@ -1,25 +1,25 @@
 public class Token {
     private Player player;
     private int color;
-    private int endPoint; //orientation int, not path int
+    private int indexOnTile; //orientation int, not path int
     private int[] position = new int[] {0, 0};
 
-    Token (Player player, int color, int endPoint, int[] position) {
+    Token (Player player, int color, int indexOnTile, int[] position) {
         this.player = player;
         this.color = color;
-        this.endPoint = endPoint;
+        this.indexOnTile = indexOnTile;
         this.position = position;
     }
 
-    Token (int endPoint, int[] position) {
-        this.endPoint = endPoint;
+    Token (int indexOnTile, int[] position) {
+        this.indexOnTile = indexOnTile;
         this.position = position;
     }
 
-    public void setEndPoint(int index) { endPoint = index; }
+    public void setIndex(int index) { indexOnTile = index; }
 
     // Return the orientation int where the token is currently standing upon
-    public int getEndPint() { return endPoint; }
+    public int getIndex() { return indexOnTile; }
 
     public void setPosition(int x, int y) {
         position[0] = x;
