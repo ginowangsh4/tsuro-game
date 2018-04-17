@@ -6,6 +6,9 @@ public class Server {
     private ArrayList<Player> inPlayer;
     private ArrayList<Player> outPlayer;
 
+    private ArrayList<Player> winners;
+    private boolean isOver;
+
     Server(Board b, ArrayList<Tile> drawPile, ArrayList<Player> inPlayer, ArrayList<Player> outPlayer) {
         this.board = b;
         this.drawPile = drawPile;
@@ -31,26 +34,17 @@ public class Server {
         }
         // do we need to consider other rotation?
         boolean rotate = false;
-
+    
         Token token = simulateMove(p.token, t, b);
-        int ti = token.getIndex();
-        int[] tl = token.getPosition();
-        if ((ti == 0 || ti == 1) && tl[1] == 0 ||
-            (ti == 2 || ti == 3) && tl[0] == 5 ||
-            (ti == 4 || ti == 5) && tl[1] == 5 ||
-            (ti == 6 || ti == 7) && tl[0] == 0) {
+        if (outOfBoard(token)){
             rotate = true;
         }
         if (rotate) {
             Tile newTile = new Tile(t.getPaths());
             for (int i = 0; i < 3; i++) {
+                newTile.rotateTile();
                 token = simulateMove(p.token, newTile, b);
-                ti = token.getIndex();
-                tl = token.getPosition();
-                if ((ti == 0 || ti == 1) && tl[1] == 0 ||
-                        (ti == 2 || ti == 3) && tl[0] == 5 ||
-                        (ti == 4 || ti == 5) && tl[1] == 5 ||
-                        (ti == 6 || ti == 7) && tl[0] == 0) {
+                if (outOfBoard(token)) {
                     continue;
                 } else {
                     return false; // original rotation is illegal, as there is another legal rotation
@@ -61,6 +55,63 @@ public class Server {
             return true;          // original rotation is legal without considering other rotations
         }
     }
+
+    public void playATurn(ArrayList<Tile> drawPile, ArrayList<Player> inP, ArrayList<Player> outP, Board b, Tile t) {
+
+        // step 1. place a tile path
+        Player currentP = inP.get(0);
+        inP.remove(0);
+        Token currentT = currentP.getToken();
+        int[] location = getAdjacentLocation(currentT);
+        b.placeTile(t, location[0], location[1]);
+
+        // step 2. move the token and eliminate player if necessary
+        while(!outOfBoard(currentT) && b.getTile(location[0], location[1]) != null) {
+            currentT.setPosition(location[0], location[1]); // move to tile
+            int pathStart = t.neighborIndex.get(currentT.getIndex());
+            int pathEnd = t.getPathEnd(pathStart);
+            currentT.setIndex(pathEnd);
+            location = getAdjacentLocation(currentT);
+        }
+        // eliminate current player & recycle tiles in hand
+        if (outOfBoard(currentT)) {
+            for (Tile tile : currentP.getHand()) {
+                drawPile.add(tile);
+            }
+            currentP.getHand().clear();
+            outP.add(currentP);
+        }
+        // add to tail & draw tile
+        else {
+            if (drawPile.size() == 0) {
+                currentP.getDragon();
+            }
+            Tile temp = drawPile.get(0);
+            currentP.getHand().add(temp);
+            drawPile.remove(0);
+            inP.add(currentP);
+        }
+
+        // determine whether game is over
+        if (inP.size() == 1) {
+            this.isOver = true;
+            this.winners = inP;
+        }
+    }
+
+    public boolean outOfBoard(Token token){
+
+        int ti = token.getIndex();
+        int[] tl = token.getPosition();
+        if ((ti == 0 || ti == 1) && tl[1] == 0 ||
+                (ti == 2 || ti == 3) && tl[0] == 5 ||
+                (ti == 4 || ti == 5) && tl[1] == 5 ||
+                (ti == 6 || ti == 7) && tl[0] == 0) {
+            return true;
+        }
+        return false;
+    }
+
 
     private Token simulateMove(Token token, Tile tileToPlace, Board board) {
         // location to place the tile
