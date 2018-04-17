@@ -31,7 +31,7 @@ public class Server {
         }
         // do we need to consider other rotation?
         boolean rotate = false;
-
+    
         Token token = simulateMove(p.token, t, b);
         int ti = token.getIndex();
         int[] tl = token.getPosition();
@@ -44,6 +44,7 @@ public class Server {
         if (rotate) {
             Tile newTile = new Tile(t.getPaths());
             for (int i = 0; i < 3; i++) {
+                newTile.rotateTile();
                 token = simulateMove(p.token, newTile, b);
                 ti = token.getIndex();
                 tl = token.getPosition();
@@ -62,6 +63,13 @@ public class Server {
         }
     }
 
+    /**
+     *
+     * @param token
+     * @param tileToPlace
+     * @param board
+     * @return
+     */
     private Token simulateMove(Token token, Tile tileToPlace, Board board) {
         // location to place the tile
         int[] location = getAdjacentLocation(token);
