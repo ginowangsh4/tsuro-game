@@ -16,12 +16,16 @@ public class Token {
 
     public void setIndex(int index) { indexOnTile = index; }
 
-    // Return the orientation int where the token is currently standing upon
     public int getIndex() { return indexOnTile; }
 
     public void setPosition(int x, int y) {
         position[0] = x;
         position[1] = y;
+    }
+
+    public void setPosition(int[] xy){
+        position[0] = xy[0];
+        position[1] = xy[1];
     }
 
     public int[] getPosition() { return position; }
