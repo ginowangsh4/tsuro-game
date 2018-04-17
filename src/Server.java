@@ -31,12 +31,12 @@ public class Server {
      * @return true if this play is legal
      */
     public boolean legalPlay(Player p, Board b, Tile t) {
-
         // check condition 1
         for (Tile pt : p.getHand()) {
             if (!t.isSameTile(pt)) {
                 return false;
             }
+            else break;
         }
         // check condition 2
         Token token = simulateMove(p.getToken(), t, b);
@@ -50,9 +50,9 @@ public class Server {
                 token = simulateMove(p.getToken(), newTile, b);
                 if (!outOfBoard(token)) return false; // original rotation is illegal, as there is another legal rotation
             }
-            if (p.getHand().size() > 1) {
-                for (Tile pt: p.getHand())
-                    if (!t.isSameTile(pt)) {
+            if (p.getHand().size() > 1){
+                for (Tile pt: p.getHand()){
+                    if (!t.isSameTile(pt)){
                         newTile = new Tile(pt.getPaths());
                         for (int i = 0; i < 4; i++) {
                             newTile.rotateTile();
@@ -60,6 +60,7 @@ public class Server {
                             if (!outOfBoard(token)) return false;   // original rotation is illegal, as there is another legal move
                         }
                     }
+                }
             }
             else return true;     // original rotation is legal as 1. only one tile in player's hand 2. all rotations of this tile leads to elimination
         }
@@ -246,8 +247,22 @@ public class Server {
         p.draw(tile);
     }
 
-    // Illegal 1: tile to be placed is not in player's hand
+    // Legal 4: all tiles at hand lead to elimination
     static public void createExample4() {
+        b = new Board();
+        token = new Token(0, 1,new int[] {0,1});
+        Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
+        b.placeTile(tile1, 0, 1);
+        tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
+        Tile tile2 = new Tile(new int[][] {{0,4}, {1,5}, {2,6}, {3,7}});
+        ArrayList<Tile> hand = new ArrayList<>();
+        p = new Player(token, hand);
+        p.draw(tile);
+        p.draw(tile2);
+    }
+
+    // Illegal 1: tile to be placed is not in player's hand
+    static public void createExample5() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
@@ -258,7 +273,7 @@ public class Server {
     }
 
     // Illegal 2: this rotation of the tile leads to elimination while others do not
-    static public void createExample5() {
+    static public void createExample6() {
         b = new Board();
         token = new Token(0, 4,new int[] {0,0});
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
@@ -270,7 +285,7 @@ public class Server {
     }
 
     // Illegal 3: all rotation of this tile leads to elimination but other tiles do not
-    static public void createExample6() {
+    static public void createExample7() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
@@ -291,10 +306,12 @@ public class Server {
         createExample3();
         Tester.check(server.legalPlay(p, b, tile) == true, "Legal 3");
         createExample4();
-        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 1");
+        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 4");
         createExample5();
         Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 2");
         createExample6();
+        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 3");
+        createExample7();
         Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 3");
     }
 }
