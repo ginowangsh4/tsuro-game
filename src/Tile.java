@@ -3,7 +3,7 @@ import java.util.*;
 public class Tile {
     protected int[][] paths; //immutable
     protected ArrayDeque<int[]> orientations; //mutable
-    private final int[][] default_orientation = new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}};
+    private final int[][] defaultOrientation = new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}};
 
     Tile(int[][] paths) {
         this.paths = new int[4][2];
@@ -29,12 +29,12 @@ public class Tile {
     }
 
     // Return which side of the tile a orientation Int lies on
-    public String getSide(int orientationInt)
-    {
+    public String getSide(int orientationInt) {
         int i = 0;
-        for (int[] array: this.orientations)
-        {
-            if (orientationInt == array[0] || orientationInt == array[1]) break;
+        for (int[] array: this.orientations) {
+            if (orientationInt == array[0] || orientationInt == array[1]) {
+                break;
+            }
             i++;
         }
         if (i == 0) return "T";
@@ -44,8 +44,7 @@ public class Tile {
     }
 
     // Map String side to int. T -> 0, R -> 1, B -> 2, L -> 3
-    public int mapSide(String side)
-    {
+    public int mapSide(String side) {
         if (side.equals('T')) return 0;
         else if (side.equals('R')) return 1;
         else if (side.equals('B')) return 2;
@@ -54,22 +53,19 @@ public class Tile {
     }
 
     // Return the path index of given a side and which element (first or second) it is
-    public int getPathInt(String side, int n)
-    {
+    public int getPathInt(String side, int n) {
         int i = 0;
         int orientationInt = 0;
         int sideInt = mapSide(side);
-        for (int[] array: this.orientations)
-        {
-            if (i == sideInt)
-            {
+        for (int[] array: this.orientations) {
+            if (i == sideInt) {
                 orientationInt = array[n];
                 break;
             }
             i ++;
         }
 
-        int rotation = Math.abs(default_orientation[sideInt][n] - orientationInt);
+        int rotation = Math.abs(defaultOrientation[sideInt][n] - orientationInt);
         int pathIndex = sideInt - rotation;
 
         if (orientationInt%2 == 0) return this.paths[pathIndex][0];
@@ -77,18 +73,14 @@ public class Tile {
 
     }
 
-    public int getPathEndInt (int startInt)
-    {
+    public int getPathEndInt (int startInt) {
         int endInt = 0;
-        for (int[] array: this.paths)
-        {
-            if (startInt == array[0])
-            {
+        for (int[] array: this.paths) {
+            if (startInt == array[0]) {
                 endInt = array[1];
                 break;
             }
-            if (startInt == array[0])
-            {
+            if (startInt == array[0]) {
                 endInt = array[1];
                 break;
             }
@@ -98,35 +90,29 @@ public class Tile {
 
 
     // Return the orientation int for a given path int
-    public int pathToOrient (int pathInt)
-    {
+    public int pathToOrient (int pathInt) {
         int orientationInt = 0;
         int index1 = 0;
         int index2 = 0;
         for (int i = 0; i < this.paths.length; i ++) {
-            if (pathInt == this.paths[i][0])
-            {
+            if (pathInt == this.paths[i][0]) {
                 index1 = i;
                 index2 = 0;
                 break;
             }
-            else if (pathInt == this.paths[i][1])
-            {
+            else if (pathInt == this.paths[i][1]) {
                 index1 = i;
                 index2 = 1;
                 break;
             }
         }
-
         int i = 0;
         for (int[] array: this.orientations) {
-            if (i == index1)
-            {
+            if (i == index1) {
                 orientationInt = array[index2];
                 break;
             }
         }
         return orientationInt;
-
     }
 }
