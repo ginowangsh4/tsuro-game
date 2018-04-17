@@ -16,7 +16,7 @@ public class Server {
 //        this.outPlayer = outPlayer;
 //    }
 
-    // singleton pattern:
+    // Singleton Pattern
     public static Server server = new Server();
     private Server() {}
 
@@ -31,14 +31,26 @@ public class Server {
      * @return true if this play is legal
      */
     public boolean legalPlay(Player p, Board b, Tile t) {
+        if (p.hand.size() == 0) {
+            return false;
+        }
         for (Tile pt : p.hand) {
             if (!t.isSameTile(pt)) {
                 return false;
             }
         }
-        // do we need to consider other rotation?
-        boolean rotate = false;
+        // put tile ot place on board and simulate move
+        int[] location = getAdjacentLocation(p.getToken());
+        b.placeTile(t, location[0], location[1]);
         Token token = simulateMove(p.token, t, b);
+        // delete tile to place
+        b.deleteTile(location[0], location[1]);
+        // if collision, return false
+        if (hasToken(b, token.getPosition(), token.getIndex())) {
+            return false;
+        }
+        // check whether other rotations are elimination moves
+        boolean rotate = false;
         if (outOfBoard(token)){
             rotate = true;
         }
@@ -46,7 +58,9 @@ public class Server {
             Tile newTile = new Tile(t.getPaths());
             for (int i = 0; i < 3; i++) {
                 newTile.rotateTile();
+                b.placeTile(newTile, location[0], location[1]);
                 token = simulateMove(p.token, newTile, b);
+                b.deleteTile(location[0], location[1]);
                 if (outOfBoard(token)) {
                     continue;
                 } else {
@@ -60,14 +74,13 @@ public class Server {
     }
 
     public void playATurn(ArrayList<Tile> drawPile, ArrayList<Player> inP, ArrayList<Player> outP, Board b, Tile t) {
-        // step 1. place a tile path
+        // place a tile path
         Player currentP = inP.get(0);
         inP.remove(0);
         Token currentT = currentP.getToken();
         int[] location = getAdjacentLocation(currentT);
         b.placeTile(t, location[0], location[1]);
-
-        // step 2. move the token and eliminate player if necessary
+        // move the token and eliminate player if necessary
         while(!outOfBoard(currentT) && b.getTile(location[0], location[1]) != null) {
             currentT.setPosition(location[0], location[1]); // move to tile
             int pathStart = t.neighborIndex.get(currentT.getIndex());
@@ -93,7 +106,6 @@ public class Server {
             drawPile.remove(0);
             inP.add(currentP);
         }
-
         // determine whether game is over
         if (inP.size() == 1) {
             this.isOver = true;
@@ -101,33 +113,42 @@ public class Server {
         }
     }
 
-    public boolean outOfBoard(Token token){
-        int ti = token.getIndex();
-        int[] tl = token.getPosition();
-        if ((ti == 0 || ti == 1) && tl[1] == 0 ||
-                (ti == 2 || ti == 3) && tl[0] == 5 ||
-                (ti == 4 || ti == 5) && tl[1] == 5 ||
-                (ti == 6 || ti == 7) && tl[0] == 0) {
-            return true;
-        }
-        return false;
-    }
-
     private Token simulateMove(Token token, Tile tileToPlace, Board board) {
         // location to place the tile
         int[] location = getAdjacentLocation(token);
         // return if reach the end of path
         if (tileToPlace == null && board.getTile(location[0], location[1]) == null) {
-            board.deleteTile(location[0], location[1]);
             return token;
         }
         // place tile & get path indices
         int pathStart = tileToPlace.neighborIndex.get(token.getIndex());
+        // check for collision
+        if (hasToken(b, location, pathStart)) {
+            return token;
+        }
         int pathEnd = tileToPlace.getPathEnd(pathStart);
         // recursion
         Token nt = new Token(pathEnd, location);
         int[] nl = getAdjacentLocation(nt);
         return simulateMove(nt, board.getTile(nl[0], nl[1]), board);
+    }
+
+    /**
+     *
+     * @param b
+     * @param location
+     * @param indexOnTile
+     * @return whether a player's token is on the tile at input location
+     *         and at the index on the tile
+     */
+    private boolean hasToken(Board b, int[] location, int indexOnTile) {
+        for (Player p : b.getPlayerMap().keySet()) {
+            int[] temp = b.getPlayerMap().get(p);
+            if (location[0] == temp[0] && location[1] == temp[1] && location[2] == indexOnTile) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -156,6 +177,25 @@ public class Server {
         return next;
     }
 
+    /**
+     * Check whether the token is on the edge of the board
+     * so we need to eliminate the player holding that token
+     * @param token
+     * @return
+     */
+    public boolean outOfBoard(Token token){
+        int ti = token.getIndex();
+        int[] tl = token.getPosition();
+        if ((ti == 0 || ti == 1) && tl[1] == 0 ||
+                (ti == 2 || ti == 3) && tl[0] == 5 ||
+                (ti == 4 || ti == 5) && tl[1] == 5 ||
+                (ti == 6 || ti == 7) && tl[0] == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Test */
     static Board b;
     static Token token;
     static Player p;
@@ -197,12 +237,25 @@ public class Server {
         p.draw(tile);
     }
 
+    // Illegal 1: tile to be placed is not in player's hand
+    static public void createExample4() {
+        b = new Board();
+        token = new Token(0, 1,new int[] {0,1});
+        Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
+        b.placeTile(tile1, 0, 1);
+        tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
+        ArrayList<Tile> hand = new ArrayList<>();
+        p = new Player(token, hand);
+    }
+
     public static void main(String argv[]) {
         createExample1();
-        Tester.check(server.legalPlay(p, b, tile), "Legal 1");
+        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 1");
         createExample2();
-        Tester.check(server.legalPlay(p, b, tile), "Legal 2");
+        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 2");
         createExample3();
-        Tester.check(server.legalPlay(p, b, tile), "Legal 3");
+        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 3");
+        createExample4();
+        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 1");
     }
 }

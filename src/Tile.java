@@ -20,6 +20,7 @@ public class Tile {
             this.paths[i][1] = paths[i][1];
         }
     }
+
     public int[][] getPaths() {
         return this.paths;
     }

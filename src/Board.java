@@ -3,8 +3,11 @@ import java.util.*;
 public class Board {
     protected Tile[][] board;
     protected final int SIZE = 6;
+    protected HashMap<Player, int[]> playerMap; // [x of location, y of location, index on tile at (x,y)]
+
     Board() {
         this.board = new Tile[SIZE][SIZE];
+        this.playerMap = new HashMap<>();
     }
 
     public Tile getTile(int x, int y) {
@@ -22,4 +25,6 @@ public class Board {
         }
         this.board[x][y] = null;
     }
+
+    public HashMap<Player, int[]> getPlayerMap() { return this.playerMap; }
 }
