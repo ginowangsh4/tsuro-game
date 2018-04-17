@@ -16,10 +16,6 @@ public class Token {
         this.position = position;
     }
 
-    public boolean equals(Token t) {
-        return t.player ==
-    }
-
     public void setIndex(int index) { indexOnTile = index; }
 
     // Return the orientation int where the token is currently standing upon

@@ -31,7 +31,7 @@ public class Server {
         }
         // do we need to consider other rotation?
         boolean rotate = false;
-        
+
         Token token = simulateMove(p.token, t, b);
         int ti = token.getIndex();
         int[] tl = token.getPosition();
