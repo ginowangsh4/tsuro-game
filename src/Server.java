@@ -1,10 +1,6 @@
 import java.util.*;
 
 public class Server {
-    // singleton
-    public static Server server = new Server();
-    private Server() {}
-
     private Board board;
     private ArrayList<Tile> drawPile;
     private ArrayList<Player> inPlayer;
@@ -28,11 +24,14 @@ public class Server {
      * @return true if this play is legal
      */
     public boolean legalPlay(Player p, Board b, Tile t) {
-        for (Tile playerTile : p.hand) {
-            if (!t.isSameTile(playerTile)) {
+        for (Tile pt : p.hand) {
+            if (!t.isSameTile(pt)) {
                 return false;
             }
         }
+        // do we need to consider other rotation?
+        boolean rotate = false;
+        
         Token token = simulateMove(p.token, t, b);
         int ti = token.getIndex();
         int[] tl = token.getPosition();
@@ -40,9 +39,27 @@ public class Server {
             (ti == 2 || ti == 3) && tl[0] == 5 ||
             (ti == 4 || ti == 5) && tl[1] == 5 ||
             (ti == 6 || ti == 7) && tl[0] == 0) {
-            return false;
+            rotate = true;
         }
-        return true;
+        if (rotate) {
+            Tile newTile = new Tile(t.getPaths());
+            for (int i = 0; i < 3; i++) {
+                token = simulateMove(p.token, newTile, b);
+                ti = token.getIndex();
+                tl = token.getPosition();
+                if ((ti == 0 || ti == 1) && tl[1] == 0 ||
+                        (ti == 2 || ti == 3) && tl[0] == 5 ||
+                        (ti == 4 || ti == 5) && tl[1] == 5 ||
+                        (ti == 6 || ti == 7) && tl[0] == 0) {
+                    continue;
+                } else {
+                    return false; // original rotation is illegal, as there is another legal rotation
+                }
+            }
+            return true;          // all rotations are illegal, original rotation is legal
+        } else {
+            return true;          // original rotation is legal without considering other rotations
+        }
     }
 
     private Token simulateMove(Token token, Tile tileToPlace, Board board) {
@@ -75,16 +92,13 @@ public class Server {
         if (indexOnTile == 0 || indexOnTile == 1) {
             next[0] = x;
             next[1] = y - 1;
-        }
-        else if (indexOnTile == 2 || indexOnTile == 3) {
+        } else if (indexOnTile == 2 || indexOnTile == 3) {
             next[0] = x + 1;
             next[1] = y;
-        }
-        else if (indexOnTile == 4 || indexOnTile == 7) {
+        } else if (indexOnTile == 4 || indexOnTile == 7) {
             next[0] = x;
             next[1] = y + 1;
-        }
-        else {
+        } else {
             next[0] = x - 1;
             next[1] = y;
         }

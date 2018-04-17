@@ -24,8 +24,16 @@ public class Tile {
         return this.paths;
     }
 
-    public boolean isSameTile(Tile tile)
-    {
+    public void rotateTile() {
+        for (int i = 0; i < 4; i++) {
+            for (int side = 0; side < paths.length; side++) {
+                paths[side][0] = (paths[side][0] + 2) % 8;
+                paths[side][1] = (paths[side][1] + 2) % 8;
+            }
+        }
+    }
+
+    public boolean isSameTile(Tile tile) {
         int[][] temp = tile.paths;
         for (int i = 0; i < 4; i++) {
             for (int side = 0; side < temp.length; side++) {
@@ -38,7 +46,7 @@ public class Tile {
         }
         return false;
     }
-    
+
     public int getPathEnd (int startInt) {
         int endInt = 0;
         for (int[] array: this.paths) {
