@@ -5,6 +5,10 @@ public class Player {
     protected ArrayList<Tile> hand;
     protected boolean hasDragon = false;
 
+    public Player(Token t, ArrayList<Tile> hand){
+        this.token = t;
+        this.hand = hand;
+    }
     public Token getToken(){ return this.token; }
 
     public void draw(Tile t){ hand.add(t); }

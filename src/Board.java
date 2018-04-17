@@ -8,12 +8,18 @@ public class Board {
     }
 
     public Tile getTile(int x, int y) {
+        if (x < 0 || y < 0 || x > 5 || y > 5) {
+            return null;
+        }
         return this.board[x][y];
     }
 
     public void placeTile(Tile t, int x, int y) { this.board[x][y] = t;}
 
     public void deleteTile(int x, int y) {
+        if (x < 0 || y < 0 || x > 5 || y > 5) {
+            return;
+        }
         this.board[x][y] = null;
-    } //illegal actually
+    }
 }

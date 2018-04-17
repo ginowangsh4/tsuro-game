@@ -1,11 +1,9 @@
 public class Token {
-    private Player player;
     private int color;
     private int indexOnTile; //orientation int, not path int
-    private int[] position = new int[] {0, 0};
+    private int[] position;
 
-    Token (Player player, int color, int indexOnTile, int[] position) {
-        this.player = player;
+    Token (int color, int indexOnTile, int[] position) {
         this.color = color;
         this.indexOnTile = indexOnTile;
         this.position = position;

@@ -25,22 +25,24 @@ public class Tile {
     }
 
     public void rotateTile() {
-        for (int i = 0; i < 4; i++) {
-            for (int side = 0; side < paths.length; side++) {
-                paths[side][0] = (paths[side][0] + 2) % 8;
-                paths[side][1] = (paths[side][1] + 2) % 8;
-            }
+        for (int side = 0; side < paths.length; side++) {
+            paths[side][0] = (paths[side][0] + 2) % 8;
+            paths[side][1] = (paths[side][1] + 2) % 8;
         }
     }
 
     public boolean isSameTile(Tile tile) {
-        int[][] temp = tile.paths;
+        int[][] paths = tile.getPaths();
+        int[][] temp = new int[4][];
+        for (int i = 0; i < 4; i++) {
+            temp[i] = Arrays.copyOf(paths[i], paths[i].length);
+        }
         for (int i = 0; i < 4; i++) {
             for (int side = 0; side < temp.length; side++) {
                 temp[side][0] = (temp[side][0] + 2) % 8;
                 temp[side][1] = (temp[side][1] + 2) % 8;
             }
-            if (temp == this.paths) {
+            if (Arrays.deepEquals(temp, this.paths)) {
                 return true;
             }
         }
@@ -49,9 +51,12 @@ public class Tile {
 
     public int getPathEnd (int startInt) {
         int endInt = 0;
-        for (int[] array: this.paths) {
+        for (int[] array : this.paths) {
             if (startInt == array[0]) {
                 endInt = array[1];
+                break;
+            } else if (startInt == array[1]) {
+                endInt = array[0];
                 break;
             }
         }
