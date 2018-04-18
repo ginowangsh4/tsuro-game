@@ -328,20 +328,20 @@ public class Server {
     }
 
     public static void main(String argv[]) {
-        createExample1();
-        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 1");
-        createExample2();
-        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 2");
-        createExample3();
-        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 3");
-        createExample4();
-        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 4");
-        createExample5();
-        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 1");
-        createExample6();
-        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 2");
-        createExample7();
-        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 3");
+//        createExample1();
+//        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 1");
+//        createExample2();
+//        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 2");
+//        createExample3();
+//        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 3");
+//        createExample4();
+//        Tester.check(server.legalPlay(p, b, tile) == true, "Legal 4");
+//        createExample5();
+//        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 1");
+//        createExample6();
+//        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 2");
+//        createExample7();
+//        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 3");
         createExample8();
         Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile) == null, "Play a Turn 1");
     }
