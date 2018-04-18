@@ -62,7 +62,7 @@ public class Board {
      * Update the given token
      * @param t a new token
      */
-    public void updateToken(Token t){
+    public void updateToken(Token t) {
         this.token_list.remove(t);
         this.token_list.add(t);
     }

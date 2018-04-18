@@ -183,7 +183,7 @@ public class Server {
      * @param token the token of player currently making the move
      * @return an array of location [x,y] of the adjacent tile
      */
-    private int[] getAdjacentLocation(Token token){
+    private int[] getAdjacentLocation(Token token) {
         int[] next = new int[2];
         int x = token.getPosition()[0];
         int y = token.getPosition()[1];
@@ -209,7 +209,7 @@ public class Server {
      * @param token a token to be checked
      * @return true if on the edge; false if not
      */
-    public boolean outOfBoard(Token token){
+    public boolean outOfBoard(Token token) {
         int ti = token.getIndex();
         int[] tl = token.getPosition();
         if ((ti == 0 || ti == 1) && tl[1] == 0 ||
