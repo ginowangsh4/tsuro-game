@@ -1,67 +1,77 @@
 # Tsuro-Game
 
-Implementation of classic board game Tsuro with a taste of Java
+Implementation of classic board game Tsuro with Java 7
 
 ## Interface Definition
 
 ### Board
 ```
-Tile[][] locations
-HashMap<Token, Tile> tokenMap
-void placeTile(Tile, int, int)
-void placeToken(Token, int, int)
+protected Tile[][] board;
+protected final int SIZE = 6;
+protected ArrayList<Token> token_list;
+public Tile getTile(int x, int y)
+public void placeTile(Tile t, int x, int y)
+public void deleteTile(int x, int y)
+public void addToken(Token t)
+public void removeToken(Token inT)
+public void updateToken(Token t)
 ```
 ### Server
 ```
-void registerPlayer(Player)
-String play() 		// run game
-```
-### SPlayer
-```
-void inform(String) 	// accept invitation from server
-void turn(Turn)		// play turn
-void record()		// record result
-void cheat()		// detect attempt to cheat
+private Board board;
+private ArrayList<Tile> drawPile;
+private ArrayList<Player> inPlayer;
+private ArrayList<Player> outPlayer;
+private boolean gameOver = false;
+public boolean legalPlay(Player p, Board b, Tile t)
+public ArrayList playATurn(ArrayList<Tile> drawPile, ArrayList<Player> inPlayer, ArrayList<Player> outPlayer, Board board, Tile t)
+private Token simulateMove(Token token, Board board)
+private int[] getAdjacentLocation(Token token)
+public boolean outOfBoard(Token token)
+*contains tests*
 ```
 ### Player
 ```
-Hand hand
-Token token
-int[2] startLocation
-Token getToken()
-void inform(String) 	// accept invitation from server
-void turn(Turn)		// play turn
+protected Token token;
+protected ArrayList<Tile> hand;
+protected boolean hasDragon = false;
+public Token getToken()
+public void updateToken(Token token)
+public void draw(Tile t)
+public ArrayList<Tile> getHand()  
+public void getDragon() 
+public void passDragon(Player p)
 ```
 ### Token 
 ```
-Player player
-Player getPlayer()
-```
-### Hand
-```
-Tile[] tiles
-bool hasDragon()
-```
-### Turn
-```
-void placeToken(Token, Location)
-void placeTile(Tile)
+private int color;
+private int indexOnTile; //orientation int, not path int
+private int[] position;
+private Player owner;
+public void setIndex(int index) 
+public int getIndex() 
+public void setPosition(int[] xy)
+public int[] getPosition()
+public void setOwner(Player p) 
+public boolean equals(Token t) 
 ```
 ### Tile
 ```
-/*
-pairs[0] = 1 indicates there is a path connecting 0th point 
-and 1st point; int[2] location, array of size 2 indicating 
-the x,y location of the tile on the board
-*/
-int[][] pairs 
-HashMap<Token, int> map 	// mark token location on tile (1-8) 
-boolean onBoard()			// true if already place on board
-void clearMap()			// reset tile when placed back in deck
-```
-### DragonTile
-```
-Player player
+protected int[][] paths; // mutable
+public final HashMap<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
+        put(0, 5);
+        put(1, 4);
+        put(2, 7);
+        put(3, 6);
+        put(4, 1);
+        put(5, 0);
+        put(6, 3);
+        put(7, 2);
+    }};
+public int[][] getPaths()
+public void rotateTile() 
+public boolean isSameTile(Tile tile) 
+public int getPathEnd (int startInt) 
 ```
 ### Deck
 ```
