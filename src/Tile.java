@@ -21,6 +21,10 @@ public class Tile {
         }
     }
 
+    /**
+     * Get all the engraved paths on a tile
+     * @return a 2d array of paths
+     */
     public int[][] getPaths() {
         return this.paths;
     }
@@ -32,6 +36,11 @@ public class Tile {
         }
     }
 
+    /**
+     * Check whether two tiles are equal
+     * @param tile the tile to be checked against
+     * @return true if equal; false if not
+     */
     public boolean isSameTile(Tile tile) {
         int[][] paths = tile.getPaths();
         int[][] temp = new int[4][];
@@ -50,6 +59,11 @@ public class Tile {
         return false;
     }
 
+    /**
+     * Given the starting index of a path, get the end index on the path
+     * @param startInt starting index of the path
+     * @return the end index
+     */
     public int getPathEnd (int startInt) {
         int endInt = 0;
         for (int[] array : this.paths) {
