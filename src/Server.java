@@ -1,3 +1,4 @@
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.*;
 
 public class Server {
@@ -21,6 +22,7 @@ public class Server {
      * @param t         the tile that the player wishes to place on the board
      * @return true if this play is legal
      */
+    @SuppressWarnings("Duplicates")
     public boolean legalPlay(Player p, Board b, Tile t) {
         // check condition 1
         for (Tile pt : p.getHand()) {
@@ -94,14 +96,17 @@ public class Server {
             if (drawPile.size() == 0) {
                 currentP.getDragon();
             }
-            Tile temp = drawPile.get(0);
-            currentP.draw(temp);
-            drawPile.remove(0);
-            inPlayer.add(currentP);
+            else {
+                Tile temp = drawPile.get(0);
+                currentP.draw(temp);
+                drawPile.remove(0);
+                inPlayer.add(currentP);
+            }
+
         }
 
         // check if other players can make a move because of the placement of this tile t
-        for (int i = 0; i < inPlayer.size()-1; i ++)
+        for (int i = 0; i < inPlayer.size(); i++)
         {
             currentP = inPlayer.get(i);
             currentT = currentP.getToken();
@@ -115,6 +120,7 @@ public class Server {
                 drawPile.addAll(currentP.getHand());
                 board.removeToken(currentT);
                 currentP.getHand().clear();
+                inPlayer.remove(currentP);
                 outPlayer.add(currentP);
             }
         }
@@ -126,12 +132,13 @@ public class Server {
         this.outPlayer = outPlayer;
 
         // determine whether game is over
-        if (inPlayer.size() == 0) {
-            return null;
-        }
-        else {
+        if (this.inPlayer.size() == 1) {
             return inPlayer;
         }
+        else if (this.inPlayer.size() == 0) {
+            return null;
+        }
+        else return null;
     }
 
     private Token simulateMove(Token token, Board board) {
@@ -166,7 +173,7 @@ public class Server {
         } else if (indexOnTile == 2 || indexOnTile == 3) {
             next[0] = x + 1;
             next[1] = y;
-        } else if (indexOnTile == 4 || indexOnTile == 7) {
+        } else if (indexOnTile == 4 || indexOnTile == 5) {
             next[0] = x;
             next[1] = y + 1;
         } else {
@@ -199,15 +206,19 @@ public class Server {
     static Token token;
     static Player p;
     static Tile tile;
+    static ArrayList<Tile> pile;
+    static ArrayList<Player> inPlayerList;
+    static ArrayList<Player> outPlayerList;
 
     // Legal 1: place a tile, not tile around it on board
     static public void createExample1() {
         b = new Board();
-        token = new Token(0, 4, new int[] {0,0});
-        tile = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
+        token = new Token(0, 4, new int[]{0, 0});
+        tile = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         ArrayList<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
+
     }
 
     // Legal 2: place a tile, move to some tile not at edge
@@ -289,17 +300,31 @@ public class Server {
 
     static public void createExample8() {
         b = new Board();
-        Tile tile1 = new Tile(new int[][] {{0,3}, {2,4}, {3,7}, {5,6}});
+        Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
         Tile tile2 = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
-        Tile tile3 = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
-        Tile tile4 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
+        tile = new Tile(new int[][] {{0,7}, {1,2}, {3,4}, {5,6}});
+        Tile tile4 = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
+        Tile tile5 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         b.placeTile(tile1, 2, 0);
         b.placeTile(tile2, 2, 1);
-        b.placeTile(tile3, 1, 2);
-        b.placeTile(tile4, 0, 2);
-        Token token1 = new Token(0, 1,new int[] {0,1});
-        Token token2 = new Token(1, 1,new int[] {0,1});
+        b.placeTile(tile4, 1, 2);
+        b.placeTile(tile5, 0, 2);
+        Token token1 = new Token(0, 2,new int[] {1,2});
+        Token token2 = new Token(1, 5,new int[] {2,1});
+        ArrayList<Tile> hand1 = new ArrayList<>();
+        ArrayList<Tile> hand2 = new ArrayList<>();
+        Player player1 = new Player(token1, hand1);
+        Player player2 = new Player(token2, hand2);
+        token1.setOwner(player1);
+        token2.setOwner(player2);
+        b.addToken(token1);
+        b.addToken(token2);
 
+        inPlayerList = new ArrayList<>();
+        outPlayerList = new ArrayList<>();
+        pile = new ArrayList<>();
+        inPlayerList.add(player1);
+        inPlayerList.add(player2);
     }
 
     public static void main(String argv[]) {
@@ -317,5 +342,7 @@ public class Server {
         Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 2");
         createExample7();
         Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 3");
+        createExample8();
+        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile) == null, "Play a Turn 1");
     }
 }
