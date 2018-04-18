@@ -6,15 +6,6 @@ public class Server {
     private ArrayList<Tile> drawPile;
     private ArrayList<Player> inPlayer;
     private ArrayList<Player> outPlayer;
-//    private ArrayList<Player> winners;
-//    private boolean isOver;
-
-//    Server(Board b, ArrayList<Tile> drawPile, ArrayList<Player> inPlayer, ArrayList<Player> outPlayer) {
-//        this.board = b;
-//        this.drawPile = drawPile;
-//        this.inPlayer = inPlayer;
-//        this.outPlayer = outPlayer;
-//    }
 
     // Singleton Pattern
     public static Server server = new Server();
@@ -39,7 +30,10 @@ public class Server {
             else break;
         }
         // check condition 2
-        Token token = simulateMove(p.getToken(), t, b);
+        int[] location = getAdjacentLocation(p.getToken());
+        b.placeTile(t, location[0], location[1]);
+        Token token = simulateMove(p.getToken(), b);
+        b.deleteTile(location[0], location[1]);
         if (!outOfBoard(token)){
             return true;          // original rotation is legal without considering other rotations
         }
@@ -47,7 +41,9 @@ public class Server {
             Tile newTile = new Tile(t.getPaths());
             for (int i =0; i < 3; i++){
                 newTile.rotateTile();
-                token = simulateMove(p.getToken(), newTile, b);
+                b.placeTile(newTile, location[0], location[1]);
+                token = simulateMove(p.getToken(), b);
+                b.deleteTile(location[0], location[1]);
                 if (!outOfBoard(token)) return false; // original rotation is illegal, as there is another legal rotation
             }
             if (p.getHand().size() > 1){
@@ -56,7 +52,9 @@ public class Server {
                         newTile = new Tile(pt.getPaths());
                         for (int i = 0; i < 4; i++) {
                             newTile.rotateTile();
-                            token = simulateMove(p.getToken(), newTile, b);
+                            b.placeTile(newTile, location[0], location[1]);
+                            token = simulateMove(p.getToken(), b);
+                            b.deleteTile(location[0], location[1]);
                             if (!outOfBoard(token)) return false;   // original rotation is illegal, as there is another legal move
                         }
                     }
@@ -73,20 +71,22 @@ public class Server {
         inPlayer.remove(0);
         Token currentT = currentP.getToken();
         int[] location = getAdjacentLocation(currentT);
-        b.placeTile(t, location[0], location[1]);
+        board.placeTile(t, location[0], location[1]);
 
         // move the token
-        Token tempT = simulateMove(currentT, null, b);
+        Token tempT = simulateMove(currentT, b);
         currentT.setIndex(tempT.getIndex());
         currentT.setPosition(tempT.getPosition());
 
-        // update player map on board -> physically move the token forward to the final location and index
-        currentP.setToken(currentT);
-        b.getPlayerMap().put(currentP, new int[] {currentT.getPosition()[0], currentT.getPosition()[1], currentT.getIndex()});
+        // update player's and board's copy of the token
+        currentP.updateToken(currentT);
+        board.updateToken(currentT);
+
         // eliminate current player & recycle tiles in hand
         if (outOfBoard(currentT)) {
             drawPile.addAll(currentP.getHand());
             currentP.getHand().clear();
+            board.removeToken(currentT);
             outPlayer.add(currentP);
         }
         // add to tail & draw tile
@@ -100,17 +100,20 @@ public class Server {
             inPlayer.add(currentP);
         }
 
+        // check if other players can make a move because of the placement of this tile t
         for (int i = 0; i < inPlayer.size()-1; i ++)
         {
             currentP = inPlayer.get(i);
             currentT = currentP.getToken();
-            tempT = simulateMove(currentT, null, b);
+            tempT = simulateMove(currentT, board);
             currentT.setPosition(tempT.getPosition());
             currentT.setIndex(tempT.getIndex());
-            currentP.setToken(currentT);
+            currentP.updateToken(currentT);
+            board.updateToken(currentT);
 
             if (outOfBoard(currentT)) {
                 drawPile.addAll(currentP.getHand());
+                board.removeToken(currentT);
                 currentP.getHand().clear();
                 outPlayer.add(currentP);
             }
@@ -123,15 +126,20 @@ public class Server {
         this.outPlayer = outPlayer;
 
         // determine whether game is over
-        if (inPlayer.size() == 0) return null;
-        else return inPlayer;
+        if (inPlayer.size() == 0) {
+            return null;
+        }
+        else {
+            return inPlayer;
+        }
     }
 
-    private Token simulateMove(Token token, Tile nextTile, Board board) {
+    private Token simulateMove(Token token, Board board) {
         // next location the token can go on
         int[] location = getAdjacentLocation(token);
+        Tile nextTile = board.getTile(location[0], location[1]);
         // return if reach the end of path
-        if (nextTile == null && board.getTile(location[0], location[1]) == null) {
+        if (nextTile == null) {
             return token;
         }
         // simulate moving token & get new token index
@@ -139,26 +147,7 @@ public class Server {
         int pathEnd = nextTile.getPathEnd(pathStart);
         // recursion
         Token nt = new Token(pathEnd, location);
-        int[] nl = getAdjacentLocation(nt);
-        return simulateMove(nt, board.getTile(nl[0], nl[1]), board);
-    }
-
-    /**
-     * Check whether a player's token is on tile at the location and the index
-     * @param b
-     * @param location
-     * @param indexOnTile
-     * @return whether a player's token is on the tile at input location
-     *         and at the index on the tile
-     */
-    private boolean hasToken(Board b, int[] location, int indexOnTile) {
-        for (Player p : b.getPlayerMap().keySet()) {
-            int[] temp = b.getPlayerMap().get(p);
-            if (location[0] == temp[0] && location[1] == temp[1] && location[2] == indexOnTile) {
-                return true;
-            }
-        }
-        return false;
+        return simulateMove(nt, board);
     }
 
     /**
@@ -298,6 +287,21 @@ public class Server {
         p.draw(tile2);
     }
 
+    static public void createExample8() {
+        b = new Board();
+        Tile tile1 = new Tile(new int[][] {{0,3}, {2,4}, {3,7}, {5,6}});
+        Tile tile2 = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
+        Tile tile3 = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
+        Tile tile4 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
+        b.placeTile(tile1, 2, 0);
+        b.placeTile(tile2, 2, 1);
+        b.placeTile(tile3, 1, 2);
+        b.placeTile(tile4, 0, 2);
+        Token token1 = new Token(0, 1,new int[] {0,1});
+        Token token2 = new Token(1, 1,new int[] {0,1});
+
+    }
+
     public static void main(String argv[]) {
         createExample1();
         Tester.check(server.legalPlay(p, b, tile) == true, "Legal 1");
@@ -308,9 +312,9 @@ public class Server {
         createExample4();
         Tester.check(server.legalPlay(p, b, tile) == true, "Legal 4");
         createExample5();
-        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 2");
+        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 1");
         createExample6();
-        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 3");
+        Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 2");
         createExample7();
         Tester.check(server.legalPlay(p, b, tile) == false, "Illegal 3");
     }

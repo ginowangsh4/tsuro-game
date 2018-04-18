@@ -19,11 +19,6 @@ public class Token {
 
     public int getIndex() { return indexOnTile; }
 
-    public void setPosition(int x, int y) {
-        position[0] = x;
-        position[1] = y;
-    }
-
     public void setPosition(int[] xy){
         position[0] = xy[0];
         position[1] = xy[1];
@@ -32,5 +27,12 @@ public class Token {
     public int[] getPosition() { return position; }
 
     public Player getOwner() {return owner;}
+
+    public void setOwner(Player p) {this.owner = p;}
+
+    public boolean equals(Token t) {
+        if (this.color == t.color) return true;
+        return false;
+    }
 
 }
