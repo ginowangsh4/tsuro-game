@@ -433,7 +433,7 @@ public class Server {
         Tester.check(server.legalPlay(p, b, tile) == false, "legalPlay - Expect Illegal - Test 7");
 
         createExample8();
-        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile) == null, "Play a Turn - Expect Game Over - Test 1");
+        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile) == null, "PlayATurn - Expect Game Over - Test 1");
         Tester.check(server.gameOver == true, "check game status");
         Tester.check(server.inPlayer.size() == 0, "check inPlayer list");
         Tester.check(server.outPlayer.size() == 2, "check outPlayer list");
@@ -444,7 +444,7 @@ public class Server {
         server.gameOver = false;
 
         createExample9();
-        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile) == null, "Play a Turn - Expect Game Not Over - Test 2");
+        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile) == null, "PlayATurn - Expect Game Not Over - Test 2");
         Tester.check(server.gameOver == false, "check game status");
         Tester.check(server.inPlayer.size() == 2, "check inPlayer list");
         Tester.check(server.outPlayer.size() == 0, "check outPlayer list");
@@ -454,7 +454,7 @@ public class Server {
         Tester.check(server.inPlayer.get(0).getToken().getIndex() == 7, "check player 2 token index");
 
         createExample10();
-        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile).equals(server.inPlayer), "Play a Turn - Expect Game Over - Test 3");
+        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile).equals(server.inPlayer), "PlayATurn - Expect Game Over - Test 3");
         Tester.check(server.gameOver == true, "check game status");
         Tester.check(server.inPlayer.size() == 1, "check inPlayer list");
         Tester.check(server.outPlayer.size() == 1, "check outPlayer list");
