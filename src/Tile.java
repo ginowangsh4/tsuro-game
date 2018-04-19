@@ -47,12 +47,14 @@ public class Tile {
         for (int i = 0; i < 4; i++) {
             temp[i] = Arrays.copyOf(paths[i], paths[i].length);
         }
+        Tile tempTile = new Tile(temp);
         for (int i = 0; i < 4; i++) {
-            for (int side = 0; side < temp.length; side++) {
-                temp[side][0] = (temp[side][0] + 2) % 8;
-                temp[side][1] = (temp[side][1] + 2) % 8;
-            }
-            if (Arrays.deepEquals(temp, this.paths)) {
+//            for (int side = 0; side < temp.length; side++) {
+//                temp[side][0] = (temp[side][0] + 2) % 8;
+//                temp[side][1] = (temp[side][1] + 2) % 8;
+//            }
+            tempTile.rotateTile();
+            if (Arrays.deepEquals(tempTile.getPaths(), this.paths)) {
                 return true;
             }
         }
