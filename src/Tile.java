@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Tile {
     protected int[][] paths; // mutable
-    public final HashMap<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
+    public final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
         put(0, 5);
         put(1, 4);
         put(2, 7);

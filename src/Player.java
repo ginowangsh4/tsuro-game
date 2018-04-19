@@ -2,10 +2,10 @@ import java.util.*;
 
 public class Player {
     protected Token token;
-    protected ArrayList<Tile> hand;
+    protected List<Tile> hand;
     protected boolean hasDragon = false;
 
-    public Player(Token t, ArrayList<Tile> hand){
+    public Player(Token t, List<Tile> hand){
         this.token = t;
         this.hand = hand;
     }
@@ -32,7 +32,7 @@ public class Player {
      * Get a player's hand
      * @return a list of tiles on player's hand
      */
-    public ArrayList<Tile> getHand() { return this.hand; }
+    public List<Tile> getHand() { return this.hand; }
 
     /**
      * The player now holds the dragon tile

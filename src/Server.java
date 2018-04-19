@@ -4,9 +4,9 @@ import java.util.*;
 public class Server {
 
     private Board board;
-    private ArrayList<Tile> drawPile;
-    private ArrayList<Player> inPlayer;
-    private ArrayList<Player> outPlayer;
+    private List<Tile> drawPile;
+    private List<Player> inPlayer;
+    private List<Player> outPlayer;
 
     private boolean gameOver = false;
 
@@ -87,7 +87,7 @@ public class Server {
      * @return the list of winner if the gmae is over; otherwise return null
      *         (drawPile, inPlayer, outPlayer are themselves updated and updated in server's status through private fields)
      */
-    public ArrayList playATurn(ArrayList<Tile> drawPile, ArrayList<Player> inPlayer, ArrayList<Player> outPlayer, Board board, Tile t) {
+    public List<Player> playATurn(List<Tile> drawPile, List<Player> inPlayer, List<Player> outPlayer, Board board, Tile t) {
         // place a tile path
         Player currentP = inPlayer.get(0);
         inPlayer.remove(0);
@@ -228,16 +228,16 @@ public class Server {
     static Token token;
     static Player p;
     static Tile tile;
-    static ArrayList<Tile> pile;
-    static ArrayList<Player> inPlayerList;
-    static ArrayList<Player> outPlayerList;
+    static List<Tile> pile;
+    static List<Player> inPlayerList;
+    static List<Player> outPlayerList;
 
     // legalPlay - Expect Legal - Test 1: place a tile, not tile around it on board
     static public void createExample1() {
         b = new Board();
         token = new Token(0, 4, new int[]{0, 0});
         tile = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
-        ArrayList<Tile> hand = new ArrayList<>();
+        List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
 
@@ -252,7 +252,7 @@ public class Server {
         b.placeTile(tile1, 0, 0);
         b.placeTile(tile2,1,1);
         tile = new Tile(new int[][] {{0,5}, {1,2}, {3,4}, {6,7}});
-        ArrayList<Tile> hand = new ArrayList<>();
+        List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
     }
@@ -264,7 +264,7 @@ public class Server {
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        ArrayList<Tile> hand = new ArrayList<>();
+        List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
     }
@@ -277,7 +277,7 @@ public class Server {
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile2 = new Tile(new int[][] {{0,4}, {1,5}, {2,6}, {3,7}});
-        ArrayList<Tile> hand = new ArrayList<>();
+        List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
         p.draw(tile2);
@@ -289,7 +289,7 @@ public class Server {
         token = new Token(0, 1,new int[] {0,1});
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
-        ArrayList<Tile> hand = new ArrayList<>();
+        List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile1);
     }
@@ -301,7 +301,7 @@ public class Server {
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         b.placeTile(tile1, 0, 0);
         tile = new Tile(new int[][] {{0,2}, {1,7}, {3,4}, {5,6}});
-        ArrayList<Tile> hand = new ArrayList<>();
+        List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
     }
@@ -314,7 +314,7 @@ public class Server {
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile2 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
-        ArrayList<Tile> hand = new ArrayList<>();
+        List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
         p.draw(tile2);
@@ -334,8 +334,8 @@ public class Server {
         b.placeTile(tile5, 0, 2);
         Token token1 = new Token(0, 2,new int[] {1,2});
         Token token2 = new Token(1, 5,new int[] {2,1});
-        ArrayList<Tile> hand1 = new ArrayList<>();
-        ArrayList<Tile> hand2 = new ArrayList<>();
+        List<Tile> hand1 = new ArrayList<>();
+        List<Tile> hand2 = new ArrayList<>();
         Player player1 = new Player(token1, hand1);
         Player player2 = new Player(token2, hand2);
         token1.setOwner(player1);
@@ -364,8 +364,8 @@ public class Server {
         b.placeTile(tile5, 0, 2);
         Token token1 = new Token(0, 1,new int[] {2,2});
         Token token2 = new Token(1, 5,new int[] {2,0});
-        ArrayList<Tile> hand1 = new ArrayList<>();
-        ArrayList<Tile> hand2 = new ArrayList<>();
+        List<Tile> hand1 = new ArrayList<>();
+        List<Tile> hand2 = new ArrayList<>();
         Player player1 = new Player(token1, hand1);
         Player player2 = new Player(token2, hand2);
         token1.setOwner(player1);
@@ -394,8 +394,8 @@ public class Server {
         b.placeTile(tile5, 0, 2);
         Token token1 = new Token(0, 3,new int[] {1,2});
         Token token2 = new Token(1, 5,new int[] {2,1});
-        ArrayList<Tile> hand1 = new ArrayList<>();
-        ArrayList<Tile> hand2 = new ArrayList<>();
+        List<Tile> hand1 = new ArrayList<>();
+        List<Tile> hand2 = new ArrayList<>();
         Player player1 = new Player(token1, hand1);
         Player player2 = new Player(token2, hand2);
         token1.setOwner(player1);

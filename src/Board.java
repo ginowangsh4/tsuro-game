@@ -6,7 +6,7 @@ import java.util.*;
 public class Board {
     protected Tile[][] board;
     protected final int SIZE = 6;
-    protected ArrayList<Token> token_list;
+    protected List<Token> token_list;
 
     Board() {
         this.board = new Tile[SIZE][SIZE];
