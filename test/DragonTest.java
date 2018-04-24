@@ -28,7 +28,7 @@ class DragonTest {
         deck = new Deck();
         t1 = new Token(1, 4, new int[]{0, -1});
         t2 = new Token(2, 2, new int[]{-1, 3});
-        t3 = new Token(3, 0, new int[]{6, 3});
+        t3 = new Token(3, 0, new int[]{3, 6});
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
@@ -53,8 +53,18 @@ class DragonTest {
         p1.deal(t);
         server.init(b, inPlayer, outPlayer, deck);
         server.playATurn(t);
-        assertEquals(3, p1.getHand().size(),"Error: player 1 doesn't have 3 tiles" );
-        assertEquals(25, deck.size(),"Error: more than one player drew" );
+        assertEquals(3, p1.getHand().size(),"Error: player 1 didn't draw new tile");
+        assertEquals(25, deck.size(),"Error: more than one player drew in a turn" );
+        t = p2.getHand().get(0);
+        p2.deal(t);
+        server.playATurn(t);
+        assertEquals(3, p1.getHand().size(),"Error: player 2 didn't draw new tile");
+        assertEquals(24, deck.size(),"Error: more than one player drew in a turn" );
+        t = p2.getHand().get(2);
+        p2.deal(t);
+        server.playATurn(t);
+        assertEquals(3, p1.getHand().size(),"Error: player 3 didn't draw new tile");
+        assertEquals(23, deck.size(),"Error: more than one player drew in a turn" );
     }
 
 }
