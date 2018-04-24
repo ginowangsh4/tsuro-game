@@ -14,6 +14,11 @@ public class Server {
     private static Server server = new Server();
     private Server() {}
     public static Server getServer() { return server; }
+
+    public boolean isGameOver() { return this.gameOver; }
+
+    public void setGameOver(boolean b) {this.gameOver = b; }
+
     /**
      * Return false if
      * 1) the tile is not (a possibly rotated version of) one of the tiles of the player
@@ -95,7 +100,7 @@ public class Server {
         int[] location = getAdjacentLocation(currentT);
         board.placeTile(t, location[0], location[1]);
         // move the token
-        Token tempT = simulateMove(currentT, b);
+        Token tempT = simulateMove(currentT, board);
         currentT.setIndex(tempT.getIndex());
         currentT.setPosition(tempT.getPosition());
         // update player's and board's copy of the token
