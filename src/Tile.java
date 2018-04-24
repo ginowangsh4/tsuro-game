@@ -14,6 +14,9 @@ public class Tile {
     }};
 
     Tile (int[][] paths) {
+        if (paths.length != 4 || paths[0].length != 2) {
+            throw new IllegalArgumentException("Path is not a 4 x 2 matrix");
+        }
         this.paths = new int[4][2];
         for (int i = 0; i < paths.length; i++) {
             this.paths[i][0] = paths[i][0];
@@ -59,16 +62,13 @@ public class Tile {
      * @return the end index
      */
     public int getPathEnd (int startInt) {
-        int endInt = 0;
         for (int[] array : this.paths) {
             if (startInt == array[0]) {
-                endInt = array[1];
-                break;
+                return array[1];
             } else if (startInt == array[1]) {
-                endInt = array[0];
-                break;
+                return array[0];
             }
         }
-        return endInt;
+        throw new IllegalArgumentException("Error: Invalid path start index");
     }
 }
