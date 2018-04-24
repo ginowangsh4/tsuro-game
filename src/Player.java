@@ -3,9 +3,8 @@ import java.util.*;
 public class Player {
     protected Token token;
     protected List<Tile> hand;
-    protected boolean hasDragon = false;
 
-    public Player(Token t, List<Tile> hand){
+    Player(Token t, List<Tile> hand){
         this.token = t;
         this.hand = hand;
     }
@@ -33,18 +32,4 @@ public class Player {
      * @return a list of tiles on player's hand
      */
     public List<Tile> getHand() { return this.hand; }
-
-    /**
-     * The player now holds the dragon tile
-     */
-    public void getDragon() { this.hasDragon = true; }
-
-    /**
-     * The player passes the dragon tile to another player
-     * @param p the players to pass on to
-     */
-    public void passDragon(Player p) {
-        this.hasDragon = true;
-        p.getDragon();
-    }
 }

@@ -4,11 +4,10 @@ import java.util.*;
 public class Server {
 
     private Board board;
-
-    private List<Tile> drawPile;
+    private Deck drawPile;
     private List<Player> inPlayer;
     private List<Player> outPlayer;
-
+    private Player dragonHolder = null;
     private boolean gameOver = false;
 
     // Singleton Pattern
@@ -23,7 +22,7 @@ public class Server {
         return server;
     }
 
-    public void init(Board board, List<Player> inPlayer, List<Player> outPlayer, List<Tile> drawPile) {
+    public void init(Board board, List<Player> inPlayer, List<Player> outPlayer, Deck drawPile) {
         this.board = board;
         this.inPlayer = inPlayer;
         this.outPlayer = outPlayer;
@@ -46,7 +45,7 @@ public class Server {
      */
     @SuppressWarnings("Duplicates")
     public boolean legalPlay(Player p, Board b, Tile t) {
-        // check condition 1
+        // check condition 1)
         for (Tile pt : p.getHand()) {
             if (!t.isSameTile(pt)) {
                 return false;
@@ -55,7 +54,7 @@ public class Server {
                 break;
             }
         }
-        // check condition 2
+        // check condition 2)
         int[] location = getAdjacentLocation(p.getToken());
         b.placeTile(t, location[0], location[1]);
         Token token = simulateMove(p.getToken(), b);
@@ -98,8 +97,8 @@ public class Server {
     }
 
     /**
-     * Vomputes the state of the game after the completion of a turn given the state of the game before the turn
-     * @param t          the tile to be placed on that board
+     * Computes the state of the game after the completion of a turn given the state of the game before the turn
+     * @param t the tile to be placed on that board
      * @return the list of winner if the game is over; otherwise return null
      *         (drawPile, inPlayer, outPlayer are themselves updated and updated in server's status through private fields)
      */
@@ -119,15 +118,18 @@ public class Server {
         board.updateToken(currentT);
         // eliminate current player & recycle tiles in hand
         if (outOfBoard(currentT)) {
-            drawPile.addAll(currentP.getHand());
+            drawPile.addAndShuffle(currentP.getHand());
             currentP.getHand().clear();
             board.removeToken(currentT);
             outPlayer.add(currentP);
+            // handle the case whether dragon is dealt
+            passDragon();
         }
         // add to tail & draw tile
         else {
-            if (drawPile.size() == 0) {
-                currentP.getDragon();
+            if (drawPile.isEmpty()) {
+                // player gets dragon if it is not dealt to another player
+                getDragon(currentP);
             }
             else {
                 Tile temp = drawPile.get(0);
@@ -153,11 +155,13 @@ public class Server {
             board.updateToken(currentT);
 
             if (outOfBoard(currentT)) {
-                drawPile.addAll(currentP.getHand());
+                drawPile.addAndShuffle(currentP.getHand());
                 board.removeToken(currentT);
                 currentP.getHand().clear();
                 inPlayer.remove(currentP);
                 outPlayer.add(currentP);
+                // handle the case whether dragon is dealt
+                passDragon();
             }
         }
 
@@ -236,5 +240,38 @@ public class Server {
             return true;
         }
         return false;
+    }
+
+    public void getDragon(Player p) {
+        if (dragonHolder == null) {
+            dragonHolder = p;
+        }
+    }
+
+    public void passDragon() {
+        if (dragonHolder == null) {
+            return;
+        }
+        int index = inPlayer.indexOf(dragonHolder);
+        while (!drawPile.isEmpty()) {
+            boolean full = true;
+            for (Player p : inPlayer) {
+                if (p.getHand().size() == 3) {
+                    continue;
+                } else {
+                    full = false;
+                    break;
+                }
+            }
+            if (full) {
+                return;
+            } else {
+                if (dragonHolder.getHand().size() < 3) {
+                    dragonHolder.getHand().add(drawPile.pop());
+                }
+                index = (index + 1) % inPlayer.size();
+                dragonHolder = inPlayer.get(index);
+            }
+        }
     }
 }

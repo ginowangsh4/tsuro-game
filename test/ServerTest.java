@@ -15,6 +15,7 @@ class ServerTest {
     static Player p;
     static Tile tile;
     static List<Tile> pile;
+    static Deck deck;
     static List<Player> inPlayer;
     static List<Player> outPlayer;
     static Server server = Server.getInstance();
@@ -149,10 +150,11 @@ class ServerTest {
         inPlayer = new ArrayList<>();
         outPlayer = new ArrayList<>();
         pile = new ArrayList<>();
+        deck = new Deck(pile);
         inPlayer.add(player1);
         inPlayer.add(player2);
 
-        server.init(b, inPlayer, outPlayer, pile);
+        server.init(b, inPlayer, outPlayer, deck);
 
         assertEquals(null, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 1");
         assertEquals(true, server.isGameOver(), "check game status");
@@ -192,10 +194,11 @@ class ServerTest {
         inPlayer = new ArrayList<>();
         outPlayer = new ArrayList<>();
         pile = new ArrayList<>();
+        deck = new Deck(pile);
         inPlayer.add(player1);
         inPlayer.add(player2);
 
-        server.init(b, inPlayer, outPlayer, pile);
+        server.init(b, inPlayer, outPlayer, deck);
 
         assertEquals(null, server.playATurn(tile), "PlayATurn - Expect Game Not Over - Test 2");
         assertEquals(false, server.isGameOver(), "check game status");
@@ -234,10 +237,11 @@ class ServerTest {
         inPlayer = new ArrayList<>();
         outPlayer = new ArrayList<>();
         pile = new ArrayList<>();
+        deck = new Deck(pile);
         inPlayer.add(player1);
         inPlayer.add(player2);
 
-        server.init(b, inPlayer, outPlayer, pile);
+        server.init(b, inPlayer, outPlayer, deck);
 
         assertEquals(inPlayer, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 3");
         assertEquals(true, server.isGameOver(), "check game status");
@@ -266,10 +270,11 @@ class ServerTest {
         inPlayer = new ArrayList<>();
         outPlayer = new ArrayList<>();
         pile = new ArrayList<>();
+        deck = new Deck(pile);
         inPlayer.add(player1);
         inPlayer.add(player2);
 
-        server.init(b, inPlayer, outPlayer, pile);
+        server.init(b, inPlayer, outPlayer, deck);
 
         assertEquals(null, server.playATurn(tile1), "PlayATurn - Expect Game Not Over - Test 4");
         assertEquals(2, inPlayer.size(), "check inPlayer list");
