@@ -100,7 +100,7 @@ public class Server {
     /**
      * Vomputes the state of the game after the completion of a turn given the state of the game before the turn
      * @param t          the tile to be placed on that board
-     * @return the list of winner if the gmae is over; otherwise return null
+     * @return the list of winner if the game is over; otherwise return null
      *         (drawPile, inPlayer, outPlayer are themselves updated and updated in server's status through private fields)
      */
     public List<Player> playATurn(Tile t) {
@@ -141,6 +141,11 @@ public class Server {
         {
             currentP = inPlayer.get(i);
             currentT = currentP.getToken();
+            // do not simulate move for a new player
+            if (currentT.getPosition()[0] < 0 || currentT.getPosition()[0] > 5 ||
+                    currentT.getPosition()[1] < 0 || currentT.getPosition()[1] > 5) {
+                continue;
+            }
             tempT = simulateMove(currentT, board);
             currentT.setPosition(tempT.getPosition());
             currentT.setIndex(tempT.getIndex());
@@ -196,10 +201,6 @@ public class Server {
      * @return an array of location [x,y] of the adjacent tile
      */
     private int[] getAdjacentLocation(Token token) {
-        // Start of the game: adjacent location = its current tile's location
-        if (token.isNew) return token.getPosition();
-
-        // Other cases: adjacent location = its adjacent tile's location
         int[] next = new int[2];
         int x = token.getPosition()[0];
         int y = token.getPosition()[1];
