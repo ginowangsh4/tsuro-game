@@ -1,7 +1,9 @@
 import com.sun.deploy.util.ArrayUtil;
 import com.sun.tools.javac.util.ArrayUtils;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Board {
     protected Tile[][] board;
@@ -26,7 +28,18 @@ public class Board {
      * @param x the x-coordinate of the given location
      * @param y the y-coordinate of the given location
      */
-    public void placeTile(Tile t, int x, int y) { this.board[x][y] = t;}
+    public void placeTile(Tile t, int x, int y) {
+        try{
+            if (board[x][y] != null) {
+                throw new IllegalArgumentException("The location given contains another tile");
+            }
+            this.board[x][y] = t;
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            System.out.println("The location given is outside of board");
+            throw e;
+        }
+    }
 
     /**
      * Delete the tile in the given location if it currently holds a tile
@@ -34,8 +47,16 @@ public class Board {
      * @param y the y-coordinate of the given location
      */
     public void deleteTile(int x, int y) {
-        if (getTile(x, y) != null) this.board[x][y] = null;
-        else return;
+        try{
+            if (board[x][y] == null) {
+                throw new IllegalArgumentException("The location given doesn't contain a tile");
+            }
+            this.board[x][y] = null;
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            System.out.println("The location given is outside of board");
+            throw e;
+        }
     }
 
     /**
@@ -43,6 +64,9 @@ public class Board {
      * @param t a token to be added
      */
     public void addToken(Token t){
+        if (token_list.contains(t)) {
+            throw new IllegalArgumentException("The token given already exists on board");
+        }
         this.token_list.add(t);
     }
 
@@ -51,19 +75,28 @@ public class Board {
      * @param inT a token to be removed
      */
     public void removeToken(Token inT) {
-        for (int i = 0; i < token_list.size(); i++) {
-            if (inT.equals(this.token_list.get(i))) {
-                this.token_list.remove(i);
-            }
+        if (!token_list.remove(inT)) {
+            throw new IllegalArgumentException("The token given doesn't exist on board");
         }
     }
 
     /**
-     * Update the given token
-     * @param t a new token
+     * Update the token with a new one
+     * @param newT the new token
      */
-    public void updateToken(Token t) {
-        this.token_list.remove(t);
-        this.token_list.add(t);
+    public void updateToken(Token newT) {
+        Token oldT = null;
+        for (Token t: token_list)
+        {
+            if (t.getColor() == newT.getColor()) {
+                oldT = t;
+                break;
+            }
+        }
+        if (oldT == null) {
+            throw new IllegalArgumentException("The token given can't be updated since it doesn't exist on board");
+        }
+        token_list.remove(oldT);
+        token_list.add(newT);
     }
 }

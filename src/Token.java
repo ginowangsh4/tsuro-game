@@ -11,11 +11,8 @@ public class Token {
         this.isNew = true;
     }
 
-    Token (int indexOnTile, int[] position) {
-        this.indexOnTile = indexOnTile;
-        this.position = position;
-    }
 
+    public int getColor(){return this.color;}
     /**
      * Set the index of a token
      * @param index a new index
