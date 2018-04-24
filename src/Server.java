@@ -196,6 +196,10 @@ public class Server {
      * @return an array of location [x,y] of the adjacent tile
      */
     private int[] getAdjacentLocation(Token token) {
+        // Start of the game: adjacent location = its current tile's location
+        if (token.isNew) return token.getPosition();
+
+        // Other cases: adjacent location = its adjacent tile's location
         int[] next = new int[2];
         int x = token.getPosition()[0];
         int y = token.getPosition()[1];

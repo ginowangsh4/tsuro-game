@@ -2,12 +2,13 @@ public class Token {
     private int color;
     private int indexOnTile; //orientation int, not path int
     private int[] position;
-    private Player owner;
+    public boolean isNew;
 
     Token (int color, int indexOnTile, int[] position) {
         this.color = color;
         this.indexOnTile = indexOnTile;
         this.position = position;
+        this.isNew = true;
     }
 
     Token (int indexOnTile, int[] position) {
@@ -41,18 +42,6 @@ public class Token {
      * @return a position array
      */
     public int[] getPosition() { return position; }
-
-    /**
-     * Get the player who owns this token
-     * @return a player
-     */
-    public Player getOwner() {return owner;}
-
-    /**
-     * Assign this token an owner
-     * @param p a player
-     */
-    public void setOwner(Player p) {this.owner = p;}
 
     /**
      * Check whether two tokens are the same
