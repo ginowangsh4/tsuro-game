@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Deck {
 
@@ -56,9 +57,16 @@ public class Deck {
 
     public Tile pop() {
         if (isEmpty()) {
-            return null;
+            throw new NoSuchElementException("Error: Can't draw tile from an empty deck");
         }
         return pile.remove(0);
+    }
+
+    public Tile peek() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("Error: Can't draw tile from an empty deck");
+        }
+        return pile.get(0);
     }
 
     public void shuffle() {
