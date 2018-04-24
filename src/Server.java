@@ -64,7 +64,7 @@ public class Server {
             return true;    // original rotation is legal without considering other rotations
         }
         else {
-            Tile newTile = new Tile(t.getPaths());
+            Tile newTile = t.copyTile();
             for (int i =0; i < 3; i++){
                 newTile.rotateTile();
                 b.placeTile(newTile, location[0], location[1]);
@@ -77,7 +77,7 @@ public class Server {
             if (p.getHand().size() > 1){
                 for (Tile pt: p.getHand()){
                     if (!t.isSameTile(pt)){
-                        newTile = new Tile(pt.getPaths());
+                        newTile = pt.copyTile();
                         for (int i = 0; i < 4; i++) {
                             newTile.rotateTile();
                             b.placeTile(newTile, location[0], location[1]);
@@ -99,10 +99,6 @@ public class Server {
 
     /**
      * Vomputes the state of the game after the completion of a turn given the state of the game before the turn
-     * @param drawPile   the list of tiles on the draw pile
-     * @param inPlayer   the list of players still in the game in the order of play
-     * @param outPlayer  the list of eliminated players in no particular order
-     * @param board      the board before the turn
      * @param t          the tile to be placed on that board
      * @return the list of winner if the gmae is over; otherwise return null
      *         (drawPile, inPlayer, outPlayer are themselves updated and updated in server's status through private fields)

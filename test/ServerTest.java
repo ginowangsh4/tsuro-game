@@ -27,7 +27,7 @@ class ServerTest {
         List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
-        assertEquals(server.legalPlay(p, b, tile), true,"legalPlay - Expect Legal - Test 1");
+        assertEquals(true, server.legalPlay(p, b, tile),"legalPlay - Expect Legal - Test 1");
     }
 
     @Test
@@ -42,7 +42,7 @@ class ServerTest {
         List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
-        assertEquals(server.legalPlay(p, b, tile), true,"legalPlay - Expect Legal - Test 2");
+        assertEquals(true, server.legalPlay(p, b, tile),"legalPlay - Expect Legal - Test 2");
     }
 
     @Test
@@ -55,7 +55,7 @@ class ServerTest {
         List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
-        assertEquals(server.legalPlay(p, b, tile), true, "legalPlay - Expect Legal - Test 3");
+        assertEquals(true, server.legalPlay(p, b, tile),"legalPlay - Expect Legal - Test 3");
     }
 
     @Test
@@ -70,7 +70,7 @@ class ServerTest {
         p = new Player(token, hand);
         p.draw(tile);
         p.draw(tile2);
-        assertEquals(server.legalPlay(p, b, tile), true,"legalPlay - Expect Legal - Test 4");
+        assertEquals(true, server.legalPlay(p, b, tile), "legalPlay - Expect Legal - Test 4");
     }
 
     @Test
@@ -82,7 +82,7 @@ class ServerTest {
         List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile1);
-        assertEquals(server.legalPlay(p, b, tile), false,"legalPlay - Expect Illegal - Test 5");
+        assertEquals(false, server.legalPlay(p, b, tile), "legalPlay - Expect Illegal - Test 5");
     }
 
     @Test
@@ -95,7 +95,7 @@ class ServerTest {
         List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
-        assertEquals(server.legalPlay(p, b, tile), false,"legalPlay - Expect Illegal - Test 6");
+        assertEquals(false,server.legalPlay(p, b, tile), "legalPlay - Expect Illegal - Test 6");
     }
 
     @Test
@@ -110,7 +110,7 @@ class ServerTest {
         p = new Player(token, hand);
         p.draw(tile);
         p.draw(tile2);
-        assertEquals(server.legalPlay(p, b, tile), false,"legalPlay - Expect Illegal - Test 7");
+        assertEquals(false, server.legalPlay(p, b, tile), "legalPlay - Expect Illegal - Test 7");
     }
 
     @Test

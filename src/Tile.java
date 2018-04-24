@@ -21,19 +21,20 @@ public class Tile {
         }
     }
 
-    /**
-     * Get all the engraved paths on a tile
-     * @return a 2d array of paths
-     */
-    public int[][] getPaths() {
-        return this.paths;
-    }
-
     public void rotateTile() {
         for (int side = 0; side < paths.length; side++) {
             paths[side][0] = (paths[side][0] + 2) % 8;
             paths[side][1] = (paths[side][1] + 2) % 8;
         }
+    }
+
+    public Tile copyTile(){
+        int[][] paths = this.paths;
+        int[][] temp = new int[4][];
+        for (int i = 0; i < 4; i++) {
+            temp[i] = Arrays.copyOf(paths[i], paths[i].length);
+        }
+        return new Tile(temp);
     }
 
     /**
@@ -42,19 +43,10 @@ public class Tile {
      * @return true if equal; false if not
      */
     public boolean isSameTile(Tile tile) {
-        int[][] paths = tile.getPaths();
-        int[][] temp = new int[4][];
+        Tile tempTile = tile.copyTile();
         for (int i = 0; i < 4; i++) {
-            temp[i] = Arrays.copyOf(paths[i], paths[i].length);
-        }
-        Tile tempTile = new Tile(temp);
-        for (int i = 0; i < 4; i++) {
-//            for (int side = 0; side < temp.length; side++) {
-//                temp[side][0] = (temp[side][0] + 2) % 8;
-//                temp[side][1] = (temp[side][1] + 2) % 8;
-//            }
             tempTile.rotateTile();
-            if (Arrays.deepEquals(tempTile.getPaths(), this.paths)) {
+            if (Arrays.deepEquals(tempTile.paths, this.paths)) {
                 return true;
             }
         }
