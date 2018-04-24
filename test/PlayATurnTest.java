@@ -17,9 +17,12 @@ public class PlayATurnTest {
     static List<Player> outPlayer;
     static Server server = Server.getInstance();
 
-    @Test // playATurn - Expect Game Over - Test 1: Player 1 and Player 2 move off board and both gets eliminated
-        // Multiple players get eliminated
-    void testPlayATurn1() {
+    // Test 1: player 1 and player 2 move outside of board, both get eliminated, and game is over
+    // Making a move that causes a token to cross multiple tiles
+    // Making a move where multiple players move at once
+    // Making a move where multiple players are eliminated
+    @Test
+    void playATurnTest1() {
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
         Tile tile2 = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
@@ -59,9 +62,11 @@ public class PlayATurnTest {
         server.setGameOver(false);
     }
 
-    @Test // playATurn - Expect Game Not Over - Test 2: Player 1 and Player 2 move to a non-edge tile
-        // Multiple players move at once and cross multiple tiles
-    void testPlayATurn2() {
+    // Test 2: player 1 and player 2 move and neither get eliminated.
+    // Making a move that causes a token to cross multiple tiles
+    // Making a move where multiple players move at once
+    @Test
+    void playATurnTest2() {
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
         tile = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
@@ -100,9 +105,11 @@ public class PlayATurnTest {
         assertEquals(7, inPlayer.get(0).getToken().getIndex(), "check player 2 token index");
     }
 
-    @Test // playATurn - Expect Game Not Over - Test 3: Player 2 gets eliminated and player 1 wins
-        // Multiple players move at once and cross multiple tiles
-    void testPlayATurn3() {
+    // Test 3: player 2 gets eliminated, player 1 wins, and game is over
+    // Making a move that causes a token to cross multiple tiles
+    // Making a move where multiple players move at once
+    @Test
+    void playATurnTest3() {
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
         Tile tile2 = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
@@ -141,8 +148,11 @@ public class PlayATurnTest {
         assertEquals(7, outPlayer.get(0).getToken().getIndex(),"check player 2 token index");
     }
 
-    @Test // playATurn - Expect Game Not Over - Test 4: Player 1 and Player 2 move from an edge
-    void testPlayATurn4(){
+    // Test 4: player 1 moves from an edge, doesn't get eliminated, and then is player 2's turn
+    //         player 2 moves from an edge, doesn't get eliminated, and game is not over
+    // Making a move from the edge
+    @Test
+    void playATurnTest4(){
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile2 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});

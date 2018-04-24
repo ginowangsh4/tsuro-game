@@ -241,6 +241,10 @@ public class Server {
         return false;
     }
 
+    public Player getDragonHolder() {
+        return dragonHolder;
+    }
+
     public void getDragon(Player p) {
         if (dragonHolder == null) {
             dragonHolder = p;

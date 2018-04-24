@@ -16,8 +16,10 @@ class LegalPlayTest {
     static Tile tile;
     static Server server = Server.getInstance();
 
-    @Test // legalPlay - Expect Legal - Test 1: place a tile, not tile around it on board
-    void testLegalPlay1() {
+    // Test 1: original position is legal, and token is simulated to cross one tile
+    // Making a legal move where tile is placed in its original position
+    @Test
+    void legalPlayTest1() {
         b = new Board();
         token = new Token(0, 4, new int[]{0, 0});
         tile = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
@@ -27,8 +29,10 @@ class LegalPlayTest {
         assertEquals(true, server.legalPlay(p, b, tile),"legalPlay - Expect Legal - Test 1");
     }
 
-    @Test // legalPlay - Expect Legal - Test 2: place a tile, move to some tile not at edge
-    void testLegalPlay2() {
+    // Test 2: original position is legal, and token is simulated to cross two tiles
+    // Making a legal move where tile is placed in its original position
+    @Test
+    void legalPlayTest2() {
         b = new Board();
         token = new Token(0, 4,new int[] {0,0});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
@@ -42,21 +46,27 @@ class LegalPlayTest {
         assertEquals(true, server.legalPlay(p, b, tile),"legalPlay - Expect Legal - Test 2");
     }
 
-    @Test // legalPlay - Expect Legal - Test 3: only one tile in hand, all rotations lead to elimination
-    void testLegalPlay3() {
+    // Test 3: all rotations are legal, tile is rotated once, not placed in its original position
+    // Making a legal move where the tile is not placed in its original position
+    @Test
+    void legalPlayTest3() {
         b = new Board();
         token = new Token(0, 1, new int[]{0, 1});
         Tile tile1 = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][]{{0, 5}, {1, 4}, {2, 7}, {3, 6}});
+        Tile tile2 = tile.copyTile();
+        tile2.rotateTile();
         List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
         p.draw(tile);
-        assertEquals(true, server.legalPlay(p, b, tile),"legalPlay - Expect Legal - Test 3");
+        assertEquals(true, server.legalPlay(p, b, tile2),"legalPlay - Expect Legal - Test 3");
     }
 
-    @Test // legalPlay - Expect Legal - Test 4: all tiles at hand lead to elimination
-    void testLegalPlay4() {
+    // Test 4: original position is illegal, but no other tile is legal, and token is simulated to move to the edge
+    // Making a legal move when all possible moves are illegal
+    @Test
+    void legalPlayTest4() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
@@ -70,8 +80,10 @@ class LegalPlayTest {
         assertEquals(true, server.legalPlay(p, b, tile), "legalPlay - Expect Legal - Test 4");
     }
 
-    @Test // legalPlay - Expect Illegal - Test 5: tile to be placed is not in player's hand
-    void testLegalPlay5() {
+    // Test 5: tile is not in player's hand
+    // Making a illegal move when player doesn't have this tile
+    @Test
+    void legalPlayTest5() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
@@ -82,9 +94,10 @@ class LegalPlayTest {
         assertEquals(false, server.legalPlay(p, b, tile), "legalPlay - Expect Illegal - Test 5");
     }
 
-    @Test // legalPlay - Expect Illegal - Test 6: this rotation of the tile leads to elimination while other rotations do not
-          // the move is an elimination move, but there are non-elimination moves available
-    void testLegalPlay6() {
+    // Test 6: original position is illegal, but other legal position exists for this tile
+    // Making an illegal move where the move is an elimination move, but there are non-elimination move
+    @Test
+    void legalPlayTest6() {
         b = new Board();
         token = new Token(0, 4,new int[] {0,0});
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
@@ -96,9 +109,10 @@ class LegalPlayTest {
         assertEquals(false,server.legalPlay(p, b, tile), "legalPlay - Expect Illegal - Test 6");
     }
 
-    @Test // legalPlay - Expect Illegal - Test 7: all rotation of this tile leads to elimination but other tiles do not
-          // the move is an elimination move, but there are non-elimination moves available
-    void testLegalPlay7() {
+    // Test 7: all positions are illegal for this tile, but exists legal tiles in hand
+    // Making an illegal move where the move is an elimination move, but there are non-elimination move
+    @Test
+    void legalPlayTest7() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
