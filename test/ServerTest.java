@@ -17,7 +17,7 @@ class ServerTest {
     static List<Tile> pile;
     static List<Player> inPlayer;
     static List<Player> outPlayer;
-    static Server server = Server.getServer();
+    static Server server = Server.getInstance();
 
     @Test
     void testLegalPlay1() {
@@ -142,8 +142,9 @@ class ServerTest {
         inPlayer.add(player1);
         inPlayer.add(player2);
 
-        server.playATurn(pile, inPlayer, outPlayer, b, tile);
+        server.init(b, inPlayer, outPlayer, pile);
 
+        assertEquals(null, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 1");
         assertEquals(true, server.isGameOver(), "check game status");
         assertEquals(0, inPlayer.size(), "check inPlayer list");
         assertEquals(2, outPlayer.size(), "check outPlayer list");
@@ -183,7 +184,9 @@ class ServerTest {
         inPlayer.add(player1);
         inPlayer.add(player2);
 
-        assertEquals(null, server.playATurn(pile, inPlayer, outPlayer, b, tile), "PlayATurn - Expect Game Over - Test 2");
+        server.init(b, inPlayer, outPlayer, pile);
+
+        assertEquals(null, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 2");
         assertEquals(false, server.isGameOver(), "check game status");
         assertEquals(2, inPlayer.size(),"check inPlayer list");
         assertEquals(0, outPlayer.size(),"check outPlayer list");
@@ -222,7 +225,9 @@ class ServerTest {
         inPlayer.add(player1);
         inPlayer.add(player2);
 
-        assertEquals(inPlayer, server.playATurn(pile, inPlayer, outPlayer, b, tile), "PlayATurn - Expect Game Over - Test 3");
+        server.init(b, inPlayer, outPlayer, pile);
+
+        assertEquals(inPlayer, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 3");
         assertEquals(true, server.isGameOver(), "check game status");
         assertEquals(1, inPlayer.size(), "check inPlayer list");
         assertEquals(1, outPlayer.size(), "check outPlayer list");

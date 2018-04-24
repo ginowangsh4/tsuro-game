@@ -4,6 +4,7 @@ import java.util.*;
 public class Server {
 
     private Board board;
+
     private List<Tile> drawPile;
     private List<Player> inPlayer;
     private List<Player> outPlayer;
@@ -11,9 +12,23 @@ public class Server {
     private boolean gameOver = false;
 
     // Singleton Pattern
-    private static Server server = new Server();
-    private Server() {}
-    public static Server getServer() { return server; }
+    private static Server server = null;
+
+    private Server() {};
+
+    public static Server getInstance() {
+        if (server == null) {
+            server = new Server();
+        }
+        return server;
+    }
+
+    public void init(Board board, List<Player> inPlayer, List<Player> outPlayer, List<Tile> drawPile) {
+        this.board = board;
+        this.inPlayer = inPlayer;
+        this.outPlayer = outPlayer;
+        this.drawPile = drawPile;
+    };
 
     public boolean isGameOver() { return this.gameOver; }
 
@@ -92,7 +107,7 @@ public class Server {
      * @return the list of winner if the gmae is over; otherwise return null
      *         (drawPile, inPlayer, outPlayer are themselves updated and updated in server's status through private fields)
      */
-    public List<Player> playATurn(List<Tile> drawPile, List<Player> inPlayer, List<Player> outPlayer, Board board, Tile t) {
+    public List<Player> playATurn(Tile t) {
         // place a tile path
         Player currentP = inPlayer.get(0);
         inPlayer.remove(0);
@@ -144,18 +159,14 @@ public class Server {
                 outPlayer.add(currentP);
             }
         }
-        // update the state of the game
-        this.board = board;
-        this.drawPile = drawPile;
-        this.inPlayer = inPlayer;
-        this.outPlayer = outPlayer;
+
         // determine whether game is over
-        if (this.inPlayer.size() == 1) {
-            this.gameOver = true;
+        if (inPlayer.size() == 1) {
+            gameOver = true;
             return inPlayer;
         }
-        else if (this.inPlayer.size() == 0) {
-            this.gameOver = true;
+        else if (inPlayer.size() == 0) {
+            gameOver = true;
             return null;
         }
         return null;
@@ -224,248 +235,5 @@ public class Server {
             return true;
         }
         return false;
-    }
-
-    /******************************/
-    /*********** Tests ************/
-    /******************************/
-    static Board b;
-    static Token token;
-    static Player p;
-    static Tile tile;
-    static List<Tile> pile;
-    static List<Player> inPlayerList;
-    static List<Player> outPlayerList;
-
-    // legalPlay - Expect Legal - Test 1: place a tile, not tile around it on board
-    static public void createExample1() {
-        b = new Board();
-        token = new Token(0, 4, new int[]{0, 0});
-        tile = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
-        List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
-        p.draw(tile);
-
-    }
-
-    // legalPlay - Expect Legal - Test 2: place a tile, move to some tile not at edge
-    static public void createExample2() {
-        b = new Board();
-        token = new Token(0, 4,new int[] {0,0});
-        Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
-        Tile tile2= new Tile(new int[][] {{0,5}, {1,2}, {3,6}, {4,7}});
-        b.placeTile(tile1, 0, 0);
-        b.placeTile(tile2,1,1);
-        tile = new Tile(new int[][] {{0,5}, {1,2}, {3,4}, {6,7}});
-        List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
-        p.draw(tile);
-    }
-
-    // legalPlay - Expect Legal - Test 3: place a tile, all rotation leads to elimination
-    static public void createExample3() {
-        b = new Board();
-        token = new Token(0, 1,new int[] {0,1});
-        Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
-        b.placeTile(tile1, 0, 1);
-        tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
-        p.draw(tile);
-    }
-
-    // legalPlay - Expect Legal - Test 4: all tiles at hand lead to elimination
-    static public void createExample4() {
-        b = new Board();
-        token = new Token(0, 1,new int[] {0,1});
-        Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
-        b.placeTile(tile1, 0, 1);
-        tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        Tile tile2 = new Tile(new int[][] {{0,4}, {1,5}, {2,6}, {3,7}});
-        List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
-        p.draw(tile);
-        p.draw(tile2);
-    }
-
-    // legalPlay - Expect Illegal - Test 5: tile to be placed is not in player's hand
-    static public void createExample5() {
-        b = new Board();
-        token = new Token(0, 1,new int[] {0,1});
-        tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
-        List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
-        p.draw(tile1);
-    }
-
-    // legalPlay - Expect Illegal - Test 6: this rotation of the tile leads to elimination while others do not
-    static public void createExample6() {
-        b = new Board();
-        token = new Token(0, 4,new int[] {0,0});
-        Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        b.placeTile(tile1, 0, 0);
-        tile = new Tile(new int[][] {{0,2}, {1,7}, {3,4}, {5,6}});
-        List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
-        p.draw(tile);
-    }
-
-    // legalPlay - Expect Illegal - Test 7: all rotation of this tile leads to elimination but other tiles do not
-    static public void createExample7() {
-        b = new Board();
-        token = new Token(0, 1,new int[] {0,1});
-        Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
-        b.placeTile(tile1, 0, 1);
-        tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        Tile tile2 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
-        List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
-        p.draw(tile);
-        p.draw(tile2);
-    }
-
-    // playATurn - Expect Game Over - Test 1: Player 1 and Player 2 move off board and both gets eliminated
-    static public void createExample8() {
-        b = new Board();
-        Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
-        Tile tile2 = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
-        tile = new Tile(new int[][] {{0,7}, {1,2}, {3,4}, {5,6}});
-        Tile tile4 = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
-        Tile tile5 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        b.placeTile(tile1, 2, 0);
-        b.placeTile(tile2, 2, 1);
-        b.placeTile(tile4, 1, 2);
-        b.placeTile(tile5, 0, 2);
-        Token token1 = new Token(0, 2,new int[] {1,2});
-        Token token2 = new Token(1, 5,new int[] {2,1});
-        List<Tile> hand1 = new ArrayList<>();
-        List<Tile> hand2 = new ArrayList<>();
-        Player player1 = new Player(token1, hand1);
-        Player player2 = new Player(token2, hand2);
-        token1.setOwner(player1);
-        token2.setOwner(player2);
-        b.addToken(token1);
-        b.addToken(token2);
-
-        inPlayerList = new ArrayList<>();
-        outPlayerList = new ArrayList<>();
-        pile = new ArrayList<>();
-        inPlayerList.add(player1);
-        inPlayerList.add(player2);
-    }
-
-    // playATurn - Expect Game Not Over - Test 2: Player 1 and Player 2 move to a non-edge tile
-    static public void createExample9() {
-        b = new Board();
-        Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
-        tile = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
-        Tile tile3 = new Tile(new int[][] {{0,7}, {1,2}, {3,4}, {5,6}});
-        Tile tile4 = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
-        Tile tile5 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        b.placeTile(tile1, 2, 0);
-        b.placeTile(tile3, 2, 2);
-        b.placeTile(tile4, 1, 2);
-        b.placeTile(tile5, 0, 2);
-        Token token1 = new Token(0, 1,new int[] {2,2});
-        Token token2 = new Token(1, 5,new int[] {2,0});
-        List<Tile> hand1 = new ArrayList<>();
-        List<Tile> hand2 = new ArrayList<>();
-        Player player1 = new Player(token1, hand1);
-        Player player2 = new Player(token2, hand2);
-        token1.setOwner(player1);
-        token2.setOwner(player2);
-        b.addToken(token1);
-        b.addToken(token2);
-
-        inPlayerList = new ArrayList<>();
-        outPlayerList = new ArrayList<>();
-        pile = new ArrayList<>();
-        inPlayerList.add(player1);
-        inPlayerList.add(player2);
-    }
-
-    // playATurn - Expect Game Not Over - Test 2: Player 1 and Player 2 move to a non-edge tile
-    static public void createExample10() {
-        b = new Board();
-        Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
-        Tile tile2 = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
-        tile = new Tile(new int[][] {{0,7}, {1,2}, {3,4}, {5,6}});
-        Tile tile4 = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
-        Tile tile5 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        b.placeTile(tile1, 2, 0);
-        b.placeTile(tile2, 2, 1);
-        b.placeTile(tile4, 1, 2);
-        b.placeTile(tile5, 0, 2);
-        Token token1 = new Token(0, 3,new int[] {1,2});
-        Token token2 = new Token(1, 5,new int[] {2,1});
-        List<Tile> hand1 = new ArrayList<>();
-        List<Tile> hand2 = new ArrayList<>();
-        Player player1 = new Player(token1, hand1);
-        Player player2 = new Player(token2, hand2);
-        token1.setOwner(player1);
-        token2.setOwner(player2);
-        b.addToken(token1);
-        b.addToken(token2);
-
-        inPlayerList = new ArrayList<>();
-        outPlayerList = new ArrayList<>();
-        pile = new ArrayList<>();
-        inPlayerList.add(player1);
-        inPlayerList.add(player2);
-    }
-
-    public static void main(String argv[]) {
-        createExample1();
-        Tester.check(server.legalPlay(p, b, tile) == true, "legalPlay - Expect Legal - Test 1");
-
-        createExample2();
-        Tester.check(server.legalPlay(p, b, tile) == true, "legalPlay - Expect Legal - Test 2");
-
-        createExample3();
-        Tester.check(server.legalPlay(p, b, tile) == true, "legalPlay - Expect Legal - Test 3");
-
-        createExample4();
-        Tester.check(server.legalPlay(p, b, tile) == true, "legalPlay - Expect Legal - Test 4");
-
-        createExample5();
-        Tester.check(server.legalPlay(p, b, tile) == false, "legalPlay - Expect Illegal - Test 5");
-
-        createExample6();
-        Tester.check(server.legalPlay(p, b, tile) == false, "legalPlay - Expect Illegal - Test 6");
-
-        createExample7();
-        Tester.check(server.legalPlay(p, b, tile) == false, "legalPlay - Expect Illegal - Test 7");
-
-        createExample8();
-        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile) == null, "PlayATurn - Expect Game Over - Test 1");
-        Tester.check(server.gameOver == true, "check game status");
-        Tester.check(server.inPlayer.size() == 0, "check inPlayer list");
-        Tester.check(server.outPlayer.size() == 2, "check outPlayer list");
-        Tester.check(Arrays.equals(server.outPlayer.get(0).getToken().getPosition(), new int[] {2,0}), "check player 1 token position");
-        Tester.check(server.outPlayer.get(0).getToken().getIndex() == 1, "check player 1 token index");
-        Tester.check(Arrays.equals(server.outPlayer.get(1).getToken().getPosition(), new int[] {0,2}), "check player 2 token position");
-        Tester.check(server.outPlayer.get(1).getToken().getIndex() == 7, "check player 2 token index");
-        server.gameOver = false;
-
-        createExample9();
-        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile) == null, "PlayATurn - Expect Game Not Over - Test 2");
-        Tester.check(server.gameOver == false, "check game status");
-        Tester.check(server.inPlayer.size() == 2, "check inPlayer list");
-        Tester.check(server.outPlayer.size() == 0, "check outPlayer list");
-        Tester.check(Arrays.equals(server.inPlayer.get(0).getToken().getPosition(), new int[] {2,1}), "check player 1 token position");
-        Tester.check(server.inPlayer.get(1).getToken().getIndex() == 3, "check player 1 token index");
-        Tester.check(Arrays.equals(server.inPlayer.get(1).getToken().getPosition(), new int[] {2,1}), "check player 2 token position");
-        Tester.check(server.inPlayer.get(0).getToken().getIndex() == 7, "check player 2 token index");
-
-        createExample10();
-        Tester.check(server.playATurn(pile, inPlayerList, outPlayerList, b, tile).equals(server.inPlayer), "PlayATurn - Expect Game Over - Test 3");
-        Tester.check(server.gameOver == true, "check game status");
-        Tester.check(server.inPlayer.size() == 1, "check inPlayer list");
-        Tester.check(server.outPlayer.size() == 1, "check outPlayer list");
-        Tester.check(Arrays.equals(server.inPlayer.get(0).getToken().getPosition(), new int[] {2,2}), "check player 1 token position");
-        Tester.check(server.inPlayer.get(0).getToken().getIndex() == 5, "check player 1 token index");
-        Tester.check(Arrays.equals(server.outPlayer.get(0).getToken().getPosition(), new int[] {0,2}), "check player 2 token position");
-        Tester.check(server.outPlayer.get(0).getToken().getIndex() == 7, "check player 2 token index");
     }
 }
