@@ -264,6 +264,7 @@ public class Server {
                 }
             }
             if (full) {
+                dragonHolder = null;
                 return;
             } else {
                 if (dragonHolder.getHand().size() < 3) {
