@@ -88,7 +88,7 @@ public class Board {
         Token oldT = null;
         for (Token t: token_list)
         {
-            if (t.getColor() == newT.getColor()) {
+            if (t.equals(newT)) {
                 oldT = t;
                 break;
             }

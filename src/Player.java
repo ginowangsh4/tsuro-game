@@ -27,6 +27,8 @@ public class Player {
      */
     public void draw(Tile t){ hand.add(t); }
 
+    public boolean deal(Tile t){ return hand.remove(t);}
+
     /**
      * Get a player's hand
      * @return a list of tiles on player's hand

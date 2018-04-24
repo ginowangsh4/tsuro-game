@@ -31,9 +31,7 @@ public class PlayATurnTest {
         b.placeTile(tile4, 1, 2);
         b.placeTile(tile5, 0, 2);
         Token token1 = new Token(0, 2,new int[] {1,2});
-        token1.isNew = false;
         Token token2 = new Token(1, 5,new int[] {2,1});
-        token2.isNew = false;
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
         Player player1 = new Player(token1, hand1);
@@ -75,9 +73,7 @@ public class PlayATurnTest {
         b.placeTile(tile4, 1, 2);
         b.placeTile(tile5, 0, 2);
         Token token1 = new Token(0, 1,new int[] {2,2});
-        token1.isNew = false;
         Token token2 = new Token(1, 5,new int[] {2,0});
-        token2.isNew = false;
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
         Player player1 = new Player(token1, hand1);
@@ -118,9 +114,7 @@ public class PlayATurnTest {
         b.placeTile(tile4, 1, 2);
         b.placeTile(tile5, 0, 2);
         Token token1 = new Token(0, 3, new int[] {1,2});
-        token1.isNew = false;
         Token token2 = new Token(1, 5, new int[] {2,1});
-        token2.isNew = false;
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
         Player player1 = new Player(token1, hand1);

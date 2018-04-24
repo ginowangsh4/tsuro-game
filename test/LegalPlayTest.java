@@ -20,7 +20,6 @@ class LegalPlayTest {
     void testLegalPlay1() {
         b = new Board();
         token = new Token(0, 4, new int[]{0, 0});
-        token.isNew = false;
         tile = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         List<Tile> hand = new ArrayList<>();
         p = new Player(token, hand);
@@ -32,7 +31,6 @@ class LegalPlayTest {
     void testLegalPlay2() {
         b = new Board();
         token = new Token(0, 4,new int[] {0,0});
-        token.isNew = false;
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         Tile tile2= new Tile(new int[][] {{0,5}, {1,2}, {3,6}, {4,7}});
         b.placeTile(tile1, 0, 0);
@@ -48,7 +46,6 @@ class LegalPlayTest {
     void testLegalPlay3() {
         b = new Board();
         token = new Token(0, 1, new int[]{0, 1});
-        token.isNew = false;
         Tile tile1 = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][]{{0, 5}, {1, 4}, {2, 7}, {3, 6}});
@@ -62,7 +59,6 @@ class LegalPlayTest {
     void testLegalPlay4() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
-        token.isNew = false;
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
@@ -78,7 +74,6 @@ class LegalPlayTest {
     void testLegalPlay5() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
-        token.isNew = false;
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         List<Tile> hand = new ArrayList<>();
@@ -92,7 +87,6 @@ class LegalPlayTest {
     void testLegalPlay6() {
         b = new Board();
         token = new Token(0, 4,new int[] {0,0});
-        token.isNew = false;
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         b.placeTile(tile1, 0, 0);
         tile = new Tile(new int[][] {{0,2}, {1,7}, {3,4}, {5,6}});
@@ -107,7 +101,6 @@ class LegalPlayTest {
     void testLegalPlay7() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
-        token.isNew = false;
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});

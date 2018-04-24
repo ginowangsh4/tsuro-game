@@ -2,13 +2,11 @@ public class Token {
     private int color;
     private int indexOnTile; //orientation int, not path int
     private int[] position;
-    public boolean isNew;
 
     Token (int color, int indexOnTile, int[] position) {
         this.color = color;
         this.indexOnTile = indexOnTile;
         this.position = position;
-        this.isNew = true;
     }
 
 
