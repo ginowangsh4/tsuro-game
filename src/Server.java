@@ -11,9 +11,9 @@ public class Server {
     private boolean gameOver = false;
 
     // Singleton Pattern
-    public static Server server = new Server();
+    private static Server server = new Server();
     private Server() {}
-
+    public static Server getServer() { return server; }
     /**
      * Return false if
      * 1) the tile is not (a possibly rotated version of) one of the tiles of the player
