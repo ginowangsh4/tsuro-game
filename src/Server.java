@@ -181,7 +181,7 @@ public class Server {
      * Simulate the path taken by a token given a board
      * @param token token that attempts making the move
      * @param board a board at a given state
-     * @return a stub (fake) token which only contains the final position on the board and index on the tile after the move
+     * @return a copy of the original token with new position and index
      */
     private Token simulateMove(Token token, Board board) {
         // next location the token can go on
@@ -195,7 +195,7 @@ public class Server {
         int pathStart = nextTile.neighborIndex.get(token.getIndex());
         int pathEnd = nextTile.getPathEnd(pathStart);
         // recursion
-        Token nt = new Token(pathEnd, location);
+        Token nt = new Token(token.getColor(), pathEnd, location);
         return simulateMove(nt, board);
     }
 
