@@ -1,8 +1,8 @@
 import java.util.*;
 
 public class Player {
-    protected Token token;
-    protected List<Tile> hand;
+    private Token token;
+    private List<Tile> hand;
 
     Player(Token t, List<Tile> hand){
         this.token = t;

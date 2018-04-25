@@ -6,8 +6,8 @@ import java.util.*;
 import java.util.List;
 
 public class Board {
-    protected Tile[][] board;
-    protected final int SIZE = 6;
+    private Tile[][] board;
+    private final int SIZE = 6;
     protected List<Token> token_list;
 
     Board() {

@@ -139,8 +139,7 @@ public class Server {
                 getDragon(currentP);
             }
             else {
-                Tile temp = drawPile.pop();
-                currentP.draw(temp);
+                currentP.draw(drawPile.pop());
             }
             inPlayer.remove(0);
             inPlayer.add(currentP);
