@@ -105,7 +105,6 @@ public class Server {
     public List<Player> playATurn(Tile t) {
         // place a tile path
         Player currentP = inPlayer.get(0);
-        inPlayer.remove(0);
         Token currentT = currentP.getToken();
         int[] location = getAdjacentLocation(currentT);
         board.placeTile(t, location[0], location[1]);
@@ -121,8 +120,12 @@ public class Server {
             drawPile.addAndShuffle(currentP.getHand());
             currentP.getHand().clear();
             board.removeToken(currentT);
+            if (currentP.equals(dragonHolder)) {
+                dragonHolder = inPlayer.get(1);
+            }
+            inPlayer.remove(0);
             outPlayer.add(currentP);
-            // handle the case whether dragon is dealt
+            // handle the case if dragon is already dealt
             passDragon();
         }
         // add to tail & draw tile
@@ -135,6 +138,7 @@ public class Server {
                 Tile temp = drawPile.pop();
                 currentP.draw(temp);
             }
+            inPlayer.remove(0);
             inPlayer.add(currentP);
         }
         // check if other players can make a move because of the placement of this tile t
@@ -157,11 +161,15 @@ public class Server {
                 drawPile.addAndShuffle(currentP.getHand());
                 board.removeToken(currentT);
                 currentP.getHand().clear();
+                if (currentP.equals(dragonHolder)) {
+                    int currentPInd = inPlayer.indexOf(currentP);
+                    dragonHolder = inPlayer.get((currentPInd + 1) % 8);
+                }
                 inPlayer.remove(currentP);
                 outPlayer.add(currentP);
-                // handle the case whether dragon is dealt
-                passDragon();
             }
+            // handle the case if dragon is already dealt
+            passDragon();
         }
 
         // determine whether game is over
@@ -257,25 +265,27 @@ public class Server {
         }
         int index = inPlayer.indexOf(dragonHolder);
         while (!drawPile.isEmpty()) {
-            boolean full = true;
-            for (Player p : inPlayer) {
-                if (p.getHand().size() == 3) {
-                    continue;
-                } else {
-                    full = false;
-                    break;
-                }
-            }
-            if (full) {
+            dragonHolder.getHand().add(drawPile.pop());
+            // all players have full hand
+            if (fullHand()) {
                 dragonHolder = null;
                 return;
-            } else {
-                if (dragonHolder.getHand().size() < 3) {
-                    dragonHolder.getHand().add(drawPile.pop());
-                }
+            }
+            do {
                 index = (index + 1) % inPlayer.size();
-                dragonHolder = inPlayer.get(index);
+            }while (inPlayer.get(index).getHand().size() >= 3);
+            dragonHolder = inPlayer.get(index);
+        }
+    }
+
+    public boolean fullHand() {
+        for (Player p : inPlayer) {
+            if (p.getHand().size() >= 3) {
+                continue;
+            } else {
+                return false;
             }
         }
+        return true;
     }
 }
