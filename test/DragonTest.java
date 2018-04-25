@@ -1,11 +1,10 @@
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DragonTest {
+public class DragonTest {
 
     static Board b;
     static Player p1, p2, p3;
@@ -111,11 +110,11 @@ class DragonTest {
         inPlayer.add(p1);
         inPlayer.add(p2);
         inPlayer.add(p3);
+        server.init(b, inPlayer, outPlayer, deck);
         // give player 2 dragon tile
         server.getDragon(p2);
         Tile t = p1.getHand().get(2);
         p1.deal(t);
-        server.init(b, inPlayer, outPlayer, deck);
         // Player 1 tries to draw tile but should fail due to empty deck
         server.playATurn(t);
         assertEquals(2, p1.getHand().size(), "Error: player 1 should not draw any new tile");
@@ -159,11 +158,11 @@ class DragonTest {
         inPlayer.add(p1);
         inPlayer.add(p2);
         inPlayer.add(p3);
+        server.init(b, inPlayer, outPlayer, deck);
         // give player 1 dragon tile
         server.getDragon(p1);
         Tile t = p1.getHand().get(0);
         p1.deal(t);
-        server.init(b, inPlayer, outPlayer, deck);
         // player 1 makes the move, eliminates player 2, and player 3 stay still
         server.playATurn(t);
         assertEquals(1, p1.getHand().size(), "Error: player 1 should have 1 tile");
@@ -212,11 +211,11 @@ class DragonTest {
         inPlayer.add(p1);
         inPlayer.add(p2);
         inPlayer.add(p3);
+        server.init(b, inPlayer, outPlayer, deck);
         // give player 2 dragon tile
         server.getDragon(p2);
         Tile t = p1.getHand().get(0);
         p1.deal(t);
-        server.init(b, inPlayer, outPlayer, deck);
         // player 1 makes the move, eliminates player 2, and player 3 gets dragon, draws and passes to player 1
         server.playATurn(t);
         assertEquals(0, p1.getHand().size(), "Error: player 1 should have 0 tile");
@@ -264,11 +263,11 @@ class DragonTest {
         inPlayer.add(p1);
         inPlayer.add(p2);
         inPlayer.add(p3);
+        server.init(b, inPlayer, outPlayer, deck);
         // give player 1 dragon tile
         server.getDragon(p1);
         Tile t = p1.getHand().get(0);
         p1.deal(t);
-        server.init(b, inPlayer, outPlayer, deck);
         // player 1 makes the move, eliminates player 2 and himself, player 3 gets dragon, draw, and holds dragon.
         server.playATurn(t);
         assertEquals(0, p1.getHand().size(), "Error: player 1 should have 0 tile");
@@ -276,6 +275,6 @@ class DragonTest {
         assertEquals(2, p3.getHand().size(), "Error: player 3 should have 2 tiles");
         assertEquals(tp2, p3.getHand().get(1), "Error: player 3 drew the wrong tile");
         assertEquals(0, deck.size(), "Error: deck should be empty");
-        assertEquals(null, server.getDragonHolder(), "Error: no one should have the dragon tile");
+        assertEquals(p3, server.getDragonHolder(), "Error: no one should have the dragon tile");
     }
 }

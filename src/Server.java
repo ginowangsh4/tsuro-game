@@ -27,6 +27,7 @@ public class Server {
         this.inPlayer = inPlayer;
         this.outPlayer = outPlayer;
         this.drawPile = drawPile;
+        this.dragonHolder = null;
     };
 
     public boolean isGameOver() { return this.gameOver; }
