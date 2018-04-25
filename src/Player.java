@@ -19,15 +19,19 @@ public class Player {
      * Update a player's token
      * @param token new token
      */
-    public void updateToken(Token token){ this.token = token; }
+    public void updateToken(Token token) { this.token = token; }
 
     /**
      * Player draws a tile
      * @param t tile to be added to the player's hand
      */
-    public void draw(Tile t){ hand.add(t); }
+    public void draw(Tile t) { hand.add(t); }
 
-    public boolean deal(Tile t){ return hand.remove(t);}
+    /**
+     * Simulate player choosing a tile to place
+     * @param t tile to be placed
+     */
+    public void deal(Tile t) { hand.remove(t); }
 
     /**
      * Get a player's hand

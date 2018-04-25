@@ -268,13 +268,14 @@ public class DragonTest {
         server.getDragon(p1);
         Tile t = p1.getHand().get(0);
         p1.deal(t);
-        // player 1 makes the move, eliminates player 2 and himself, player 3 gets dragon, draw, and holds dragon.
+        // player 1 makes the move, eliminates player 2 and himself,
+        // player 3 gets dragon, draws the tile from player 2, and wins so no dragon holder
         server.playATurn(t);
         assertEquals(0, p1.getHand().size(), "Error: player 1 should have 0 tile");
         assertEquals(0, p2.getHand().size(), "Error: player 2 should have 0 tile");
         assertEquals(2, p3.getHand().size(), "Error: player 3 should have 2 tiles");
         assertEquals(tp2, p3.getHand().get(1), "Error: player 3 drew the wrong tile");
         assertEquals(0, deck.size(), "Error: deck should be empty");
-        assertEquals(p3, server.getDragonHolder(), "Error: no one should have the dragon tile");
+        assertEquals(null, server.getDragonHolder(), "Error: no one should have the dragon tile");
     }
 }

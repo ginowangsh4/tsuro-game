@@ -12,8 +12,7 @@ public class Server {
 
     // Singleton Pattern
     private static Server server = null;
-
-    private Server() {};
+    private Server() {}
 
     public static Server getInstance() {
         if (server == null) {
@@ -28,11 +27,8 @@ public class Server {
         this.outPlayer = outPlayer;
         this.drawPile = drawPile;
         this.dragonHolder = null;
-    };
-
-    public boolean isGameOver() { return this.gameOver; }
-
-    public void setGameOver(boolean b) {this.gameOver = b; }
+        this.gameOver = false;
+    }
 
     /**
      * Return false if
@@ -46,7 +42,7 @@ public class Server {
      */
     @SuppressWarnings("Duplicates")
     public boolean legalPlay(Player p, Board b, Tile t) {
-        // check condition 1)
+        // check condition (1) above
         for (Tile pt : p.getHand()) {
             if (!t.isSameTile(pt)) {
                 return false;
@@ -55,13 +51,14 @@ public class Server {
                 break;
             }
         }
-        // check condition 2)
+        // check condition (2) above
         int[] location = getAdjacentLocation(p.getToken());
         b.placeTile(t, location[0], location[1]);
         Token token = simulateMove(p.getToken(), b);
         b.deleteTile(location[0], location[1]);
         if (!outOfBoard(token)){
-            return true;    // original rotation is legal without considering other rotations
+            // original rotation is legal without considering other rotations
+            return true;
         }
         else {
             Tile newTile = t.copyTile();
@@ -71,7 +68,8 @@ public class Server {
                 token = simulateMove(p.getToken(), b);
                 b.deleteTile(location[0], location[1]);
                 if (!outOfBoard(token)) {
-                    return false;   // original rotation is illegal, as there is another legal rotation
+                    // original rotation is illegal, as there is another legal rotation
+                    return false;
                 }
             }
             if (p.getHand().size() > 1){
@@ -84,14 +82,18 @@ public class Server {
                             token = simulateMove(p.getToken(), b);
                             b.deleteTile(location[0], location[1]);
                             if (!outOfBoard(token)) {
-                                return false;   // original rotation is illegal, as there is another legal move
+                                // original rotation is illegal, as there is another legal move
+                                return false;
                             }
                         }
                     }
                 }
             }
             else {
-                return true;    // original rotation is legal as 1. only one tile in player's hand 2. all rotations of this tile leads to elimination
+                // original rotation is legal as
+                // 1. only one tile in player's hand
+                // 2. all rotations of this tile leads to elimination
+                return true;
             }
         }
         return true;
@@ -110,19 +112,20 @@ public class Server {
         int[] location = getAdjacentLocation(currentT);
         board.placeTile(t, location[0], location[1]);
         // move the token
-        Token tempT = simulateMove(currentT, board);
-        currentT.setIndex(tempT.getIndex());
-        currentT.setPosition(tempT.getPosition());
+        currentT = simulateMove(currentT, board);
         // update player's and board's copy of the token
         currentP.updateToken(currentT);
         board.updateToken(currentT);
+
         // eliminate current player & recycle tiles in hand
         if (outOfBoard(currentT)) {
             drawPile.addAndShuffle(currentP.getHand());
             currentP.getHand().clear();
             board.removeToken(currentT);
+            // assign dragon holder to be the next player
             if (currentP.equals(dragonHolder)) {
-                dragonHolder = inPlayer.get(1);
+                int index = findNextHolder(0);
+                dragonHolder = index == -1 ? null : inPlayer.get(index);
             }
             inPlayer.remove(0);
             outPlayer.add(currentP);
@@ -142,6 +145,7 @@ public class Server {
             inPlayer.remove(0);
             inPlayer.add(currentP);
         }
+
         // check if other players can make a move because of the placement of this tile t
         for (int i = 0; i < inPlayer.size(); i++)
         {
@@ -152,9 +156,7 @@ public class Server {
                     currentT.getPosition()[1] < 0 || currentT.getPosition()[1] > 5) {
                 continue;
             }
-            tempT = simulateMove(currentT, board);
-            currentT.setPosition(tempT.getPosition());
-            currentT.setIndex(tempT.getIndex());
+            currentT = simulateMove(currentT, board);
             currentP.updateToken(currentT);
             board.updateToken(currentT);
 
@@ -163,8 +165,8 @@ public class Server {
                 board.removeToken(currentT);
                 currentP.getHand().clear();
                 if (currentP.equals(dragonHolder)) {
-                    int currentPInd = inPlayer.indexOf(currentP);
-                    dragonHolder = inPlayer.get((currentPInd + 1) % 8);
+                    int index = findNextHolder(inPlayer.indexOf(currentP));
+                    dragonHolder = index == -1 ? null : inPlayer.get(index);
                 }
                 inPlayer.remove(currentP);
                 outPlayer.add(currentP);
@@ -195,14 +197,14 @@ public class Server {
         // next location the token can go on
         int[] location = getAdjacentLocation(token);
         Tile nextTile = board.getTile(location[0], location[1]);
-        // return if reach the end of path
+        // base case, return if reached the end of path
         if (nextTile == null) {
             return token;
         }
         // simulate moving token & get new token index
         int pathStart = nextTile.neighborIndex.get(token.getIndex());
         int pathEnd = nextTile.getPathEnd(pathStart);
-        // recursion
+        // recursion step
         Token nt = new Token(token.getColor(), pathEnd, location);
         return simulateMove(nt, board);
     }
@@ -250,16 +252,28 @@ public class Server {
         return false;
     }
 
+    /**
+     * Get the current dragon holder
+     * @return the player with da dragon
+     */
     public Player getDragonHolder() {
         return dragonHolder;
     }
 
+    /**
+     * Assign dragon tile to a player
+     * @param p the player to assign to
+     */
     public void getDragon(Player p) {
         if (dragonHolder == null) {
             dragonHolder = p;
         }
     }
 
+    /**
+     * Pass dragon to the next player who has less than three tile on hand,
+     * set dragon holder to be nobody if cannot find any or there is a winner
+     */
     public void passDragon() {
         if (dragonHolder == null) {
             return;
@@ -267,26 +281,41 @@ public class Server {
         int index = inPlayer.indexOf(dragonHolder);
         while (!drawPile.isEmpty()) {
             dragonHolder.getHand().add(drawPile.pop());
-            // all players have full hand
-            if (fullHand()) {
+            index = findNextHolder(index);
+            // cannot find next player with < 3 tiles on his/her hand
+            if (index == -1) {
                 dragonHolder = null;
                 return;
             }
-            do {
-                index = (index + 1) % inPlayer.size();
-            }while (inPlayer.get(index).getHand().size() >= 3);
             dragonHolder = inPlayer.get(index);
         }
     }
 
-    public boolean fullHand() {
-        for (Player p : inPlayer) {
-            if (p.getHand().size() >= 3) {
-                continue;
-            } else {
-                return false;
+    /**
+     * Find the index of next player with < 3 tiles on hand
+     * @param index index of current dragon holder
+     * @return the index of next player with < 3 tiles on hand
+     */
+    public int findNextHolder(int index) {
+        int i = 0;
+        while (i < inPlayer.size() - 1) {
+            index = (index + 1) % inPlayer.size();
+            if (inPlayer.get(index).getHand().size() < 3) {
+                return index;
             }
         }
-        return true;
+        return -1;
     }
+
+    /**
+     * Check whether a game is over
+     * @return true if game is over
+     */
+    public boolean isGameOver() { return this.gameOver; }
+
+    /**
+     * Set status of the game, mainly used by unit tests
+     * @param b boolean value to set
+     */
+    public void setGameOver(boolean b) {this.gameOver = b; }
 }

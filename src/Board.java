@@ -15,6 +15,12 @@ public class Board {
         this.token_list = new ArrayList<>();
     }
 
+    /**
+     * Get the tile on a given location on board
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return tile on a given location; null is not on board or indices are invalid
+     */
     public Tile getTile(int x, int y) {
         if (x < 0 || y < 0 || x > 5 || y > 5) {
             return null;
@@ -42,7 +48,7 @@ public class Board {
     }
 
     /**
-     * Delete the tile in the given location if it currently holds a tile
+     * Delete the tile in the given location if it currently has a tile
      * @param x the x-coordinate of the given location
      * @param y the y-coordinate of the given location
      */

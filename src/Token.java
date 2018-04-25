@@ -1,6 +1,7 @@
 public class Token {
-    private int color;
-    private int indexOnTile; //orientation int, not path int
+    // color of a token should be unique
+    private final int color;
+    private int indexOnTile;
     private int[] position;
 
     Token (int color, int indexOnTile, int[] position) {
@@ -11,31 +12,16 @@ public class Token {
 
 
     public int getColor(){return this.color;}
-    /**
-     * Set the index of a token
-     * @param index a new index
-     */
+
     public void setIndex(int index) { indexOnTile = index; }
 
-    /**
-     * Get the index of a token
-     * @return an index
-     */
     public int getIndex() { return indexOnTile; }
 
-    /**
-     * Set the position of a token
-     * @param xy a position array [x, y]
-     */
     public void setPosition(int[] xy){
         position[0] = xy[0];
         position[1] = xy[1];
     }
 
-    /**
-     * Get the position of a token
-     * @return a position array
-     */
     public int[] getPosition() { return position; }
 
     /**
@@ -47,5 +33,4 @@ public class Token {
         if (this.color == t.color) return true;
         return false;
     }
-
 }

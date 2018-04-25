@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Tile {
-    protected int[][] paths; // mutable
+    protected int[][] paths;
     public final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
         put(0, 5);
         put(1, 4);
@@ -24,6 +24,9 @@ public class Tile {
         }
     }
 
+    /**
+     * Rotate a given tile clockwise by 90 degrees
+     */
     public void rotateTile() {
         for (int side = 0; side < paths.length; side++) {
             paths[side][0] = (paths[side][0] + 2) % 8;
@@ -31,6 +34,10 @@ public class Tile {
         }
     }
 
+    /**
+     * Duplicate a given tile
+     * @return a copy of a given tile
+     */
     public Tile copyTile(){
         int[][] paths = this.paths;
         int[][] temp = new int[4][];
@@ -58,14 +65,14 @@ public class Tile {
 
     /**
      * Given the starting index of a path, get the end index on the path
-     * @param startInt starting index of the path
+     * @param start starting index of the path
      * @return the end index
      */
-    public int getPathEnd (int startInt) {
+    public int getPathEnd (int start) {
         for (int[] array : this.paths) {
-            if (startInt == array[0]) {
+            if (start == array[0]) {
                 return array[1];
-            } else if (startInt == array[1]) {
+            } else if (start == array[1]) {
                 return array[0];
             }
         }
