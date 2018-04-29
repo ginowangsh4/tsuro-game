@@ -1,8 +1,25 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public class Token {
     // color of a token should be unique
     private final int color;
+    private final Map<Integer, String> colorMap = new HashMap<Integer, String>() {{
+            put(0, "blue");
+            put(1, "red");
+            put(2, "green");
+            put(3, "orange");
+            put(4, "sienna");
+            put(5, "hotpink");
+            put(6, "darkgreen");
+            put(7, "pueple");
+    }};
     private int indexOnTile;
     private int[] position;
+
+    Token (int color) {
+        this.color = color;
+    }
 
     Token (int color, int indexOnTile, int[] position) {
         this.color = color;
@@ -11,7 +28,9 @@ public class Token {
     }
 
 
-    public int getColor(){return this.color;}
+    public int getColor(){ return this.color; }
+
+    public String getColorStr(){ return this.colorMap.get(this.color); }
 
     public void setIndex(int index) { indexOnTile = index; }
 

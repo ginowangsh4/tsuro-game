@@ -8,11 +8,11 @@ import java.util.List;
 public class Board {
     private Tile[][] board;
     private final int SIZE = 6;
-    protected List<Token> token_list;
+    protected List<Token> tokenList;
 
     Board() {
         this.board = new Tile[SIZE][SIZE];
-        this.token_list = new ArrayList<>();
+        this.tokenList = new ArrayList<>();
     }
 
     /**
@@ -70,10 +70,10 @@ public class Board {
      * @param t a token to be added
      */
     public void addToken(Token t){
-        if (token_list.contains(t)) {
+        if (tokenList.contains(t)) {
             throw new IllegalArgumentException("The token given already exists on board");
         }
-        this.token_list.add(t);
+        this.tokenList.add(t);
     }
 
     /**
@@ -81,7 +81,7 @@ public class Board {
      * @param inT a token to be removed
      */
     public void removeToken(Token inT) {
-        if (!token_list.remove(inT)) {
+        if (!tokenList.remove(inT)) {
             throw new IllegalArgumentException("The token given doesn't exist on board");
         }
     }
@@ -92,7 +92,7 @@ public class Board {
      */
     public void updateToken(Token newT) {
         Token oldT = null;
-        for (Token t: token_list)
+        for (Token t: tokenList)
         {
             if (t.equals(newT)) {
                 oldT = t;
@@ -102,7 +102,7 @@ public class Board {
         if (oldT == null) {
             throw new IllegalArgumentException("The token given can't be updated since it doesn't exist on board");
         }
-        token_list.remove(oldT);
-        token_list.add(newT);
+        tokenList.remove(oldT);
+        tokenList.add(newT);
     }
 }

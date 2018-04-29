@@ -1,12 +1,89 @@
 import java.util.*;
 
-public class Player {
+public class Player implements IPlayer{
     private Token token;
     private List<Tile> hand;
+    private String name;
+    // list of colors in the order that the game will be played
+    private List<Integer> colors;
+    private boolean isWinner;
 
     Player(Token t, List<Tile> hand){
         this.token = t;
         this.hand = hand;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void initialize(int color, List<Integer> colors) {
+        this.token = new Token(color);
+        this.colors = colors;
+    }
+
+    public Token placePawn(Board b) {
+        Random rand = new Random();
+        int x = Integer.MAX_VALUE;
+        int y = Integer.MAX_VALUE;
+        int indexOnTile = Integer.MAX_VALUE;
+        boolean found = false;
+        while (!found) {
+            // choose random number in {0,1,2,3}
+            int side = rand.nextInt(4);
+            // choose random number in {0,1,2,...,11}
+            int sideIndex = rand.nextInt(12);
+            switch (side) {
+                case 0: {
+                    x = sideIndex / 2;
+                    y = -1;
+                    indexOnTile = sideIndex % 2;
+                    break;
+                }
+                case 1: {
+                    x = 6;
+                    y = sideIndex / 2;
+                    indexOnTile = sideIndex % 2 + 2;
+                    break;
+                }
+                case 2: {
+                    x = sideIndex / 2;
+                    y = 6;
+                    indexOnTile = sideIndex % 2 + 4;
+                    break;
+                }
+                case 3: {
+                    x = -1;
+                    y = sideIndex / 2;
+                    indexOnTile = sideIndex % 2 + 6;
+                    break;
+                }
+                default: {
+                    throw new IllegalArgumentException("Error: Unable to pick starting position on board");
+                }
+            }
+            found = true;
+            for (Token t : b.tokenList) {
+                if (x == t.getPosition()[0] && y == t.getPosition()[1] && indexOnTile == t.getIndex()) {
+                    found = false;
+                    break;
+                }
+            }
+        }
+        if (x == Integer.MAX_VALUE || y == Integer.MAX_VALUE || indexOnTile == Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Error: Unable to pick starting position on board");
+        }
+        updateToken(new Token(this.token.getColor(), indexOnTile, new int[] {x, y}));
+        b.addToken(this.token);
+        return this.token;
+    }
+
+    public void endGame(Board b, List<Integer> colors) {
+        this.colors = colors;
+        if (b.tokenList.contains(this.token)) {
+            this.isWinner = true;
+        }
+        this.isWinner = false;
     }
 
     /**

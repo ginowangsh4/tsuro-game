@@ -5,8 +5,8 @@ public class Server {
 
     private Board board;
     private Deck drawPile;
-    private List<Player> inPlayer;
-    private List<Player> outPlayer;
+    public List<Player> inPlayer;
+    public List<Player> outPlayer;
     private Player dragonHolder = null;
     private boolean gameOver = false;
 
