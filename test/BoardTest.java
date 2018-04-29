@@ -59,14 +59,14 @@ class BoardTest {
         ArrayList<Token> myTokenList = new ArrayList<>();
         myTokenList.add(t1);
         myTokenList.add(t2);
-        assertEquals(myTokenList, b.token_list, "Error: t1 and t2 not both on board");
+        assertEquals(myTokenList, b.tokenList, "Error: t1 and t2 not both on board");
         b.removeToken(t1);
         myTokenList.remove(t1);
-        assertEquals(myTokenList, b.token_list, "Error: t2 not the only token on board");
+        assertEquals(myTokenList, b.tokenList, "Error: t2 not the only token on board");
         b.updateToken(t3);
         myTokenList.remove(t2);
         myTokenList.add(t3);
-        assertEquals(myTokenList, b.token_list, "Error: t2 not updated");
+        assertEquals(myTokenList, b.tokenList, "Error: t2 not updated");
     }
 
     @Test
