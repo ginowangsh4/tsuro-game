@@ -1,5 +1,7 @@
 import java.util.*;
 
+// Not complete
+// More test cases need to be build to confirm that all things work as expected
 public class Player {
     private Token token;
     private List<Tile> hand;
@@ -17,11 +19,22 @@ public class Player {
         return this.name;
     }
 
+    /**
+     * Called to indicate a game is starting.
+     * @param color the player's color
+     * @param colors all of the players'colors, in the order that the game will be played.
+     */
     public void initialize(int color, List<Integer> colors) {
         this.token = new Token(color);
         this.colors = colors;
     }
 
+    /**
+     * Called at the first step in a game indicates where the player wishes to place their token
+     * token must be placed along the edge in an unoccupied space.
+     * @param b the current board state
+     * @return a token with the player's color, its position [x,y] and index on tile.
+     */
     public Token placePawn(Board b) {
         Random rand = new Random();
         int x = Integer.MAX_VALUE;
@@ -78,6 +91,11 @@ public class Player {
         return this.token;
     }
 
+    /**
+     * Called to inform the player of the final board state and which players won the game.
+     * @param b the current board game
+     * @param colors the list of winner's colors
+     */
     public void endGame(Board b, List<Integer> colors) {
         this.colors = colors;
         if (b.getTokenList().contains(this.token)) {
@@ -87,6 +105,13 @@ public class Player {
     }
 
 
+    /**
+     * Called to ask the player to make a move.
+     * @param b the current board state
+     * @param strategy the strategy that player plays
+     * @param tilesLeft count of tiles that are not yet handed out to players.
+     * @return the tile the player should place, suitably rotated.
+     */
     public Tile playTurn(Board b, String strategy, int tilesLeft) {
         List<Tile> legalMoves = new ArrayList<>();
         List<Tile> legalTiles = new ArrayList<>();
@@ -169,6 +194,9 @@ public class Player {
 
 }
 
+/**
+ * The following classes are used with Array.sort
+ */
 class SymmetricComparator implements Comparator<Tile> {
     @Override
     // a < b return -1
@@ -184,6 +212,11 @@ class SymmetricComparator implements Comparator<Tile> {
         return countA < countB ? -1 : 1;
     }
 
+    /**
+     * Count the number of ways a given tile can be placed
+     * @param t a given tile
+     * @return the number of ways it can be placed
+     */
     public static int diffPaths(Tile t){
         int count = 1;
         Tile copy = t.copyTile();
@@ -200,6 +233,12 @@ class SymmetricComparator implements Comparator<Tile> {
         return count == 3 ? count-1 : count;
     }
 
+    /**
+     * Reorder the path arrays of a given tile; path indices ordered from smallest to largest
+     * Doesn't modify the actual path
+     * i.e. {{2,6}, {3, 7}, {4, 1}, {5, 0}} becomes {{0,5}, {1, 4}, {2, 6}, {3, 7}}
+     * @param t a given tile
+     */
     public static void reorderPath(Tile t) {
         for (int[] array : t.paths) {
             Arrays.sort(array);

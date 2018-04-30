@@ -7,6 +7,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// The following only covers the simplest test cases
+// More complicate ones need to be build later to cover different logical aspects.
 class PlayerTest {
 
     @Test
@@ -20,7 +22,6 @@ class PlayerTest {
             System.out.println("The player is currently standing at [" + posn[0] + ", " + posn[1] + "]" +
                     " and he is at index " + p.getToken().getIndex());
         }
-
     }
 
     @Test
