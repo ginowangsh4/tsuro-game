@@ -4,7 +4,7 @@ public class Player {
     private Token token;
     private List<Tile> hand;
     private String name;
-    // list of colors in the order that the game will be played
+    // list of player's colors in the order that the game will be played
     private List<Integer> colors;
     private boolean isWinner;
 
@@ -63,7 +63,7 @@ public class Player {
                 }
             }
             found = true;
-            for (Token t : b.tokenList) {
+            for (Token t : b.getTokenList()) {
                 if (x == t.getPosition()[0] && y == t.getPosition()[1] && indexOnTile == t.getIndex()) {
                     found = false;
                     break;
@@ -80,7 +80,7 @@ public class Player {
 
     public void endGame(Board b, List<Integer> colors) {
         this.colors = colors;
-        if (b.tokenList.contains(this.token)) {
+        if (b.getTokenList().contains(this.token)) {
             this.isWinner = true;
         }
         this.isWinner = false;
@@ -167,19 +167,6 @@ public class Player {
         return this.hand;
     }
 
-    public static void reorderPath(Tile t) {
-        for (int[] array : t.paths) {
-            Arrays.sort(array);
-        }
-        Arrays.sort(t.paths, new ListFirstElementComparator());
-    }
-
-    public static void main(String [] args) {
-        int[][] path = new int[][] {{2,7}, {3,6}, {4,0}, {5,1}};
-        Tile t = new Tile(path);
-        reorderPath(t);
-        System.out.print("yes");
-    }
 }
 
 class SymmetricComparator implements Comparator<Tile> {
@@ -188,7 +175,30 @@ class SymmetricComparator implements Comparator<Tile> {
     // a > b return 1
     // else return 0
     public int compare(Tile a, Tile b){
-        return -1;
+        int countA = diffPaths(a);
+        int countB = diffPaths(b);
+        if (countA == countB){
+            return 0;
+        }
+        return countA < countB ? -1 : 1;
+    }
+
+    public int diffPaths(Tile t){
+        int count = 0;
+        Tile copy = t.copyTile();
+        for (int i = 0; i < 3; i++ ){
+            copy.rotateTile();
+            reorderPath(copy);
+            if (t.hasSamePaths(copy)) count++;
+        }
+        return count;
+    }
+
+    public static void reorderPath(Tile t) {
+        for (int[] array : t.paths) {
+            Arrays.sort(array);
+        }
+        Arrays.sort(t.paths, new ListFirstElementComparator());
     }
 }
 

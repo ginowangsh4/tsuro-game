@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Tile {
+    //protected field for the purpose of testing
     protected int[][] paths;
     public final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
         put(0, 5);
@@ -61,6 +62,15 @@ public class Tile {
             }
         }
         return false;
+    }
+
+    /**
+     * Check whether two path arrays are equal
+     * @param paths the path array to be check against
+     * @return true if equal; false if not
+     */
+    public boolean hasSamePaths(Tile tile){
+        return Arrays.deepEquals(this.paths, tile.paths);
     }
 
     /**

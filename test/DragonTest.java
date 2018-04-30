@@ -112,7 +112,7 @@ public class DragonTest {
         inPlayer.add(p3);
         server.init(b, inPlayer, outPlayer, deck);
         // give player 2 dragon tile
-        server.getDragon(p2);
+        server.giveDragon(p2);
         Tile t = p1.getHand().get(2);
         p1.deal(t);
         // Player 1 tries to draw tile but should fail due to empty deck
@@ -160,7 +160,7 @@ public class DragonTest {
         inPlayer.add(p3);
         server.init(b, inPlayer, outPlayer, deck);
         // give player 1 dragon tile
-        server.getDragon(p1);
+        server.giveDragon(p1);
         Tile t = p1.getHand().get(0);
         p1.deal(t);
         // player 1 makes the move, eliminates player 2, and player 3 stay still
@@ -213,7 +213,7 @@ public class DragonTest {
         inPlayer.add(p3);
         server.init(b, inPlayer, outPlayer, deck);
         // give player 2 dragon tile
-        server.getDragon(p2);
+        server.giveDragon(p2);
         Tile t = p1.getHand().get(0);
         p1.deal(t);
         // player 1 makes the move, eliminates player 2, and player 3 gets dragon, draws and passes to player 1
@@ -265,7 +265,7 @@ public class DragonTest {
         inPlayer.add(p3);
         server.init(b, inPlayer, outPlayer, deck);
         // give player 1 dragon tile
-        server.getDragon(p1);
+        server.giveDragon(p1);
         Tile t = p1.getHand().get(0);
         p1.deal(t);
         // player 1 makes the move, eliminates player 2 and himself,

@@ -52,4 +52,20 @@ public class Token {
         if (this.color == t.color) return true;
         return false;
     }
+
+    /**
+     * Check whether the token is on the edge of the board
+     * @return true if on the edge; false if not
+     */
+    public boolean isOffBoard() {
+        int ti = this.getIndex();
+        int[] tl = this.getPosition();
+        if ((ti == 0 || ti == 1) && tl[1] == 0 ||
+                (ti == 2 || ti == 3) && tl[0] == 5 ||
+                (ti == 4 || ti == 5) && tl[1] == 5 ||
+                (ti == 6 || ti == 7) && tl[0] == 0) {
+            return true;
+        }
+        return false;
+    }
 }

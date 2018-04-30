@@ -1,4 +1,3 @@
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.*;
 
 public class Server {
@@ -52,36 +51,43 @@ public class Server {
             }
         }
         // check condition (2) above
-        int[] location = getAdjacentLocation(p.getToken());
+        Token currentT = p.getToken();
+        int[] location = getAdjacentLocation(currentT);
         b.placeTile(t, location[0], location[1]);
-        Token token = simulateMove(p.getToken(), b);
+        Token newT = simulateMove(currentT, b);
         b.deleteTile(location[0], location[1]);
-        if (!outOfBoard(token)){
+        if (!newT.isOffBoard()){
             // original rotation is legal without considering other rotations
             return true;
         }
         else {
-            Tile newTile = t.copyTile();
+            Tile copy = t.copyTile();
             for (int i =0; i < 3; i++){
-                newTile.rotateTile();
-                b.placeTile(newTile, location[0], location[1]);
-                token = simulateMove(p.getToken(), b);
+                copy.rotateTile();
+                b.placeTile(copy, location[0], location[1]);
+                newT = simulateMove(currentT, b);
                 b.deleteTile(location[0], location[1]);
-                if (!outOfBoard(token)) {
+                if (!newT.isOffBoard()) {
                     // original rotation is illegal, as there is another legal rotation
                     return false;
                 }
             }
-            if (p.getHand().size() > 1){
+            if (p.getHand().size() <= 1) {
+                // original rotation is legal as
+                // 1. only one tile in player's hand
+                // 2. all rotations of this tile leads to elimination
+                return true;
+            }
+            else {
                 for (Tile pt: p.getHand()){
                     if (!t.isSameTile(pt)){
-                        newTile = pt.copyTile();
+                        copy = pt.copyTile();
                         for (int i = 0; i < 4; i++) {
-                            newTile.rotateTile();
-                            b.placeTile(newTile, location[0], location[1]);
-                            token = simulateMove(p.getToken(), b);
+                            copy.rotateTile();
+                            b.placeTile(copy, location[0], location[1]);
+                            newT = simulateMove(currentT, b);
                             b.deleteTile(location[0], location[1]);
-                            if (!outOfBoard(token)) {
+                            if (!newT.isOffBoard()) {
                                 // original rotation is illegal, as there is another legal move
                                 return false;
                             }
@@ -89,13 +95,8 @@ public class Server {
                     }
                 }
             }
-            else {
-                // original rotation is legal as
-                // 1. only one tile in player's hand
-                // 2. all rotations of this tile leads to elimination
-                return true;
-            }
         }
+        // all possible moves lead to elimination, return true
         return true;
     }
 
@@ -118,7 +119,7 @@ public class Server {
         board.updateToken(currentT);
 
         // eliminate current player & recycle tiles in hand
-        if (outOfBoard(currentT)) {
+        if (currentT.isOffBoard()) {
             drawPile.addAndShuffle(currentP.getHand());
             currentP.getHand().clear();
             board.removeToken(currentT);
@@ -129,14 +130,14 @@ public class Server {
             }
             inPlayer.remove(0);
             outPlayer.add(currentP);
-            // handle the case if dragon is already dealt
-            passDragon();
+            // players draw and pass dragon
+            drawAndPassDragon();
         }
         // add to tail & draw tile
         else {
             if (drawPile.isEmpty()) {
                 // player gets dragon if it is not dealt to another player
-                getDragon(currentP);
+                giveDragon(currentP);
             }
             else {
                 currentP.draw(drawPile.pop());
@@ -150,7 +151,8 @@ public class Server {
         {
             currentP = inPlayer.get(i);
             currentT = currentP.getToken();
-            // do not simulate move for a new player
+            // At the start of the game, new players stand outside the board
+            // Make sure don't eliminate them
             if (currentT.getPosition()[0] < 0 || currentT.getPosition()[0] > 5 ||
                     currentT.getPosition()[1] < 0 || currentT.getPosition()[1] > 5) {
                 continue;
@@ -158,11 +160,10 @@ public class Server {
             currentT = simulateMove(currentT, board);
             currentP.updateToken(currentT);
             board.updateToken(currentT);
-
-            if (outOfBoard(currentT)) {
+            if (currentT.isOffBoard()) {
                 drawPile.addAndShuffle(currentP.getHand());
-                board.removeToken(currentT);
                 currentP.getHand().clear();
+                board.removeToken(currentT);
                 if (currentP.equals(dragonHolder)) {
                     int index = findNextHolder(inPlayer.indexOf(currentP));
                     dragonHolder = index == -1 ? null : inPlayer.get(index);
@@ -170,8 +171,8 @@ public class Server {
                 inPlayer.remove(currentP);
                 outPlayer.add(currentP);
             }
-            // handle the case if dragon is already dealt
-            passDragon();
+            // players draw and pass dragon
+            drawAndPassDragon();
         }
 
         // determine whether game is over
@@ -179,6 +180,7 @@ public class Server {
             gameOver = true;
             return inPlayer;
         }
+        //no one is the winner
         else if (inPlayer.size() == 0) {
             gameOver = true;
             return null;
@@ -235,23 +237,6 @@ public class Server {
     }
 
     /**
-     * Check whether the token is on the edge of the board
-     * @param token a token to be checked
-     * @return true if on the edge; false if not
-     */
-    public boolean outOfBoard(Token token) {
-        int ti = token.getIndex();
-        int[] tl = token.getPosition();
-        if ((ti == 0 || ti == 1) && tl[1] == 0 ||
-                (ti == 2 || ti == 3) && tl[0] == 5 ||
-                (ti == 4 || ti == 5) && tl[1] == 5 ||
-                (ti == 6 || ti == 7) && tl[0] == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Get the current dragon holder
      * @return the player with da dragon
      */
@@ -263,7 +248,7 @@ public class Server {
      * Assign dragon tile to a player
      * @param p the player to assign to
      */
-    public void getDragon(Player p) {
+    public void giveDragon(Player p) {
         if (dragonHolder == null) {
             dragonHolder = p;
         }
@@ -273,7 +258,7 @@ public class Server {
      * Pass dragon to the next player who has less than three tile on hand,
      * set dragon holder to be nobody if cannot find any or there is a winner
      */
-    public void passDragon() {
+    public void drawAndPassDragon() {
         if (dragonHolder == null) {
             return;
         }

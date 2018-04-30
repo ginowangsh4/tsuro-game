@@ -4,7 +4,7 @@ import java.util.List;
 public class Board {
     private Tile[][] board;
     private final int SIZE = 6;
-    protected List<Token> tokenList;
+    private List<Token> tokenList;
 
     Board() {
         this.board = new Tile[SIZE][SIZE];
@@ -22,6 +22,10 @@ public class Board {
             return null;
         }
         return this.board[x][y];
+    }
+
+    public List<Token> getTokenList() {
+        return tokenList;
     }
 
     /**
