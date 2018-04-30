@@ -107,12 +107,12 @@ public class Player {
             }
 
             case "LS": {
-                Collections.sort(legalMoves, new SymmetricComparator());
+                Collections.sort(legalTiles, new SymmetricComparator());
                 return legalMoves.get(0);
             }
 
             case "MS": {
-                Collections.sort(legalMoves, new SymmetricComparator());
+                Collections.sort(legalTiles, new SymmetricComparator());
                 return legalMoves.get(legalMoves.size() - 1);
             }
 
@@ -174,6 +174,7 @@ class SymmetricComparator implements Comparator<Tile> {
     // a < b return -1
     // a > b return 1
     // else return 0
+    // order is from most symmetric to least symmetric
     public int compare(Tile a, Tile b){
         int countA = diffPaths(a);
         int countB = diffPaths(b);
@@ -183,15 +184,20 @@ class SymmetricComparator implements Comparator<Tile> {
         return countA < countB ? -1 : 1;
     }
 
-    public int diffPaths(Tile t){
-        int count = 0;
+    public static int diffPaths(Tile t){
+        int count = 1;
         Tile copy = t.copyTile();
         for (int i = 0; i < 3; i++ ){
             copy.rotateTile();
-            reorderPath(copy);
-            if (t.hasSamePaths(copy)) count++;
+            Tile temp = copy.copyTile();
+            reorderPath(temp);
+            if (!t.hasSamePaths(temp)) count++;
         }
-        return count;
+        // if we have count = 3, it means we have two pathways that are different from the original
+        // but these two pathways must be the same
+        // so we need to subtract count by 1 to get the number of ways it can be placed.
+        // count can only be 1, 2, or 4
+        return count == 3 ? count-1 : count;
     }
 
     public static void reorderPath(Tile t) {
