@@ -1,14 +1,12 @@
 import java.util.*;
 
-// Not complete
-// More test cases need to be build to confirm that all things work as expected
 public class SPlayer {
     private Token token;
     private List<Tile> hand;
     private String name;
 
-    SPlayer(Token t, List<Tile> hand, String name) {
-        this.token = t;
+    SPlayer(Token token, List<Tile> hand, String name) {
+        this.token = token;
         this.hand = hand;
         this.name = name;
     }
@@ -32,18 +30,14 @@ public class SPlayer {
      *
      * @return a token
      */
-    public Token getToken() {
-        return this.token;
-    }
+    public Token getToken() { return this.token; }
 
     /**
      * Update a player's token
      *
      * @param token new token
      */
-    public void updateToken(Token token) {
-        this.token = token;
-    }
+    public void updateToken(Token token) { this.token = token; }
 
     /**
      * SPlayer draws a tile

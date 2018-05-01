@@ -17,13 +17,14 @@ class MPlayerTest {
     static Deck deck;
     static List<SPlayer> inSPlayer;
     static List<SPlayer> outSPlayer;
+    static List<Integer> colors = new ArrayList<>();
     static Server server = Server.getInstance();
 
     @Test
     void placePawnTest(){
         Board b = new Board();
         for (int i = 0; i < 8; i++){
-            MPlayer p = new MPlayer(1, null);
+            MPlayer p = new MPlayer(1, colors, "R");
             Token t = p.placePawn(b);
             int[] posn = t.getPosition();
             System.out.println("The player is currently standing at [" + posn[0] + ", " + posn[1] + "]" +
@@ -37,7 +38,7 @@ class MPlayerTest {
     void reorderPathTest(){
         //This tile has two different ways it might be placed
         int[][] path1 = new int[][] {{0,4}, {1,5}, {2,7}, {3,6}}; // First way
-        int[][] path2 = new int[][] {{0,5}, {1,4}, {2,6}, {3,7}}; // First way
+        int[][] path2 = new int[][] {{0,5}, {1,4}, {2,6}, {3,7}}; // Second way
         Tile t = new Tile(path1);
         Tile copy = t.copyTile();
         copy.rotateTile(); // Second Way
@@ -72,23 +73,23 @@ class MPlayerTest {
     }
 
     @Test
-    void diffPathsTest(){
+    void countDiffPathsTest(){
         // this tile has only one way to be placed
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
-        assertEquals(1, symmetricTile.diffPaths(), "Error: a symmetric tile has " +
+        assertEquals(1, symmetricTile.countDiffPaths(), "Error: a symmetric tile has " +
                 " only one way to be placed" );
 
         // this tile has two ways to be placed
         Tile halfSymmetricTile = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
-        assertEquals(2, halfSymmetricTile.diffPaths(), "Error: a half symmetric tile has" +
+        assertEquals(2, halfSymmetricTile.countDiffPaths(), "Error: a half symmetric tile has" +
                 " two ways to be placed" );
 
         // this tile has four ways to be placed
         Tile asymmetricTile1 = new Tile(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}});
-        assertEquals(4, asymmetricTile1.diffPaths(), "Error: a asymmetric tile has" +
+        assertEquals(4, asymmetricTile1.countDiffPaths(), "Error: a asymmetric tile has" +
                 " four ways to be placed" );
         Tile asymmetricTile2 = new Tile(new int[][] {{0, 4}, {1, 6}, {2, 7}, {3, 5}});
-        assertEquals(4, asymmetricTile2.diffPaths(), "Error: a asymmetric tile has" +
+        assertEquals(4, asymmetricTile2.countDiffPaths(), "Error: a asymmetric tile has" +
                 " four ways to be placed" );
     }
 
@@ -150,9 +151,9 @@ class MPlayerTest {
 
         server.init(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer(1,null);
+        MPlayer mPlayer = new MPlayer(1,colors, "LS");
         mPlayer.token = token;
-        Tile t = mPlayer.playTurn(b, "LS", hand, pile.size());
+        Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
 
         server.playATurn(t);
@@ -194,9 +195,9 @@ class MPlayerTest {
 
         server.init(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer(1,null);
+        MPlayer mPlayer = new MPlayer(1,colors, "LS");
         mPlayer.token = token;
-        Tile t = mPlayer.playTurn(b, "LS", hand, pile.size());
+        Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
 
         server.playATurn(t);
@@ -238,9 +239,9 @@ class MPlayerTest {
 
         server.init(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer(1,null);
+        MPlayer mPlayer = new MPlayer(1,colors, "MS");
         mPlayer.token = token;
-        Tile t = mPlayer.playTurn(b, "MS", hand, pile.size());
+        Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");
 
         server.playATurn(t);

@@ -69,7 +69,7 @@ public class Tile {
      * @param tile the tile whose path to be check against
      * @return true if equal; false if not
      */
-    public boolean hasSamePaths(Tile tile){
+    public boolean equalPath(Tile tile){
         return Arrays.deepEquals(this.paths, tile.paths);
     }
 
@@ -93,16 +93,15 @@ public class Tile {
      * Count the number of ways a given tile can be placed
      * @return the number of ways it can be placed
      */
-    public int diffPaths(){
+    public int countDiffPaths(){
         // make sure every tile has correct path order before be placed on board
         reorderPath();
         int count = 1;
         Tile copy = this.copyTile();
         for (int i = 0; i < 3; i++ ){
             copy.rotateTile();
-            Tile temp = copy.copyTile();
-            temp.reorderPath();
-            if (!this.hasSamePaths(temp)) count++;
+            copy.reorderPath();
+            if (!this.equalPath(copy)) count++;
         }
         // if we have count = 3, it means we have two pathways that are different from the original
         // but these two pathways must be the same
@@ -136,10 +135,10 @@ class SymmetricComparator implements Comparator<Tile> {
     // else return 0
     // order is from most symmetric to least symmetric
     public int compare(Tile a, Tile b){
-        if (a.diffPaths() == b.diffPaths()){
+        if (a.countDiffPaths() == b.countDiffPaths()){
             return 0;
         }
-        return a.diffPaths() < b.diffPaths() ? -1 : 1;
+        return a.countDiffPaths() < b.countDiffPaths() ? -1 : 1;
     }
 }
 

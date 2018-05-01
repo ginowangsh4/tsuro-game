@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Token {
-    // color of a token should be unique
+
     private final int color;
     public final static Map<Integer, String> colorMap = new HashMap<Integer, String>() {{
             put(0, "blue");
@@ -32,14 +32,7 @@ public class Token {
 
     public String getColorStr(){ return this.colorMap.get(this.color); }
 
-    public void setIndex(int index) { indexOnTile = index; }
-
     public int getIndex() { return indexOnTile; }
-
-    public void setPosition(int[] xy){
-        position[0] = xy[0];
-        position[1] = xy[1];
-    }
 
     public int[] getPosition() { return position; }
 

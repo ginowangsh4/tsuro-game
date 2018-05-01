@@ -36,5 +36,5 @@ public interface IPlayer {
      * @param tilesLeft count of tiles that are not yet handed out to players.
      * @return the tile the player should place, suitably rotated.
      */
-    Tile playTurn(Board b, String strategy, List<Tile> hand, int tilesLeft);
+    Tile playTurn(Board b, List<Tile> hand, int tilesLeft);
 }

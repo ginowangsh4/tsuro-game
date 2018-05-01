@@ -8,13 +8,22 @@ public class MPlayer implements IPlayer {
     private int color;
     // list of player's colors in the order that the game will be played
     private List<Integer> colors;
+    private String Strategy;
     private boolean isWinner;
     public Token token;
 
-    MPlayer (int color, List<Integer> colors) {
+    MPlayer (int color, List<Integer> colors, String Strategy) {
+        if (color < 0 || color > 7) throw new IllegalArgumentException("Invalid player's color");
+        for (int aColor : colors) {
+            if (aColor < 0 || aColor > 7) throw new IllegalArgumentException("Player list contains invalid" +
+                    "player color");
+        }
+        if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS")))
+            throw new IllegalArgumentException("Invalid player's color");
         this.color = color;
         this.name = Token.colorMap.get(color);
         this.colors = colors;
+        this.Strategy = Strategy;
     }
 
     public String getName() {
@@ -40,7 +49,7 @@ public class MPlayer implements IPlayer {
             int sideIndex = rand.nextInt(12);
             switch (side) {
                 case 0: {
-                    x = sideIndex / 2;
+                    x = sideIndex / 2; //from 1 to 5
                     y = -1;
                     indexOnTile = sideIndex % 2;
                     break;
@@ -79,7 +88,7 @@ public class MPlayer implements IPlayer {
             throw new IllegalArgumentException("Error: Unable to pick starting position on board");
         }
         Token newToken = new Token(this.color, indexOnTile, new int[]{x, y});
-        b.addToken(newToken);
+        //b.addToken(newToken);
         this.token = newToken;
         return newToken;
     }
@@ -92,7 +101,7 @@ public class MPlayer implements IPlayer {
         this.isWinner = false;
     }
 
-    public Tile playTurn(Board b, String strategy, List<Tile> hand, int tilesLeft) {
+    public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) {
         List<Tile> legalMoves = new ArrayList<>();
         List<Tile> legalTiles = new ArrayList<>();
         for (Tile t : hand) {
@@ -108,7 +117,7 @@ public class MPlayer implements IPlayer {
                 copy.rotateTile();
             }
         }
-        switch (strategy) {
+        switch (Strategy) {
             case "R": {
                 Random rand = new Random();
                 return legalMoves.get(rand.nextInt(legalMoves.size()));
