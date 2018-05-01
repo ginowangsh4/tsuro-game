@@ -120,7 +120,9 @@ public class Player {
             for (int i = 0; i < 4; i++) {
                 if (Server.getInstance().legalPlay(this, b, copy)) {
                     legalMoves.add(copy);
-                    if (!legalTiles.contains(t)) legalMoves.add(t);
+                    if (!legalTiles.contains(t)) {
+                        legalTiles.add(t);
+                    }
                 }
                 copy.rotateTile();
             }

@@ -11,6 +11,14 @@ import static org.junit.jupiter.api.Assertions.*;
 // More complicate ones need to be build later to cover different logical aspects.
 class PlayerTest {
 
+    static Board b;
+    static Tile tile;
+    static List<Tile> pile;
+    static Deck deck;
+    static List<Player> inPlayer;
+    static List<Player> outPlayer;
+    static Server server = Server.getInstance();
+
     @Test
     void placePawnTest(){
         Board b = new Board();
@@ -21,12 +29,13 @@ class PlayerTest {
             int[] posn = p.getToken().getPosition();
             System.out.println("The player is currently standing at [" + posn[0] + ", " + posn[1] + "]" +
                     " and he is at index " + p.getToken().getIndex());
+            assertTrue(posn[0] == -1 || posn[0] == 6 || posn[1] == -1 || posn[1] == 6,
+                    "Error: Placed pawn at wrong position on board");
         }
     }
 
     @Test
     void reorderPathTest(){
-
         //This tile has two different ways it might be placed
         int[][] path1 = new int[][] {{0,4}, {1,5}, {2,7}, {3,6}}; // First way
         int[][] path2 = new int[][] {{0,5}, {1,4}, {2,6}, {3,7}}; // First way
@@ -67,17 +76,20 @@ class PlayerTest {
     void diffPathsTest(){
         // this tile has only one way to be placed
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
-        assertEquals(1,SymmetricComparator.diffPaths(symmetricTile), "Error: a symmetric tile has " +
+        assertEquals(1, SymmetricComparator.diffPaths(symmetricTile), "Error: a symmetric tile has " +
                 " only one way to be placed" );
 
         // this tile has two ways to be placed
         Tile halfSymmetricTile = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
-        assertEquals(2,SymmetricComparator.diffPaths(halfSymmetricTile), "Error: a half symmetric tile has" +
+        assertEquals(2, SymmetricComparator.diffPaths(halfSymmetricTile), "Error: a half symmetric tile has" +
                 " two ways to be placed" );
 
         // this tile has four ways to be placed
-        Tile asymmetricTile = new Tile(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}});
-        assertEquals(4,SymmetricComparator.diffPaths(asymmetricTile), "Error: a asymmetric tile has" +
+        Tile asymmetricTile1 = new Tile(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}});
+        assertEquals(4, SymmetricComparator.diffPaths(asymmetricTile1), "Error: a asymmetric tile has" +
+                " four ways to be placed" );
+        Tile asymmetricTile2 = new Tile(new int[][] {{0, 4}, {1, 6}, {2, 7}, {3, 5}});
+        assertEquals(4, SymmetricComparator.diffPaths(asymmetricTile2), "Error: a asymmetric tile has" +
                 " four ways to be placed" );
     }
 
@@ -92,8 +104,45 @@ class PlayerTest {
         tileList.add(asymmetricTile);
         Collections.sort(tileList, new SymmetricComparator());
         assertEquals(symmetricTile, tileList.get(0), "Error: the symmetric tile is not the first tile in tileList");
-        assertEquals(halfSymmetricTile, tileList.get(1), "Error: the half symmetric tile is not the first tile in tileList");
-        assertEquals(asymmetricTile, tileList.get(2), "Error: the asymmetric tile is not the first tile in tileList");
+        assertEquals(halfSymmetricTile, tileList.get(1), "Error: the half symmetric tile is not the second tile in tileList");
+        assertEquals(asymmetricTile, tileList.get(2), "Error: the asymmetric tile is not the third tile in tileList");
     }
 
+    @Test
+    void leastSymmetricStrategyTest() {
+
+    }
+
+    @Test
+    void mostSymmetricStrategyTest() {
+        b = new Board();
+        Tile tile0 = new Tile(new int[][] {{0, 5}, {1, 6}, {2, 7}, {3, 4}});
+        b.placeTile(tile0, 0, 0);
+        // starting position
+        Token token = new Token(1, 5, new int[] {0, 0});
+        List<Tile> hand = new ArrayList<>();
+        // expect to play
+        Tile tile1 = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
+        Tile tile2 = new Tile(new int[][] {{0, 4}, {1, 5}, {2, 7}, {3, 6}});
+        Tile tile3 = new Tile(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}});
+        hand.add(tile1);
+        hand.add(tile2);
+        hand.add(tile3);
+        Player player = new Player(token, hand);
+        b.addToken(token);
+        inPlayer = new ArrayList<>();
+        outPlayer = new ArrayList<>();
+        pile = new ArrayList<>();
+        deck = new Deck(pile);
+        inPlayer.add(player);
+
+        server.init(b, inPlayer, outPlayer, deck);
+        Tile t = player.playTurn(b, "MS", pile.size());
+        server.playATurn(t);
+
+        assertEquals(1, inPlayer.size(), "check inPlayer list");
+        assertEquals(0, outPlayer.size(), "check outPlayer list");
+        assertTrue(Arrays.equals(inPlayer.get(0).getToken().getPosition(), new int[] {0, 0}), "check player 1 token position");
+        assertEquals(3, inPlayer.get(0).getToken().getIndex(),"check player 1 token index");
+    }
 }

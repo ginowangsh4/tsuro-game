@@ -66,7 +66,7 @@ public class Tile {
 
     /**
      * Check whether two path arrays are equal
-     * @param paths the path array to be check against
+     * @param tile the tile whose path to be check against
      * @return true if equal; false if not
      */
     public boolean hasSamePaths(Tile tile){
