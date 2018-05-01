@@ -1,9 +1,6 @@
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +9,7 @@ class LegalPlayTest {
 
     static Board b;
     static Token token;
-    static Player p;
+    static SPlayer p;
     static Tile tile;
     static Server server = Server.getInstance();
 
@@ -24,7 +21,7 @@ class LegalPlayTest {
         token = new Token(0, 4, new int[]{0, 0});
         tile = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
+        p = new SPlayer(token, hand, "");
         p.draw(tile);
         assertEquals(true, server.legalPlay(p, b, tile),"legalPlay - Expect Legal - Test 1");
     }
@@ -41,7 +38,7 @@ class LegalPlayTest {
         b.placeTile(tile2,1,1);
         tile = new Tile(new int[][] {{0,5}, {1,2}, {3,4}, {6,7}});
         List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
+        p = new SPlayer(token, hand, "");
         p.draw(tile);
         assertEquals(true, server.legalPlay(p, b, tile),"legalPlay - Expect Legal - Test 2");
     }
@@ -58,7 +55,7 @@ class LegalPlayTest {
         Tile tile2 = tile.copyTile();
         tile2.rotateTile();
         List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
+        p = new SPlayer(token, hand, "");
         p.draw(tile);
         assertEquals(true, server.legalPlay(p, b, tile2),"legalPlay - Expect Legal - Test 3");
     }
@@ -74,7 +71,7 @@ class LegalPlayTest {
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile2 = new Tile(new int[][] {{0,4}, {1,5}, {2,6}, {3,7}});
         List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
+        p = new SPlayer(token, hand, "");
         p.draw(tile);
         p.draw(tile2);
         assertEquals(true, server.legalPlay(p, b, tile), "legalPlay - Expect Legal - Test 4");
@@ -89,7 +86,7 @@ class LegalPlayTest {
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
+        p = new SPlayer(token, hand, "");
         p.draw(tile1);
         assertEquals(false, server.legalPlay(p, b, tile), "legalPlay - Expect Illegal - Test 5");
     }
@@ -104,7 +101,7 @@ class LegalPlayTest {
         b.placeTile(tile1, 0, 0);
         tile = new Tile(new int[][] {{0,2}, {1,7}, {3,4}, {5,6}});
         List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
+        p = new SPlayer(token, hand, "");
         p.draw(tile);
         assertEquals(false,server.legalPlay(p, b, tile), "legalPlay - Expect Illegal - Test 6");
     }
@@ -120,7 +117,7 @@ class LegalPlayTest {
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile2 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
         List<Tile> hand = new ArrayList<>();
-        p = new Player(token, hand);
+        p = new SPlayer(token, hand, "");
         p.draw(tile);
         p.draw(tile2);
         assertEquals(false, server.legalPlay(p, b, tile), "legalPlay - Expect Illegal - Test 7");

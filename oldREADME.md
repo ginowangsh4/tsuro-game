@@ -20,17 +20,17 @@ public void updateToken(Token t)
 ```
 private Board board;
 private ArrayList<Tile> drawPile;
-private ArrayList<Player> inPlayer;
-private ArrayList<Player> outPlayer;
+private ArrayList<SPlayer> inSPlayer;
+private ArrayList<SPlayer> outSPlayer;
 private boolean gameOver = false;
-public boolean legalPlay(Player p, Board b, Tile t)
-public ArrayList playATurn(ArrayList<Tile> drawPile, ArrayList<Player> inPlayer, ArrayList<Player> outPlayer, Board board, Tile t)
+public boolean legalPlay(SPlayer p, Board b, Tile t)
+public ArrayList playATurn(ArrayList<Tile> drawPile, ArrayList<SPlayer> inSPlayer, ArrayList<SPlayer> outSPlayer, Board board, Tile t)
 private Token simulateMove(Token token, Board board)
 private int[] getAdjacentLocation(Token token)
 public boolean outOfBoard(Token token)
 *contains tests*
 ```
-### Player
+### SPlayer
 ```
 protected Token token;
 protected ArrayList<Tile> hand;
@@ -40,19 +40,19 @@ public void updateToken(Token token)
 public void draw(Tile t)
 public ArrayList<Tile> getHand()  
 public void getDragon() 
-public void passDragon(Player p)
+public void passDragon(SPlayer p)
 ```
 ### Token 
 ```
 private int color;
 private int indexOnTile; //orientation int, not path int
 private int[] position;
-private Player owner;
+private SPlayer owner;
 public void setIndex(int index) 
 public int getIndex() 
 public void setPosition(int[] xy)
 public int[] getPosition()
-public void setOwner(Player p) 
+public void setOwner(SPlayer p)
 public boolean equals(Token t) 
 ```
 ### Tile

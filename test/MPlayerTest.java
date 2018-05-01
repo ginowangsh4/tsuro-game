@@ -9,26 +9,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 // The following only covers the simplest test cases
 // More complicate ones need to be build later to cover different logical aspects.
-class PlayerTest {
+class MPlayerTest {
 
     static Board b;
     static Tile tile;
     static List<Tile> pile;
     static Deck deck;
-    static List<Player> inPlayer;
-    static List<Player> outPlayer;
+    static List<SPlayer> inSPlayer;
+    static List<SPlayer> outSPlayer;
     static Server server = Server.getInstance();
 
     @Test
     void placePawnTest(){
         Board b = new Board();
         for (int i = 0; i < 8; i++){
-            Token t = new Token(i);
-            Player p = new Player(t,null );
-            p.placePawn(b);
-            int[] posn = p.getToken().getPosition();
+            MPlayer p = new MPlayer(1, null);
+            Token t = p.placePawn(b);
+            int[] posn = t.getPosition();
             System.out.println("The player is currently standing at [" + posn[0] + ", " + posn[1] + "]" +
-                    " and he is at index " + p.getToken().getIndex());
+                    " and he is at index " + t.getIndex());
             assertTrue(posn[0] == -1 || posn[0] == 6 || posn[1] == -1 || posn[1] == 6,
                     "Error: Placed pawn at wrong position on board");
         }
@@ -141,24 +140,27 @@ class PlayerTest {
         hand.add(tile1);
         hand.add(tile2);
         hand.add(tile3);
-        Player player = new Player(token, hand);
+        SPlayer SPlayer = new SPlayer(token, hand, "");
         b.addToken(token);
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
-        inPlayer.add(player);
+        inSPlayer.add(SPlayer);
 
-        server.init(b, inPlayer, outPlayer, deck);
-        Tile t = player.playTurn(b, "LS", pile.size());
+        server.init(b, inSPlayer, outSPlayer, deck);
+
+        MPlayer mPlayer = new MPlayer(1,null);
+        mPlayer.token = token;
+        Tile t = mPlayer.playTurn(b, "LS", hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
 
         server.playATurn(t);
 
-        assertEquals(1, inPlayer.size(), "check inPlayer list");
-        assertEquals(0, outPlayer.size(), "check outPlayer list");
-        assertTrue(Arrays.equals(inPlayer.get(0).getToken().getPosition(), new int[] {0, 1}), "check player 1 token position");
-        assertEquals(4, inPlayer.get(0).getToken().getIndex(),"check player 1 token index");
+        assertEquals(1, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(0, outSPlayer.size(), "check outSPlayer list");
+        assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 1}), "check SPlayer 1 token position");
+        assertEquals(4, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
 
     // Three tiles at hand:
@@ -182,24 +184,27 @@ class PlayerTest {
         hand.add(tile1);
         hand.add(tile2);
         hand.add(tile3);
-        Player player = new Player(token, hand);
+        SPlayer SPlayer = new SPlayer(token, hand, "");
         b.addToken(token);
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
-        inPlayer.add(player);
+        inSPlayer.add(SPlayer);
 
-        server.init(b, inPlayer, outPlayer, deck);
-        Tile t = player.playTurn(b, "LS", pile.size());
+        server.init(b, inSPlayer, outSPlayer, deck);
+
+        MPlayer mPlayer = new MPlayer(1,null);
+        mPlayer.token = token;
+        Tile t = mPlayer.playTurn(b, "LS", hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
 
         server.playATurn(t);
 
-        assertEquals(1, inPlayer.size(), "check inPlayer list");
-        assertEquals(0, outPlayer.size(), "check outPlayer list");
-        assertTrue(Arrays.equals(inPlayer.get(0).getToken().getPosition(), new int[] {0, 1}), "check player 1 token position");
-        assertEquals(3, inPlayer.get(0).getToken().getIndex(),"check player 1 token index");
+        assertEquals(1, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(0, outSPlayer.size(), "check outSPlayer list");
+        assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 1}), "check SPlayer 1 token position");
+        assertEquals(3, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
 
     // Three tiles at hand:
@@ -223,23 +228,26 @@ class PlayerTest {
         hand.add(tile1);
         hand.add(tile2);
         hand.add(tile3);
-        Player player = new Player(token, hand);
+        SPlayer SPlayer = new SPlayer(token, hand, "");
         b.addToken(token);
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
-        inPlayer.add(player);
+        inSPlayer.add(SPlayer);
 
-        server.init(b, inPlayer, outPlayer, deck);
-        Tile t = player.playTurn(b, "MS", pile.size());
+        server.init(b, inSPlayer, outSPlayer, deck);
+
+        MPlayer mPlayer = new MPlayer(1,null);
+        mPlayer.token = token;
+        Tile t = mPlayer.playTurn(b, "MS", hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");
 
         server.playATurn(t);
 
-        assertEquals(1, inPlayer.size(), "check inPlayer list");
-        assertEquals(0, outPlayer.size(), "check outPlayer list");
-        assertTrue(Arrays.equals(inPlayer.get(0).getToken().getPosition(), new int[] {0, 0}), "check player 1 token position");
-        assertEquals(3, inPlayer.get(0).getToken().getIndex(),"check player 1 token index");
+        assertEquals(1, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(0, outSPlayer.size(), "check outSPlayer list");
+        assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 0}), "check SPlayer 1 token position");
+        assertEquals(3, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
 }

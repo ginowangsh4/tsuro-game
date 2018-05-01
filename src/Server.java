@@ -4,9 +4,9 @@ public class Server {
 
     private Board board;
     private Deck drawPile;
-    public List<Player> inPlayer;
-    public List<Player> outPlayer;
-    private Player dragonHolder = null;
+    public List<SPlayer> inSPlayer;
+    public List<SPlayer> outSPlayer;
+    private SPlayer dragonHolder = null;
     private boolean gameOver = false;
 
     // Singleton Pattern
@@ -20,10 +20,10 @@ public class Server {
         return server;
     }
 
-    public void init(Board board, List<Player> inPlayer, List<Player> outPlayer, Deck drawPile) {
+    public void init(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, Deck drawPile) {
         this.board = board;
-        this.inPlayer = inPlayer;
-        this.outPlayer = outPlayer;
+        this.inSPlayer = inSPlayer;
+        this.outSPlayer = outSPlayer;
         this.drawPile = drawPile;
         this.dragonHolder = null;
         this.gameOver = false;
@@ -40,7 +40,7 @@ public class Server {
      * @return true if this play is legal
      */
     @SuppressWarnings("Duplicates")
-    public boolean legalPlay(Player p, Board b, Tile t) {
+    public boolean legalPlay(SPlayer p, Board b, Tile t) {
         // check condition (1) above
         if (!p.hasTile(t)) {
             return false;
@@ -99,11 +99,11 @@ public class Server {
      * Computes the state of the game after the completion of a turn given the state of the game before the turn
      * @param t the tile to be placed on that board
      * @return the list of winner if the game is over; otherwise return null
-     *         (drawPile, inPlayer, outPlayer are themselves updated and updated in server's status through private fields)
+     *         (drawPile, inSPlayer, outSPlayer are themselves updated and updated in server's status through private fields)
      */
-    public List<Player> playATurn(Tile t) {
+    public List<SPlayer> playATurn(Tile t) {
         // place a tile path
-        Player currentP = inPlayer.get(0);
+        SPlayer currentP = inSPlayer.get(0);
         Token currentT = currentP.getToken();
         int[] location = getAdjacentLocation(currentT);
         board.placeTile(t, location[0], location[1]);
@@ -121,10 +121,10 @@ public class Server {
             // assign dragon holder to be the next player
             if (currentP.equals(dragonHolder)) {
                 int index = findNextHolder(0);
-                dragonHolder = index == -1 ? null : inPlayer.get(index);
+                dragonHolder = index == -1 ? null : inSPlayer.get(index);
             }
-            inPlayer.remove(0);
-            outPlayer.add(currentP);
+            inSPlayer.remove(0);
+            outSPlayer.add(currentP);
             // players draw and pass dragon
             drawAndPassDragon();
         }
@@ -137,14 +137,14 @@ public class Server {
             else {
                 currentP.draw(drawPile.pop());
             }
-            inPlayer.remove(0);
-            inPlayer.add(currentP);
+            inSPlayer.remove(0);
+            inSPlayer.add(currentP);
         }
 
         // check if other players can make a move because of the placement of this tile t
-        for (int i = 0; i < inPlayer.size(); i++)
+        for (int i = 0; i < inSPlayer.size(); i++)
         {
-            currentP = inPlayer.get(i);
+            currentP = inSPlayer.get(i);
             currentT = currentP.getToken();
             // At the start of the game, new players stand outside the board
             // Make sure don't eliminate them
@@ -160,23 +160,23 @@ public class Server {
                 currentP.getHand().clear();
                 board.removeToken(currentT);
                 if (currentP.equals(dragonHolder)) {
-                    int index = findNextHolder(inPlayer.indexOf(currentP));
-                    dragonHolder = index == -1 ? null : inPlayer.get(index);
+                    int index = findNextHolder(inSPlayer.indexOf(currentP));
+                    dragonHolder = index == -1 ? null : inSPlayer.get(index);
                 }
-                inPlayer.remove(currentP);
-                outPlayer.add(currentP);
+                inSPlayer.remove(currentP);
+                outSPlayer.add(currentP);
             }
             // players draw and pass dragon
             drawAndPassDragon();
         }
 
         // determine whether game is over
-        if (inPlayer.size() == 1) {
+        if (inSPlayer.size() == 1) {
             gameOver = true;
-            return inPlayer;
+            return inSPlayer;
         }
         //no one is the winner
-        else if (inPlayer.size() == 0) {
+        else if (inSPlayer.size() == 0) {
             gameOver = true;
             return null;
         }
@@ -235,7 +235,7 @@ public class Server {
      * Get the current dragon holder
      * @return the player with da dragon
      */
-    public Player getDragonHolder() {
+    public SPlayer getDragonHolder() {
         return dragonHolder;
     }
 
@@ -243,7 +243,7 @@ public class Server {
      * Assign dragon tile to a player
      * @param p the player to assign to
      */
-    public void giveDragon(Player p) {
+    public void giveDragon(SPlayer p) {
         if (dragonHolder == null) {
             dragonHolder = p;
         }
@@ -257,7 +257,7 @@ public class Server {
         if (dragonHolder == null) {
             return;
         }
-        int index = inPlayer.indexOf(dragonHolder);
+        int index = inSPlayer.indexOf(dragonHolder);
         while (!drawPile.isEmpty()) {
             dragonHolder.getHand().add(drawPile.pop());
             index = findNextHolder(index);
@@ -266,7 +266,7 @@ public class Server {
                 dragonHolder = null;
                 return;
             }
-            dragonHolder = inPlayer.get(index);
+            dragonHolder = inSPlayer.get(index);
         }
     }
 
@@ -277,9 +277,9 @@ public class Server {
      */
     public int findNextHolder(int index) {
         int i = 0;
-        while (i < inPlayer.size() - 1) {
-            index = (index + 1) % inPlayer.size();
-            if (inPlayer.get(index).getHand().size() < 3) {
+        while (i < inSPlayer.size() - 1) {
+            index = (index + 1) % inSPlayer.size();
+            if (inSPlayer.get(index).getHand().size() < 3) {
                 return index;
             }
         }

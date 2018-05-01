@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DragonTest {
 
     static Board b;
-    static Player p1, p2, p3;
+    static SPlayer p1, p2, p3;
     static Token t1, t2, t3;
     static Deck deck;
-    static List<Player> inPlayer;
-    static List<Player> outPlayer;
+    static List<SPlayer> inSPlayer;
+    static List<SPlayer> outSPlayer;
     static Server server = Server.getInstance();
 
     // Moving where no player has the dragon tile before or after
@@ -25,9 +25,9 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new Player(t1, new ArrayList<>());
-        p2 = new Player(t2, new ArrayList<>());
-        p3 = new Player(t3, new ArrayList<>());
+        p1 = new SPlayer(t1, new ArrayList<>(), "");
+        p2 = new SPlayer(t2, new ArrayList<>(), "");
+        p3 = new SPlayer(t3, new ArrayList<>(), "");
         p1.draw(deck.pop());
         p1.draw(deck.pop());
         p1.draw(deck.pop());
@@ -37,14 +37,14 @@ public class DragonTest {
         p3.draw(deck.pop());
         p3.draw(deck.pop());
         p3.draw(deck.pop());
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
-        inPlayer.add(p1);
-        inPlayer.add(p2);
-        inPlayer.add(p3);
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
+        inSPlayer.add(p1);
+        inSPlayer.add(p2);
+        inSPlayer.add(p3);
         Tile t = p1.getHand().get(2);
         p1.deal(t);
-        server.init(b, inPlayer, outPlayer, deck);
+        server.init(b, inSPlayer, outSPlayer, deck);
         server.playATurn(t);
         assertEquals(3, p1.getHand().size(),"Error: player 1 didn't draw new tile");
         assertEquals(25, deck.size(),"Error: more than one player drew in a turn" );
@@ -61,7 +61,7 @@ public class DragonTest {
     }
 
     // Moving where one player has the dragon tile before and no one gets any new tiles
-    // This means in Player A plays a card but cannot draw any as Player B has the dragon tile
+    // This means in SPlayer A plays a card but cannot draw any as SPlayer B has the dragon tile
     // and the deck is empty
     @Test
     void dragonTest2() {
@@ -92,9 +92,9 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new Player(t1, new ArrayList<>());
-        p2 = new Player(t2, new ArrayList<>());
-        p3 = new Player(t3, new ArrayList<>());
+        p1 = new SPlayer(t1, new ArrayList<>(), "");
+        p2 = new SPlayer(t2, new ArrayList<>(), "");
+        p3 = new SPlayer(t3, new ArrayList<>(), "");
         p1.draw(deck.pop());
         p1.draw(deck.pop());
         p1.draw(deck.pop());
@@ -105,20 +105,20 @@ public class DragonTest {
         p3.draw(deck.pop());
         p3.draw(deck.pop());
         assertEquals(0, deck.size(),"Error: deck shouldn't be non-empty");
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
-        inPlayer.add(p1);
-        inPlayer.add(p2);
-        inPlayer.add(p3);
-        server.init(b, inPlayer, outPlayer, deck);
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
+        inSPlayer.add(p1);
+        inSPlayer.add(p2);
+        inSPlayer.add(p3);
+        server.init(b, inSPlayer, outSPlayer, deck);
         // give player 2 dragon tile
         server.giveDragon(p2);
         Tile t = p1.getHand().get(2);
         p1.deal(t);
-        // Player 1 tries to draw tile but should fail due to empty deck
+        // SPlayer 1 tries to draw tile but should fail due to empty deck
         server.playATurn(t);
         assertEquals(2, p1.getHand().size(), "Error: player 1 should not draw any new tile");
-        assertEquals(p2, server.getDragonHolder(),"Error: dragon tile should not belong to other than Player 2");
+        assertEquals(p2, server.getDragonHolder(),"Error: dragon tile should not belong to other than SPlayer 2");
     }
 
     // Moving where the player that has the dragon tile makes a move that causes an elimination (of another player)
@@ -147,18 +147,18 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new Player(t1, new ArrayList<>());
-        p2 = new Player(t2, new ArrayList<>());
-        p3 = new Player(t3, new ArrayList<>());
+        p1 = new SPlayer(t1, new ArrayList<>(), "");
+        p2 = new SPlayer(t2, new ArrayList<>(), "");
+        p3 = new SPlayer(t3, new ArrayList<>(), "");
         p1.draw(tp1);
         p2.draw(tp2);
         p3.draw(tp3);
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
-        inPlayer.add(p1);
-        inPlayer.add(p2);
-        inPlayer.add(p3);
-        server.init(b, inPlayer, outPlayer, deck);
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
+        inSPlayer.add(p1);
+        inSPlayer.add(p2);
+        inSPlayer.add(p3);
+        server.init(b, inSPlayer, outSPlayer, deck);
         // give player 1 dragon tile
         server.giveDragon(p1);
         Tile t = p1.getHand().get(0);
@@ -200,18 +200,18 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new Player(t1, new ArrayList<>());
-        p2 = new Player(t2, new ArrayList<>());
-        p3 = new Player(t3, new ArrayList<>());
+        p1 = new SPlayer(t1, new ArrayList<>(), "");
+        p2 = new SPlayer(t2, new ArrayList<>(), "");
+        p3 = new SPlayer(t3, new ArrayList<>(), "");
         p1.draw(tp1);
         p2.draw(tp2);
         p3.draw(tp3);
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
-        inPlayer.add(p1);
-        inPlayer.add(p2);
-        inPlayer.add(p3);
-        server.init(b, inPlayer, outPlayer, deck);
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
+        inSPlayer.add(p1);
+        inSPlayer.add(p2);
+        inSPlayer.add(p3);
+        server.init(b, inSPlayer, outSPlayer, deck);
         // give player 2 dragon tile
         server.giveDragon(p2);
         Tile t = p1.getHand().get(0);
@@ -252,18 +252,18 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new Player(t1, new ArrayList<>());
-        p2 = new Player(t2, new ArrayList<>());
-        p3 = new Player(t3, new ArrayList<>());
+        p1 = new SPlayer(t1, new ArrayList<>(), "");
+        p2 = new SPlayer(t2, new ArrayList<>(), "");
+        p3 = new SPlayer(t3, new ArrayList<>(), "");
         p1.draw(tp1);
         p2.draw(tp2);
         p3.draw(tp3);
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
-        inPlayer.add(p1);
-        inPlayer.add(p2);
-        inPlayer.add(p3);
-        server.init(b, inPlayer, outPlayer, deck);
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
+        inSPlayer.add(p1);
+        inSPlayer.add(p2);
+        inSPlayer.add(p3);
+        server.init(b, inSPlayer, outSPlayer, deck);
         // give player 1 dragon tile
         server.giveDragon(p1);
         Tile t = p1.getHand().get(0);

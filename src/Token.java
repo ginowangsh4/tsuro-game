@@ -4,7 +4,7 @@ import java.util.Map;
 public class Token {
     // color of a token should be unique
     private final int color;
-    private final Map<Integer, String> colorMap = new HashMap<Integer, String>() {{
+    public final static Map<Integer, String> colorMap = new HashMap<Integer, String>() {{
             put(0, "blue");
             put(1, "red");
             put(2, "green");
@@ -12,7 +12,7 @@ public class Token {
             put(4, "sienna");
             put(5, "hotpink");
             put(6, "darkgreen");
-            put(7, "pueple");
+            put(7, "purple");
     }};
     private int indexOnTile;
     private int[] position;

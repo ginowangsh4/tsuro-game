@@ -1,99 +1,32 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
-// Not complete
-// More test cases need to be build to confirm that all things work as expected
-public class Player {
-    private Token token;
-    private List<Tile> hand;
+public class MPlayer implements IPlayer {
     private String name;
+    private int color;
     // list of player's colors in the order that the game will be played
     private List<Integer> colors;
     private boolean isWinner;
+    public Token token;
 
-    Player(Token t, List<Tile> hand) {
-        this.token = t;
-        this.hand = hand;
+    MPlayer (int color, List<Integer> colors) {
+        this.color = color;
+        this.name = Token.colorMap.get(color);
+        this.colors = colors;
     }
 
     public String getName() {
         return this.name;
     }
 
-    /**
-     * Called to indicate a game is starting.
-     * @param color the player's color
-     * @param colors all of the players'colors, in the order that the game will be played.
-     */
-    public void initialize(int color, List<Integer> colors) {
-        this.token = new Token(color);
+    public void initialize (int color, List<Integer> colors) {
+        this.color = color;
+        this.name = Token.colorMap.get(color);
         this.colors = colors;
     }
 
-    /**
-     * Check if a player has this input tile on hand
-     * @param tile to be checked
-     * @return true if play has this tile
-     */
-    public boolean hasTile(Tile tile) {
-        for (Tile t : getHand()) {
-            if (t.isSameTile(tile)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Get a player's token
-     *
-     * @return a token
-     */
-    public Token getToken() {
-        return this.token;
-    }
-
-    /**
-     * Update a player's token
-     *
-     * @param token new token
-     */
-    public void updateToken(Token token) {
-        this.token = token;
-    }
-
-    /**
-     * Player draws a tile
-     *
-     * @param t tile to be added to the player's hand
-     */
-    public void draw(Tile t) {
-        hand.add(t);
-    }
-
-    /**
-     * Simulate player choosing a tile to place
-     *
-     * @param t tile to be placed
-     */
-    public void deal(Tile t) {
-        hand.remove(t);
-    }
-
-    /**
-     * Get a player's hand
-     *
-     * @return a list of tiles on player's hand
-     */
-    public List<Tile> getHand() {
-        return this.hand;
-    }
-
-    /**
-     * Called at the first step in a game indicates where the player wishes to place their token
-     * token must be placed along the edge in an unoccupied space.
-     * @param b the current board state
-     * @return a token with the player's color, its position [x,y] and index on tile.
-     */
     public Token placePawn(Board b) {
         Random rand = new Random();
         int x = Integer.MAX_VALUE;
@@ -145,39 +78,28 @@ public class Player {
         if (x == Integer.MAX_VALUE || y == Integer.MAX_VALUE || indexOnTile == Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Error: Unable to pick starting position on board");
         }
-        updateToken(new Token(this.token.getColor(), indexOnTile, new int[]{x, y}));
-        b.addToken(this.token);
-        return this.token;
+        Token newToken = new Token(this.color, indexOnTile, new int[]{x, y});
+        b.addToken(newToken);
+        this.token = newToken;
+        return newToken;
     }
 
-    /**
-     * Called to inform the player of the final board state and which players won the game.
-     * @param b the current board game
-     * @param colors the list of winner's colors
-     */
     public void endGame(Board b, List<Integer> colors) {
         this.colors = colors;
-        if (b.getTokenList().contains(this.token)) {
+        if (colors.contains(this.color)) {
             this.isWinner = true;
         }
         this.isWinner = false;
     }
 
-
-    /**
-     * Called to ask the player to make a move.
-     * @param b the current board state
-     * @param strategy the strategy that player plays
-     * @param tilesLeft count of tiles that are not yet handed out to players.
-     * @return the tile the player should place, suitably rotated.
-     */
-    public Tile playTurn(Board b, String strategy, int tilesLeft) {
+    public Tile playTurn(Board b, String strategy, List<Tile> hand, int tilesLeft) {
         List<Tile> legalMoves = new ArrayList<>();
         List<Tile> legalTiles = new ArrayList<>();
-        for (Tile t : getHand()) {
+        for (Tile t : hand) {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
-                if (Server.getInstance().legalPlay(this, b, copy)) {
+                SPlayer tempPlayer = new SPlayer(this.token, hand, "");
+                if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());
                     if (!legalTiles.contains(t)) {
                         legalTiles.add(t);
@@ -203,9 +125,8 @@ public class Player {
             }
 
             default: {
-                throw new IllegalArgumentException("Input strategy cannot' be identified");
+                throw new IllegalArgumentException("Input strategy cannot be identified");
             }
         }
     }
 }
-

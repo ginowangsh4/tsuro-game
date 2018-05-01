@@ -11,8 +11,8 @@ public class PlayATurnTest {
     static Tile tile;
     static List<Tile> pile;
     static Deck deck;
-    static List<Player> inPlayer;
-    static List<Player> outPlayer;
+    static List<SPlayer> inSPlayer;
+    static List<SPlayer> outSPlayer;
     static Server server = Server.getInstance();
 
     // Test 1: player 1 and player 2 move outside of board, both get eliminated, and game is over
@@ -35,28 +35,28 @@ public class PlayATurnTest {
         Token token2 = new Token(1, 5,new int[] {2,1});
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
-        Player player1 = new Player(token1, hand1);
-        Player player2 = new Player(token2, hand2);
+        SPlayer SPlayer1 = new SPlayer(token1, hand1, "");
+        SPlayer SPlayer2 = new SPlayer(token2, hand2, "");
         b.addToken(token1);
         b.addToken(token2);
 
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
-        inPlayer.add(player1);
-        inPlayer.add(player2);
+        inSPlayer.add(SPlayer1);
+        inSPlayer.add(SPlayer2);
 
-        server.init(b, inPlayer, outPlayer, deck);
+        server.init(b, inSPlayer, outSPlayer, deck);
 
         assertEquals(null, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 1");
         assertEquals(true, server.isGameOver(), "check game status");
-        assertEquals(0, inPlayer.size(), "check inPlayer list");
-        assertEquals(2, outPlayer.size(), "check outPlayer list");
-        assertEquals(true, Arrays.equals(outPlayer.get(0).getToken().getPosition(), new int[] {2,0}), "check player 1 token position");
-        assertEquals(1, outPlayer.get(0).getToken().getIndex(), "check player 1 token index");
-        assertEquals(true, Arrays.equals(outPlayer.get(1).getToken().getPosition(), new int[] {0,2}), "check player 2 token position");
-        assertEquals(7, outPlayer.get(1).getToken().getIndex(), "check player 2 token index");
+        assertEquals(0, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(2, outSPlayer.size(), "check outSPlayer list");
+        assertEquals(true, Arrays.equals(outSPlayer.get(0).getToken().getPosition(), new int[] {2,0}), "check player 1 token position");
+        assertEquals(1, outSPlayer.get(0).getToken().getIndex(), "check player 1 token index");
+        assertEquals(true, Arrays.equals(outSPlayer.get(1).getToken().getPosition(), new int[] {0,2}), "check player 2 token position");
+        assertEquals(7, outSPlayer.get(1).getToken().getIndex(), "check player 2 token index");
         server.setGameOver(false);
     }
 
@@ -79,28 +79,28 @@ public class PlayATurnTest {
         Token token2 = new Token(1, 5,new int[] {2,0});
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
-        Player player1 = new Player(token1, hand1);
-        Player player2 = new Player(token2, hand2);
+        SPlayer SPlayer1 = new SPlayer(token1, hand1, "");
+        SPlayer SPlayer2 = new SPlayer(token2, hand2, "");
         b.addToken(token1);
         b.addToken(token2);
 
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
-        inPlayer.add(player1);
-        inPlayer.add(player2);
+        inSPlayer.add(SPlayer1);
+        inSPlayer.add(SPlayer2);
 
-        server.init(b, inPlayer, outPlayer, deck);
+        server.init(b, inSPlayer, outSPlayer, deck);
 
         assertEquals(null, server.playATurn(tile), "PlayATurn - Expect Game Not Over - Test 2");
         assertEquals(false, server.isGameOver(), "check game status");
-        assertEquals(2, inPlayer.size(),"check inPlayer list");
-        assertEquals(0, outPlayer.size(),"check outPlayer list");
-        assertEquals(true, Arrays.equals(inPlayer.get(0).getToken().getPosition(), new int[] {2,1}), "check player 1 token position");
-        assertEquals(3, inPlayer.get(1).getToken().getIndex(), "check player 1 token index");
-        assertEquals(true, Arrays.equals(inPlayer.get(1).getToken().getPosition(), new int[] {2,1}), "check player 2 token position");
-        assertEquals(7, inPlayer.get(0).getToken().getIndex(), "check player 2 token index");
+        assertEquals(2, inSPlayer.size(),"check inSPlayer list");
+        assertEquals(0, outSPlayer.size(),"check outSPlayer list");
+        assertEquals(true, Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {2,1}), "check player 1 token position");
+        assertEquals(3, inSPlayer.get(1).getToken().getIndex(), "check player 1 token index");
+        assertEquals(true, Arrays.equals(inSPlayer.get(1).getToken().getPosition(), new int[] {2,1}), "check player 2 token position");
+        assertEquals(7, inSPlayer.get(0).getToken().getIndex(), "check player 2 token index");
     }
 
     // Test 3: player 2 gets eliminated, player 1 wins, and game is over
@@ -122,28 +122,28 @@ public class PlayATurnTest {
         Token token2 = new Token(1, 5, new int[] {2,1});
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
-        Player player1 = new Player(token1, hand1);
-        Player player2 = new Player(token2, hand2);
+        SPlayer SPlayer1 = new SPlayer(token1, hand1, "");
+        SPlayer SPlayer2 = new SPlayer(token2, hand2, "");
         b.addToken(token1);
         b.addToken(token2);
 
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
-        inPlayer.add(player1);
-        inPlayer.add(player2);
+        inSPlayer.add(SPlayer1);
+        inSPlayer.add(SPlayer2);
 
-        server.init(b, inPlayer, outPlayer, deck);
+        server.init(b, inSPlayer, outSPlayer, deck);
 
-        assertEquals(inPlayer, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 3");
+        assertEquals(inSPlayer, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 3");
         assertEquals(true, server.isGameOver(), "check game status");
-        assertEquals(1, inPlayer.size(), "check inPlayer list");
-        assertEquals(1, outPlayer.size(), "check outPlayer list");
-        assertEquals(true, Arrays.equals(inPlayer.get(0).getToken().getPosition(), new int[] {2,2}), "check player 1 token position");
-        assertEquals(5, inPlayer.get(0).getToken().getIndex(), "check player 1 token index");
-        assertEquals(true, Arrays.equals(outPlayer.get(0).getToken().getPosition(), new int[] {0,2}), "check player 2 token position");
-        assertEquals(7, outPlayer.get(0).getToken().getIndex(),"check player 2 token index");
+        assertEquals(1, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(1, outSPlayer.size(), "check outSPlayer list");
+        assertEquals(true, Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {2,2}), "check player 1 token position");
+        assertEquals(5, inSPlayer.get(0).getToken().getIndex(), "check player 1 token index");
+        assertEquals(true, Arrays.equals(outSPlayer.get(0).getToken().getPosition(), new int[] {0,2}), "check player 2 token position");
+        assertEquals(7, outSPlayer.get(0).getToken().getIndex(),"check player 2 token index");
     }
 
     // Test 4: player 1 moves from an edge, doesn't get eliminated, and then is player 2's turn
@@ -158,35 +158,35 @@ public class PlayATurnTest {
         Token token2 = new Token(1, 4, new int[] {3,-1});
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
-        Player player1 = new Player(token1, hand1);
-        Player player2 = new Player(token2, hand2);
+        SPlayer SPlayer1 = new SPlayer(token1, hand1, "");
+        SPlayer SPlayer2 = new SPlayer(token2, hand2, "");
         b.addToken(token1);
         b.addToken(token2);
 
-        inPlayer = new ArrayList<>();
-        outPlayer = new ArrayList<>();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
-        inPlayer.add(player1);
-        inPlayer.add(player2);
+        inSPlayer.add(SPlayer1);
+        inSPlayer.add(SPlayer2);
 
-        server.init(b, inPlayer, outPlayer, deck);
+        server.init(b, inSPlayer, outSPlayer, deck);
 
         assertEquals(null, server.playATurn(tile1), "PlayATurn - Expect Game Not Over - Test 4");
-        assertEquals(2, inPlayer.size(), "check inPlayer list");
-        assertEquals(0, outPlayer.size(), "check outPlayer list");
-        assertEquals(true, Arrays.equals(inPlayer.get(1).getToken().getPosition(), new int[] {1,0}), "check player 1 token position");
-        assertEquals(4, inPlayer.get(0).getToken().getIndex(), "check player 1 token index");
-        assertEquals(true, Arrays.equals(inPlayer.get(0).getToken().getPosition(), new int[] {3,-1}), "check player 2 token position");
-        assertEquals(4, inPlayer.get(1).getToken().getIndex(),"check player 2 token index");
+        assertEquals(2, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(0, outSPlayer.size(), "check outSPlayer list");
+        assertEquals(true, Arrays.equals(inSPlayer.get(1).getToken().getPosition(), new int[] {1,0}), "check player 1 token position");
+        assertEquals(4, inSPlayer.get(0).getToken().getIndex(), "check player 1 token index");
+        assertEquals(true, Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {3,-1}), "check player 2 token position");
+        assertEquals(4, inSPlayer.get(1).getToken().getIndex(),"check player 2 token index");
 
         assertEquals(null, server.playATurn(tile2), "PlayATurn - Expect Game Not Over - Test 4");
-        assertEquals(2, inPlayer.size(), "check inPlayer list");
-        assertEquals(0, outPlayer.size(), "check outPlayer list");
-        assertEquals(true, Arrays.equals(inPlayer.get(0).getToken().getPosition(), new int[] {1,0}), "check player 1 token position");
-        assertEquals(4, inPlayer.get(0).getToken().getIndex(), "check player 1 token index");
-        assertEquals(true, Arrays.equals(inPlayer.get(1).getToken().getPosition(), new int[] {3,0}), "check player 2 token position");
-        assertEquals(4, inPlayer.get(1).getToken().getIndex(),"check player 2 token index");
+        assertEquals(2, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(0, outSPlayer.size(), "check outSPlayer list");
+        assertEquals(true, Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {1,0}), "check player 1 token position");
+        assertEquals(4, inSPlayer.get(0).getToken().getIndex(), "check player 1 token index");
+        assertEquals(true, Arrays.equals(inSPlayer.get(1).getToken().getPosition(), new int[] {3,0}), "check player 2 token position");
+        assertEquals(4, inSPlayer.get(1).getToken().getIndex(),"check player 2 token index");
 
     }
 }
