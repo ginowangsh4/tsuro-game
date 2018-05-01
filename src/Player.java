@@ -29,6 +29,66 @@ public class Player {
         this.colors = colors;
     }
 
+
+    /**
+     * Check if a player has this input tile on hand
+     * @param tile to be checked
+     * @return true if play has this tile
+     */
+    public boolean hasTile(Tile tile) {
+        for (Tile t : getHand()) {
+            if (t.isSameTile(tile)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get a player's token
+     *
+     * @return a token
+     */
+    public Token getToken() {
+        return this.token;
+    }
+
+    /**
+     * Update a player's token
+     *
+     * @param token new token
+     */
+    public void updateToken(Token token) {
+        this.token = token;
+    }
+
+    /**
+     * Player draws a tile
+     *
+     * @param t tile to be added to the player's hand
+     */
+    public void draw(Tile t) {
+        hand.add(t);
+    }
+
+    /**
+     * Simulate player choosing a tile to place
+     *
+     * @param t tile to be placed
+     */
+    public void deal(Tile t) {
+        hand.remove(t);
+    }
+
+    /**
+     * Get a player's hand
+     *
+     * @return a list of tiles on player's hand
+     */
+    public List<Tile> getHand() {
+        return this.hand;
+    }
+
     /**
      * Called at the first step in a game indicates where the player wishes to place their token
      * token must be placed along the edge in an unoccupied space.
@@ -119,7 +179,7 @@ public class Player {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
                 if (Server.getInstance().legalPlay(this, b, copy)) {
-                    legalMoves.add(copy);
+                    legalMoves.add(copy.copyTile());
                     if (!legalTiles.contains(t)) {
                         legalTiles.add(t);
                     }
@@ -134,12 +194,12 @@ public class Player {
             }
 
             case "MS": {
-                Collections.sort(legalTiles, new SymmetricComparator());
+                Collections.sort(legalMoves, new SymmetricComparator());
                 return legalMoves.get(0);
             }
 
             case "LS": {
-                Collections.sort(legalTiles, new SymmetricComparator());
+                Collections.sort(legalMoves, new SymmetricComparator());
                 return legalMoves.get(legalMoves.size() - 1);
             }
 
@@ -149,63 +209,13 @@ public class Player {
         }
     }
 
-    /**
-     * Check if a player has this input tile on hand
-     * @param tile to be checked
-     * @return true if play has this tile
-     */
-    public boolean hasTile(Tile tile) {
-        for (Tile t : getHand()) {
-            if (t.isSameTile(tile)) {
-                return true;
+    private int findFirstMove(List<Tile> moves, Tile tile) {
+        for (int i = 0; i < moves.size(); i++) {
+            if (moves.get(i).isSameTile(tile)) {
+                return i;
             }
         }
-        return false;
-    }
-
-    /**
-     * Get a player's token
-     *
-     * @return a token
-     */
-    public Token getToken() {
-        return this.token;
-    }
-
-    /**
-     * Update a player's token
-     *
-     * @param token new token
-     */
-    public void updateToken(Token token) {
-        this.token = token;
-    }
-
-    /**
-     * Player draws a tile
-     *
-     * @param t tile to be added to the player's hand
-     */
-    public void draw(Tile t) {
-        hand.add(t);
-    }
-
-    /**
-     * Simulate player choosing a tile to place
-     *
-     * @param t tile to be placed
-     */
-    public void deal(Tile t) {
-        hand.remove(t);
-    }
-
-    /**
-     * Get a player's hand
-     *
-     * @return a list of tiles on player's hand
-     */
-    public List<Tile> getHand() {
-        return this.hand;
+        return moves.size();
     }
 
 }
@@ -234,6 +244,8 @@ class SymmetricComparator implements Comparator<Tile> {
      * @return the number of ways it can be placed
      */
     public static int diffPaths(Tile t){
+        // make sure every tile has correct path order before be placed on board
+        reorderPath(t);
         int count = 1;
         Tile copy = t.copyTile();
         for (int i = 0; i < 3; i++ ){
@@ -246,7 +258,7 @@ class SymmetricComparator implements Comparator<Tile> {
         // but these two pathways must be the same
         // so we need to subtract count by 1 to get the number of ways it can be placed.
         // count can only be 1, 2, or 4
-        return count == 3 ? count-1 : count;
+        return count == 3 ? count - 1 : count;
     }
 
     /**
