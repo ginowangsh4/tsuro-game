@@ -120,6 +120,12 @@ class PlayerTest {
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, tileList.get(2).paths), "Error: the asymmetric tile is not the third tile in tileList");
     }
 
+    // Three tiles at hand:
+    // First tile: one way to be placed, legal
+    // Second tile: two ways to be placed, both legal
+    // Third tile: four ways to be placed, original rotation legal, rotate once illegal,
+    // rotate twice legal and rotate three times legal
+    // Expect return the third tile after two rotations
     @Test
     void leastSymmetricStrategyTest1() {
         b = new Board();
@@ -155,6 +161,12 @@ class PlayerTest {
         assertEquals(4, inPlayer.get(0).getToken().getIndex(),"check player 1 token index");
     }
 
+    // Three tiles at hand:
+    // First tile: one way to be placed, legal
+    // Second tile: two ways to be placed, both legal
+    // Third tile: four ways to be placed, original rotation illegal, rotate once legal,
+    // rotate twice illegal and rotate three times legal
+    // Expect return the third tile after three rotations
     @Test
     void leastSymmetricStrategyTest2() {
         b = new Board();
@@ -190,6 +202,12 @@ class PlayerTest {
         assertEquals(3, inPlayer.get(0).getToken().getIndex(),"check player 1 token index");
     }
 
+    // Three tiles at hand:
+    // First tile: one way to be placed, legal
+    // Second tile: two ways to be placed, both legal
+    // Third tile: four ways to be placed, original rotation legal, rotate once illegal,
+    // rotate twice legal and rotate three times legal
+    // Expect return first tile in original rotation.
     @Test
     void mostSymmetricStrategyTest() {
         b = new Board();

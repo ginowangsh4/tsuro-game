@@ -29,7 +29,6 @@ public class Player {
         this.colors = colors;
     }
 
-
     /**
      * Check if a player has this input tile on hand
      * @param tile to be checked
@@ -208,20 +207,12 @@ public class Player {
             }
         }
     }
-
-    private int findFirstMove(List<Tile> moves, Tile tile) {
-        for (int i = 0; i < moves.size(); i++) {
-            if (moves.get(i).isSameTile(tile)) {
-                return i;
-            }
-        }
-        return moves.size();
-    }
-
 }
 
 /**
- * The following classes are used with Array.sort
+ * The following comparator classes are used with Array.sort
+ * Sort an array of tile from most symmetric to least symmetric
+ * Make sure the order of the path of every tile is properly ordered
  */
 class SymmetricComparator implements Comparator<Tile> {
     @Override
@@ -275,6 +266,10 @@ class SymmetricComparator implements Comparator<Tile> {
     }
 }
 
+/**
+ * The following comparator classes are used with Array.sort
+ * Sort an array of integer according to the first element of the array
+ */
 class ListFirstElementComparator implements Comparator<int[]> {
     @Override
     public int compare(int[] a, int[] b) {
