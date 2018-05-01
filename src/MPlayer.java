@@ -51,25 +51,25 @@ public class MPlayer implements IPlayer {
                 case 0: {
                     x = sideIndex / 2; //from 1 to 5
                     y = -1;
-                    indexOnTile = sideIndex % 2;
+                    indexOnTile = sideIndex % 2 + 4;
                     break;
                 }
                 case 1: {
                     x = 6;
                     y = sideIndex / 2;
-                    indexOnTile = sideIndex % 2 + 2;
+                    indexOnTile = sideIndex % 2 + 6;
                     break;
                 }
                 case 2: {
                     x = sideIndex / 2;
                     y = 6;
-                    indexOnTile = sideIndex % 2 + 4;
+                    indexOnTile = sideIndex % 2;
                     break;
                 }
                 case 3: {
                     x = -1;
                     y = sideIndex / 2;
-                    indexOnTile = sideIndex % 2 + 6;
+                    indexOnTile = sideIndex % 2 + 2;
                     break;
                 }
                 default: {

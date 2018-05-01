@@ -22,11 +22,32 @@ public class Token {
     }
 
     Token (int color, int indexOnTile, int[] position) {
+        if (color < 0 || color > 7) throw new IllegalArgumentException("Invalid token color");
         this.color = color;
+        if (!legal(indexOnTile, position)) throw  new IllegalArgumentException("Invalid token position");
         this.indexOnTile = indexOnTile;
         this.position = position;
     }
 
+    private boolean legal(int index, int[] posn) {
+        int x = posn[0];
+        int y = posn[1];
+
+        if ( x > -1 && x < 6 && y > -1 && y < 6) return true;
+        if (x == -1 && y > -1 && y < 6) {
+            if (index == 2 || index == 3) return true;
+        }
+        if (x == 6 && y > -1 && y < 6) {
+            if (index == 6 || index == 7) return true;
+        }
+        if (y == -1 && x > -1 && x < 6) {
+            if (index == 4 || index == 5) return true;
+        }
+        if (y == 6 && x > -1 && x < 6) {
+            if (index == 0 || index == 1) return true;
+        }
+        return false;
+    }
 
     public int getColor(){ return this.color; }
 
