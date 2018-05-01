@@ -88,4 +88,71 @@ public class Tile {
         }
         throw new IllegalArgumentException("Error: Invalid path start index");
     }
+
+    /**
+     * Count the number of ways a given tile can be placed
+     * @return the number of ways it can be placed
+     */
+    public int diffPaths(){
+        // make sure every tile has correct path order before be placed on board
+        reorderPath();
+        int count = 1;
+        Tile copy = this.copyTile();
+        for (int i = 0; i < 3; i++ ){
+            copy.rotateTile();
+            Tile temp = copy.copyTile();
+            temp.reorderPath();
+            if (!this.hasSamePaths(temp)) count++;
+        }
+        // if we have count = 3, it means we have two pathways that are different from the original
+        // but these two pathways must be the same
+        // so we need to subtract count by 1 to get the number of ways it can be placed.
+        // count can only be 1, 2, or 4
+        return count == 3 ? count - 1 : count;
+    }
+
+    /**
+     * Reorder the path arrays of a given tile; path indices ordered from smallest to largest
+     * Doesn't modify the actual path
+     * i.e. {{2,6}, {3, 7}, {4, 1}, {5, 0}} becomes {{0,5}, {1, 4}, {2, 6}, {3, 7}}
+     */
+    public void reorderPath() {
+        for (int[] array : this.paths) {
+            Arrays.sort(array);
+        }
+        Arrays.sort(this.paths, new ListFirstElementComparator());
+    }
+}
+
+/**
+ * The following comparator classes are used with Array.sort
+ * Sort an array of tile from most symmetric to least symmetric
+ * Make sure the order of the path of every tile is properly ordered
+ */
+class SymmetricComparator implements Comparator<Tile> {
+    @Override
+    // a < b return -1
+    // a > b return 1
+    // else return 0
+    // order is from most symmetric to least symmetric
+    public int compare(Tile a, Tile b){
+        if (a.diffPaths() == b.diffPaths()){
+            return 0;
+        }
+        return a.diffPaths() < b.diffPaths() ? -1 : 1;
+    }
+}
+
+/**
+ * The following comparator classes are used with Array.sort
+ * Sort an array of integer according to the first element of the array
+ */
+class ListFirstElementComparator implements Comparator<int[]> {
+    @Override
+    public int compare(int[] a, int[] b) {
+        if (a[0] == b[0]) {
+            return 0;
+        }
+        return a[0] < b[0] ? -1 : 1;
+    }
 }

@@ -42,15 +42,15 @@ class PlayerTest {
         Tile t = new Tile(path1);
         Tile copy = t.copyTile();
         copy.rotateTile(); // Second Way
-        SymmetricComparator.reorderPath(copy);
+        copy.reorderPath();
         assertTrue(Arrays.deepEquals(copy.paths, path2), "Error: paths are not in order");
 
         copy.rotateTile();//has the same pathways as the first way
-        SymmetricComparator.reorderPath(copy);
+        copy.reorderPath();
         assertTrue(Arrays.deepEquals(copy.paths, path1), "Error: paths are not in order");
 
         copy.rotateTile();//has the same pathways as the second way
-        SymmetricComparator.reorderPath(copy);
+        copy.reorderPath();
         assertTrue(Arrays.deepEquals(copy.paths, path2), "Error: paths are not in order");
 
         //This tile is symmetric and only has one way to be placed
@@ -58,17 +58,17 @@ class PlayerTest {
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile symmetricCopy = symmetricTile.copyTile();
         symmetricCopy.rotateTile();
-        SymmetricComparator.reorderPath(symmetricCopy);
+        symmetricCopy.reorderPath();
         assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
 
         symmetricCopy.rotateTile();
         symmetricCopy.rotateTile();
-        SymmetricComparator.reorderPath(symmetricCopy);
+        symmetricCopy.reorderPath();
         assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
 
         symmetricCopy.rotateTile();
         symmetricCopy.rotateTile();
-        SymmetricComparator.reorderPath(symmetricCopy);
+        symmetricCopy.reorderPath();
         assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
     }
 
@@ -76,20 +76,20 @@ class PlayerTest {
     void diffPathsTest(){
         // this tile has only one way to be placed
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
-        assertEquals(1, SymmetricComparator.diffPaths(symmetricTile), "Error: a symmetric tile has " +
+        assertEquals(1, symmetricTile.diffPaths(), "Error: a symmetric tile has " +
                 " only one way to be placed" );
 
         // this tile has two ways to be placed
         Tile halfSymmetricTile = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
-        assertEquals(2, SymmetricComparator.diffPaths(halfSymmetricTile), "Error: a half symmetric tile has" +
+        assertEquals(2, halfSymmetricTile.diffPaths(), "Error: a half symmetric tile has" +
                 " two ways to be placed" );
 
         // this tile has four ways to be placed
         Tile asymmetricTile1 = new Tile(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}});
-        assertEquals(4, SymmetricComparator.diffPaths(asymmetricTile1), "Error: a asymmetric tile has" +
+        assertEquals(4, asymmetricTile1.diffPaths(), "Error: a asymmetric tile has" +
                 " four ways to be placed" );
         Tile asymmetricTile2 = new Tile(new int[][] {{0, 4}, {1, 6}, {2, 7}, {3, 5}});
-        assertEquals(4, SymmetricComparator.diffPaths(asymmetricTile2), "Error: a asymmetric tile has" +
+        assertEquals(4, asymmetricTile2.diffPaths(), "Error: a asymmetric tile has" +
                 " four ways to be placed" );
     }
 
