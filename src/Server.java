@@ -42,13 +42,8 @@ public class Server {
     @SuppressWarnings("Duplicates")
     public boolean legalPlay(Player p, Board b, Tile t) {
         // check condition (1) above
-        for (Tile pt : p.getHand()) {
-            if (!t.isSameTile(pt)) {
-                return false;
-            }
-            else {
-                break;
-            }
+        if (!p.hasTile(t)) {
+            return false;
         }
         // check condition (2) above
         Token currentT = p.getToken();

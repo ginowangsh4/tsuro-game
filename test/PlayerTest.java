@@ -116,10 +116,10 @@ class PlayerTest {
     @Test
     void mostSymmetricStrategyTest() {
         b = new Board();
-        Tile tile0 = new Tile(new int[][] {{0, 5}, {1, 6}, {2, 7}, {3, 4}});
+        Tile tile0 = new Tile(new int[][] {{0, 7}, {1, 4}, {2, 6}, {3, 5}});
         b.placeTile(tile0, 0, 0);
         // starting position
-        Token token = new Token(1, 5, new int[] {0, 0});
+        Token token = new Token(1, 4, new int[] {0, 0});
         List<Tile> hand = new ArrayList<>();
         // expect to play
         Tile tile1 = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});

@@ -133,12 +133,12 @@ public class Player {
                 return legalMoves.get(rand.nextInt(legalMoves.size()));
             }
 
-            case "LS": {
+            case "MS": {
                 Collections.sort(legalTiles, new SymmetricComparator());
                 return legalMoves.get(0);
             }
 
-            case "MS": {
+            case "LS": {
                 Collections.sort(legalTiles, new SymmetricComparator());
                 return legalMoves.get(legalMoves.size() - 1);
             }
@@ -147,6 +147,20 @@ public class Player {
                 throw new IllegalArgumentException("Input strategy cannot' be identified");
             }
         }
+    }
+
+    /**
+     * Check if a player has this input tile on hand
+     * @param tile to be checked
+     * @return true if play has this tile
+     */
+    public boolean hasTile(Tile tile) {
+        for (Tile t : getHand()) {
+            if (t.isSameTile(tile)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
