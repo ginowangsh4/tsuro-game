@@ -32,7 +32,6 @@ public interface IPlayer {
     /**
      * Called to ask the player to make a move.
      * @param b the current board state
-     * @param strategy the strategy that player plays
      * @param tilesLeft count of tiles that are not yet handed out to players.
      * @return the tile the player should place, suitably rotated.
      */

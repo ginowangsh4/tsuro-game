@@ -27,7 +27,8 @@ class MPlayerTest {
             MPlayer p = new MPlayer(i, colors, "R");
             Token t = p.placePawn(b);
             b.addToken(t);
-            assertTrue(t.legal(t.getIndex(), t.getPosition()), "Error: illegal token placement");
+            // System.out.println("At [" + t.getPosition()[0] + ", " + t.getPosition()[1] + "], index = " + t.getIndex());
+            assertTrue(t.legalTokenLocation(t.getIndex(), t.getPosition()), "Error: illegal token placement");
         }
     }
 

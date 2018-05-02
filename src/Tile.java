@@ -18,7 +18,7 @@ public class Tile {
         if (paths.length != 4 || paths[0].length != 2) {
             throw new IllegalArgumentException("Path is not a 4 x 2 matrix");
         }
-        if (!legal(paths)) throw new IllegalArgumentException("Paths invalid");
+        if (!legalPaths(paths)) throw new IllegalArgumentException("Paths invalid");
         this.paths = new int[4][2];
         for (int i = 0; i < paths.length; i++) {
             this.paths[i][0] = paths[i][0];
@@ -26,7 +26,12 @@ public class Tile {
         }
     }
 
-    private boolean legal(int[][] paths) {
+    /**
+     * Check if an input path vector is a valid tile paths
+     * @param paths input path matrix
+     * @return true if the path is valid
+     */
+    private boolean legalPaths(int[][] paths) {
         HashSet<Integer> count = new HashSet<>();
         for (int[] path : paths){
             if (path[0] < 0 || path[0] > 7 || path[1] < 0 || path[1] > 7) return false;
@@ -36,6 +41,7 @@ public class Tile {
         if (count.size() != 8) return false;
         return true;
     }
+
     /**
      * Rotate a given tile clockwise by 90 degrees
      */
@@ -44,7 +50,7 @@ public class Tile {
             paths[side][0] = (paths[side][0] + 2) % 8;
             paths[side][1] = (paths[side][1] + 2) % 8;
         }
-        if (!legal(paths)) throw new IllegalArgumentException("Paths invalid");
+        if (!legalPaths(paths)) throw new IllegalArgumentException("Paths invalid");
     }
 
     /**

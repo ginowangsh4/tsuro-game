@@ -6,8 +6,9 @@ import java.util.Random;
 public class MPlayer implements IPlayer {
     private String name;
     private int color;
-    // list of player's colors in the order that the game will be played
+    // A lost of player's colors in the order that the game will be played
     private List<Integer> colors;
+    // Machine player's strategy
     private String Strategy;
     private boolean isWinner;
     public Token token;
@@ -19,7 +20,7 @@ public class MPlayer implements IPlayer {
                     "player color");
         }
         if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS")))
-            throw new IllegalArgumentException("Invalid player's color");
+            throw new IllegalArgumentException("Invalid strategy type for machine player");
         this.color = color;
         this.name = Token.colorMap.get(color);
         this.colors = colors;

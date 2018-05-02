@@ -142,7 +142,9 @@ public class Server {
             currentT = simulateMove(currentT, board);
             currentP.updateToken(currentT);
             board.updateToken(currentT);
-            if (currentT.isOffBoard()) { eliminatePlayer(currentP);}
+            if (currentT.isOffBoard()) {
+                eliminatePlayer(currentP);
+            }
         }
         // determine whether game is over
         if (inSPlayer.size() == 1) {
@@ -205,6 +207,10 @@ public class Server {
         return next;
     }
 
+    /**
+     * Handle elimination mechanism of a server player
+     * @param p the player to eliminate from the game
+     */
     private void eliminatePlayer(SPlayer p){
         int pIndex = inSPlayer.indexOf(p);
         drawPile.addAndShuffle(p.getHand());

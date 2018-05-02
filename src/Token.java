@@ -24,12 +24,12 @@ public class Token {
     Token (int color, int indexOnTile, int[] position) {
         if (color < 0 || color > 7) throw new IllegalArgumentException("Invalid token color");
         this.color = color;
-        if (!legal(indexOnTile, position)) throw  new IllegalArgumentException("Invalid token position");
+        if (!legalTokenLocation(indexOnTile, position)) throw  new IllegalArgumentException("Invalid token position");
         this.indexOnTile = indexOnTile;
         this.position = position;
     }
 
-    public boolean legal(int index, int[] posn) {
+    public boolean legalTokenLocation(int index, int[] posn) {
         int x = posn[0];
         int y = posn[1];
 
