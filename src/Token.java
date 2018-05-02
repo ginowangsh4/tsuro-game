@@ -29,7 +29,7 @@ public class Token {
         this.position = position;
     }
 
-    private boolean legal(int index, int[] posn) {
+    public boolean legal(int index, int[] posn) {
         int x = posn[0];
         int y = posn[1];
 

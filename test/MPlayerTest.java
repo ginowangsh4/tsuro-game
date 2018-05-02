@@ -23,14 +23,11 @@ class MPlayerTest {
     @Test
     void placePawnTest(){
         Board b = new Board();
-        for (int i = 0; i < 8; i++){
-            MPlayer p = new MPlayer(1, colors, "R");
+        for (int i = 0; i < 7; i++){
+            MPlayer p = new MPlayer(i, colors, "R");
             Token t = p.placePawn(b);
-            int[] posn = t.getPosition();
-            System.out.println("The player is currently standing at [" + posn[0] + ", " + posn[1] + "]" +
-                    " and he is at index " + t.getIndex());
-            assertTrue(posn[0] == -1 || posn[0] == 6 || posn[1] == -1 || posn[1] == 6,
-                    "Error: Placed pawn at wrong position on board");
+            b.addToken(t);
+            assertTrue(t.legal(t.getIndex(), t.getPosition()), "Error: illegal token placement");
         }
     }
 

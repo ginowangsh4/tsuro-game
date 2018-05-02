@@ -114,20 +114,7 @@ public class Server {
         board.updateToken(currentT);
 
         // eliminate current player & recycle tiles in hand
-        if (currentT.isOffBoard()) {
-            drawPile.addAndShuffle(currentP.getHand());
-            currentP.getHand().clear();
-            board.removeToken(currentT);
-            // assign dragon holder to be the next player
-            if (currentP.equals(dragonHolder)) {
-                int index = findNextHolder(0);
-                dragonHolder = index == -1 ? null : inSPlayer.get(index);
-            }
-            inSPlayer.remove(0);
-            outSPlayer.add(currentP);
-            // players draw and pass dragon
-            drawAndPassDragon();
-        }
+        if (currentT.isOffBoard()) { eliminatePlayer(currentP); }
         // add to tail & draw tile
         else {
             if (drawPile.isEmpty()) {
@@ -155,21 +142,8 @@ public class Server {
             currentT = simulateMove(currentT, board);
             currentP.updateToken(currentT);
             board.updateToken(currentT);
-            if (currentT.isOffBoard()) {
-                drawPile.addAndShuffle(currentP.getHand());
-                currentP.getHand().clear();
-                board.removeToken(currentT);
-                if (currentP.equals(dragonHolder)) {
-                    int index = findNextHolder(inSPlayer.indexOf(currentP));
-                    dragonHolder = index == -1 ? null : inSPlayer.get(index);
-                }
-                inSPlayer.remove(currentP);
-                outSPlayer.add(currentP);
-            }
-            // players draw and pass dragon
-            drawAndPassDragon();
+            if (currentT.isOffBoard()) { eliminatePlayer(currentP);}
         }
-
         // determine whether game is over
         if (inSPlayer.size() == 1) {
             gameOver = true;
@@ -229,6 +203,22 @@ public class Server {
             next[1] = y;
         }
         return next;
+    }
+
+    private void eliminatePlayer(SPlayer p){
+        int pIndex = inSPlayer.indexOf(p);
+        drawPile.addAndShuffle(p.getHand());
+        p.getHand().clear();
+        board.removeToken(p.getToken());
+        // assign dragon holder to be the next player
+        if (p.equals(dragonHolder)) {
+            int index = findNextHolder(pIndex);
+            dragonHolder = index == -1 ? null : inSPlayer.get(index);
+        }
+        inSPlayer.remove(pIndex);
+        outSPlayer.add(p);
+        // players draw and pass dragon
+        drawAndPassDragon();
     }
 
     /**
