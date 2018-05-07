@@ -4,7 +4,7 @@ public class SPlayer {
     private Token token;
     private List<Tile> hand;
     private String name;
-    private MPlayer mPlayer;
+    private MPlayer MPlayer;
 
     SPlayer(Token token, List<Tile> hand, String name) {
         this.token = token;
@@ -15,10 +15,11 @@ public class SPlayer {
     public void link(MPlayer mPlayer){
         if (mPlayer.getColor() != this.token.getColor())
             throw new IllegalArgumentException("SPlayer and MPlayer mismatch");
-        this.mPlayer = mPlayer;
+        this.MPlayer = mPlayer;
     }
 
-    public MPlayer getmPlayer() { return this.mPlayer;}
+    public MPlayer getMPlayer() { return this.MPlayer; }
+
     /**
      * Check if a player has this input tile on hand
      * @param tile to be checked
@@ -35,14 +36,12 @@ public class SPlayer {
 
     /**
      * Get a player's token
-     *
      * @return a token
      */
     public Token getToken() { return this.token; }
 
     /**
      * Update a player's token
-     *
      * @param token new token
      */
     public void updateToken(Token token) { this.token = token; }
@@ -58,22 +57,29 @@ public class SPlayer {
 
     /**
      * Simulate player choosing a tile to place
-     *
      * @param t tile to be placed
      */
     public void deal(Tile t) {
-        hand.remove(t);
+//        int i = hand.size();
+        for (Tile tile : hand) {
+            if (t.isSameTile(tile)) {
+//                System.out.println("removing tile from hand");
+                hand.remove(tile);
+                return;
+            }
+        }
+//        int j = hand.size();
+//        if (i==j) {
+//            System.out.println("didn't remove tile");
+//        }
     }
 
     /**
      * Get a player's hand
-     *
      * @return a list of tiles on player's hand
      */
     public List<Tile> getHand() {
         return this.hand;
     }
-
-
 }
 

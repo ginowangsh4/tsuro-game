@@ -114,7 +114,10 @@ public class Server {
         board.updateToken(currentT);
 
         // eliminate current player & recycle tiles in hand
-        if (currentT.isOffBoard()) { eliminatePlayer(currentP); }
+        List<SPlayer> deadP = new ArrayList<>();
+        if (currentT.isOffBoard()) {
+            eliminatePlayer(currentP, deadP);
+        }
         // add to tail & draw tile
         else {
             if (drawPile.isEmpty()) {
@@ -133,32 +136,40 @@ public class Server {
         {
             currentP = inSPlayer.get(i);
             currentT = currentP.getToken();
-            // At the start of the game, new players stand outside the board
-            // Make sure don't eliminate them
-            if (currentT.getPosition()[0] < 0 || currentT.getPosition()[0] > 5 ||
-                    currentT.getPosition()[1] < 0 || currentT.getPosition()[1] > 5) {
-                continue;
-            }
+//            // At the start of the game, new players stand outside the board
+//            // Make sure don't eliminate them
+//            if (currentT.getPosition()[0] < 0 || currentT.getPosition()[0] > 5 ||
+//                    currentT.getPosition()[1] < 0 || currentT.getPosition()[1] > 5) {
+//                continue;
+//            }
             currentT = simulateMove(currentT, board);
             currentP.updateToken(currentT);
             board.updateToken(currentT);
             if (currentT.isOffBoard()) {
-                eliminatePlayer(currentP);
+                eliminatePlayer(currentP, deadP);
             }
         }
+
         // determine whether game is over
         if (board.isFull()) {
             gameOver = true;
-            return inSPlayer;
+            if (inSPlayer.size() == 0) {
+                return deadP;
+            } else {
+                outSPlayer.addAll(deadP);
+                return inSPlayer;
+            }
         }
-        if (inSPlayer.size() == 1) {
+        else if (inSPlayer.size() == 1) {
             gameOver = true;
+            outSPlayer.addAll(deadP);
             return inSPlayer;
         }
-        //no one is the winner
+        // everyone is eliminated at this round
         else if (inSPlayer.size() == 0) {
             gameOver = true;
-            return null;
+            inSPlayer.addAll(deadP);
+            return inSPlayer;
         }
         return null;
     }
@@ -215,7 +226,7 @@ public class Server {
      * Handle elimination mechanism of a server player
      * @param p the player to eliminate from the game
      */
-    private void eliminatePlayer(SPlayer p){
+    private void eliminatePlayer(SPlayer p, List<SPlayer> dead){
         int pIndex = inSPlayer.indexOf(p);
         drawPile.addAndShuffle(p.getHand());
         p.getHand().clear();
@@ -226,7 +237,7 @@ public class Server {
             dragonHolder = index == -1 ? null : inSPlayer.get(index);
         }
         inSPlayer.remove(pIndex);
-        outSPlayer.add(p);
+        dead.add(p);
         // players draw and pass dragon
         drawAndPassDragon();
     }
@@ -267,6 +278,7 @@ public class Server {
                 return;
             }
             dragonHolder = inSPlayer.get(index);
+            System.out.println("Dragonholder hand size" + dragonHolder.getHand().size());
         }
     }
 
@@ -282,6 +294,7 @@ public class Server {
             if (inSPlayer.get(index).getHand().size() < 3) {
                 return index;
             }
+            i++;
         }
         return -1;
     }

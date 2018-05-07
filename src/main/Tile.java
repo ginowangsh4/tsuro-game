@@ -72,9 +72,11 @@ public class Tile {
      * @return true if equal; false if not
      */
     public boolean isSameTile(Tile tile) {
+        reorderPath();
         Tile tempTile = tile.copyTile();
         for (int i = 0; i < 4; i++) {
             tempTile.rotateTile();
+            tempTile.reorderPath();
             if (Arrays.deepEquals(tempTile.paths, this.paths)) {
                 return true;
             }

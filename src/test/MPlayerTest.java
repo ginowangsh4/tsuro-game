@@ -257,68 +257,80 @@ class MPlayerTest {
     // something happens and breaks one of our invariance
     // stack trace: MPlayer.playTurn() --> SPlayer.legalPlay() --> Board.placeTile()
 
-//    @Test
-//    void TournamentTest(){
-//        int winR = 0;
-//        int winLS = 0;
-//        int winMS = 0;
-//
-//        for(int count = 0; count < 100; count ++){
-//            Server server = Server.getInstance();
-//            b = new Board();
-//            Deck deck = new Deck();
-//
-//            MPlayer mP1 = new MPlayer(1, colors, "R");
-//            MPlayer mP2 = new MPlayer(2, colors, "LS");
-//            MPlayer mP3 = new MPlayer(3, colors, "MS");
-//
-//            Token t1 = mP1.placePawn(b);
-//            b.addToken(t1);
-//            Token t2 = mP2.placePawn(b);
-//            b.addToken(t2);
-//            Token t3 = mP3.placePawn(b);
-//            b.addToken(t3);
-//
-//            List<Tile> hand1 = new ArrayList<>();
-//            List<Tile> hand2 = new ArrayList<>();
-//            List<Tile> hand3 = new ArrayList<>();
-//            SPlayer sP1 = new SPlayer(t1,hand1, mP1.getName());
-//            SPlayer sP2 = new SPlayer(t2,hand2, mP2.getName());
-//            SPlayer sP3 = new SPlayer(t3,hand3, mP3.getName());
-//            for (int i = 0; i < 3; i++){
-//                sP1.draw(deck.pop());
-//                sP2.draw(deck.pop());
-//                sP3.draw(deck.pop());
-//            }
-//            sP1.link(mP1);
-//            sP2.link(mP2);
-//            sP3.link(mP3);
-//
-//            List<SPlayer> inPlayer = new ArrayList<>();
-//            List<SPlayer> outPlayer = new ArrayList<>();
-//            inPlayer.add(sP1);
-//            inPlayer.add(sP2);
-//            inPlayer.add(sP3);
-//
-//            server.init(b, inPlayer, outPlayer, deck);
-//            List<SPlayer> winners = new ArrayList<>();
-//
-//            while(!server.isGameOver()){
-//                SPlayer currentP = server.inSPlayer.get(0);
-//                Tile tileToPlay = currentP.getmPlayer().playTurn(server.board, currentP.getHand(),
-//                        server.drawPile.size());
-//                currentP.deal(tileToPlay);
-//                winners = server.playATurn(tileToPlay);
-//            }
-//
-//            for (SPlayer p: winners){
-//                if (p.getmPlayer().Strategy == "R") winR ++;
-//                else if (p.getmPlayer().Strategy == "LS") winLS ++;
-//                else winMS++;
-//            }
-//        }
-//        System.out.println("The Random Strategy has won " + winR +" times out of 100 game");
-//        System.out.println("The Least Symmetric Strategy has won " + winLS +" times out of 100 game");
-//        System.out.println("The Most Symmetric has won " + winMS +" times out of 100 game");
-//    }
+    @Test
+    void TournamentTest(){
+        int winR = 0;
+        int winLS = 0;
+        int winMS = 0;
+
+        for(int count = 0; count < 100; count ++){
+            // System.out.println("Tournament" + count);
+
+            Server server = Server.getInstance();
+            b = new Board();
+            deck = new Deck();
+            colors.add(1);
+            colors.add(2);
+            colors.add(3);
+
+            MPlayer mP1 = new MPlayer(1, colors, "R");
+            MPlayer mP2 = new MPlayer(2, colors, "LS");
+            MPlayer mP3 = new MPlayer(3, colors, "MS");
+
+            Token t1 = mP1.placePawn(b);
+            b.addToken(t1);
+            Token t2 = mP2.placePawn(b);
+            b.addToken(t2);
+            Token t3 = mP3.placePawn(b);
+            b.addToken(t3);
+
+            List<Tile> hand1 = new ArrayList<>();
+            List<Tile> hand2 = new ArrayList<>();
+            List<Tile> hand3 = new ArrayList<>();
+
+            SPlayer sP1 = new SPlayer(t1, hand1, mP1.getName());
+            SPlayer sP2 = new SPlayer(t2, hand2, mP2.getName());
+            SPlayer sP3 = new SPlayer(t3, hand3, mP3.getName());
+
+            sP1.link(mP1);
+            sP2.link(mP2);
+            sP3.link(mP3);
+
+            for (int i = 0; i < 3; i++){
+                sP1.draw(deck.pop());
+                sP2.draw(deck.pop());
+                sP3.draw(deck.pop());
+            }
+
+            List<SPlayer> inPlayer = new ArrayList<>();
+            List<SPlayer> outPlayer = new ArrayList<>();
+            inPlayer.add(sP1);
+            inPlayer.add(sP2);
+            inPlayer.add(sP3);
+
+            server.init(b, inPlayer, outPlayer, deck);
+
+            List<SPlayer> winners = new ArrayList<>();
+
+            int i = 0;
+            while(!server.isGameOver()) {
+                // System.out.println(i++);
+                SPlayer currentP = server.inSPlayer.get(0);
+                Tile tileToPlay = currentP.getMPlayer().playTurn(server.board, currentP.getHand(), server.drawPile.size());
+                // System.out.println("hand size BEFORE" + currentP.getHand().size());
+                currentP.deal(tileToPlay);
+                // System.out.println("hand size AFTER" + currentP.getHand().size());
+                winners = server.playATurn(tileToPlay);
+            }
+
+            for (SPlayer p: winners){
+                if (p.getMPlayer().Strategy == "R") winR ++;
+                else if (p.getMPlayer().Strategy == "LS") winLS ++;
+                else winMS++;
+            }
+        }
+        System.out.println("The Random Strategy has won " + winR +" times out of 100 game");
+        System.out.println("The Least Symmetric Strategy has won " + winLS +" times out of 100 game");
+        System.out.println("The Most Symmetric has won " + winMS +" times out of 100 game");
+    }
 }
