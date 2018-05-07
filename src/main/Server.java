@@ -29,6 +29,18 @@ public class Server {
         this.gameOver = false;
     }
 
+    public void registerPlayer(MPlayer mP) {
+        Token t = mP.placePawn(board);
+        board.addToken(t);
+        List<Tile> hand = new ArrayList<>();
+        SPlayer sP = new SPlayer(t, hand, mP.getName());
+        sP.link(mP);
+        inSPlayer.add(sP);
+        for (int i = 0; i < 3; i++){
+            sP.draw(drawPile.pop());
+        }
+    }
+
     /**
      * Return false if
      * 1) the tile is not (a possibly rotated version of) one of the tiles of the player
@@ -154,6 +166,7 @@ public class Server {
         if (board.isFull()) {
             gameOver = true;
             if (inSPlayer.size() == 0) {
+                inSPlayer.addAll(deadP);
                 return deadP;
             } else {
                 outSPlayer.addAll(deadP);
