@@ -60,18 +60,12 @@ public class SPlayer {
      * @param t tile to be placed
      */
     public void deal(Tile t) {
-//        int i = hand.size();
         for (Tile tile : hand) {
             if (t.isSameTile(tile)) {
-//                System.out.println("removing tile from hand");
                 hand.remove(tile);
                 return;
             }
         }
-//        int j = hand.size();
-//        if (i==j) {
-//            System.out.println("didn't remove tile");
-//        }
     }
 
     /**

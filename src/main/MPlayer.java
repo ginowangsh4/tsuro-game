@@ -13,13 +13,17 @@ public class MPlayer implements IPlayer {
     private boolean isWinner;
 
     MPlayer (int color, List<Integer> colors, String Strategy) {
-        if (color < 0 || color > 7) throw new IllegalArgumentException("Invalid player's color");
-        for (int aColor : colors) {
-            if (aColor < 0 || aColor > 7) throw new IllegalArgumentException("Player list contains invalid" +
-                    "player color");
+        if (color < 0 || color > 7) {
+            throw new IllegalArgumentException("Invalid player's color");
         }
-        if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS")))
+        for (int aColor : colors) {
+            if (aColor < 0 || aColor > 7) {
+                throw new IllegalArgumentException("Player list contains invalid" + "player color");
+            }
+        }
+        if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS"))) {
             throw new IllegalArgumentException("Invalid strategy type for machine player");
+        }
         this.color = color;
         this.name = Token.colorMap.get(color);
         this.colors = colors;
@@ -108,6 +112,7 @@ public class MPlayer implements IPlayer {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
                 SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand, getName());
+                tempPlayer.link(this);
                 if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());
                     if (!legalTiles.contains(t)) {
