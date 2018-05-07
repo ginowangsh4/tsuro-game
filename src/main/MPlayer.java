@@ -9,9 +9,8 @@ public class MPlayer implements IPlayer {
     // A lost of player's colors in the order that the game will be played
     private List<Integer> colors;
     // Machine player's strategy
-    private String Strategy;
+    public String Strategy;
     private boolean isWinner;
-    public Token token;
 
     MPlayer (int color, List<Integer> colors, String Strategy) {
         if (color < 0 || color > 7) throw new IllegalArgumentException("Invalid player's color");
@@ -30,6 +29,8 @@ public class MPlayer implements IPlayer {
     public String getName() {
         return this.name;
     }
+
+    public int getColor() {return this.color;}
 
     public void initialize (int color, List<Integer> colors) {
         this.color = color;
@@ -89,8 +90,6 @@ public class MPlayer implements IPlayer {
             throw new IllegalArgumentException("Error: Unable to pick starting position on board");
         }
         Token newToken = new Token(this.color, indexOnTile, new int[]{x, y});
-        //b.addToken(newToken);
-        this.token = newToken;
         return newToken;
     }
 
@@ -108,7 +107,7 @@ public class MPlayer implements IPlayer {
         for (Tile t : hand) {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
-                SPlayer tempPlayer = new SPlayer(this.token, hand, "");
+                SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand, getName());
                 if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());
                     if (!legalTiles.contains(t)) {

@@ -2,8 +2,8 @@ import java.util.*;
 
 public class Server {
 
-    private Board board;
-    private Deck drawPile;
+    public Board board;
+    public Deck drawPile;
     public List<SPlayer> inSPlayer;
     public List<SPlayer> outSPlayer;
     private SPlayer dragonHolder = null;
@@ -147,6 +147,10 @@ public class Server {
             }
         }
         // determine whether game is over
+        if (board.isFull()) {
+            gameOver = true;
+            return inSPlayer;
+        }
         if (inSPlayer.size() == 1) {
             gameOver = true;
             return inSPlayer;

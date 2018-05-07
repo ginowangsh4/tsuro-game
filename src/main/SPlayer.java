@@ -4,6 +4,7 @@ public class SPlayer {
     private Token token;
     private List<Tile> hand;
     private String name;
+    private MPlayer mPlayer;
 
     SPlayer(Token token, List<Tile> hand, String name) {
         this.token = token;
@@ -11,6 +12,13 @@ public class SPlayer {
         this.name = name;
     }
 
+    public void link(MPlayer mPlayer){
+        if (mPlayer.getColor() != this.token.getColor())
+            throw new IllegalArgumentException("SPlayer and MPlayer mismatch");
+        this.mPlayer = mPlayer;
+    }
+
+    public MPlayer getmPlayer() { return this.mPlayer;}
     /**
      * Check if a player has this input tile on hand
      * @param tile to be checked

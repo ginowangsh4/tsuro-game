@@ -28,6 +28,13 @@ public class Board {
         return tokenList;
     }
 
+    public Token getToken(int color) {
+        for (Token t: this.tokenList){
+            if (t.getColor() == color) return t;
+        }
+        throw new IllegalArgumentException("Token with this color does not exist on board");
+    }
+
     /**
      * Place the given tile in the given location
      * @param t a tile to be placed
@@ -104,5 +111,14 @@ public class Board {
         }
         tokenList.remove(oldT);
         tokenList.add(newT);
+    }
+
+    public boolean isFull(){
+        int count = 0;
+        for (int x = 0; x < 6; x++){
+            for (int y = 0; y < 6; y++)
+                if (getTile(x,y) != null) count++;
+        }
+        return count == 35? true:false;
     }
 }

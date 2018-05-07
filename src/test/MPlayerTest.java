@@ -1,9 +1,6 @@
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -150,7 +147,6 @@ class MPlayerTest {
         server.init(b, inSPlayer, outSPlayer, deck);
 
         MPlayer mPlayer = new MPlayer(1,colors, "LS");
-        mPlayer.token = token;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
 
@@ -194,7 +190,6 @@ class MPlayerTest {
         server.init(b, inSPlayer, outSPlayer, deck);
 
         MPlayer mPlayer = new MPlayer(1,colors, "LS");
-        mPlayer.token = token;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
 
@@ -238,7 +233,6 @@ class MPlayerTest {
         server.init(b, inSPlayer, outSPlayer, deck);
 
         MPlayer mPlayer = new MPlayer(1,colors, "MS");
-        mPlayer.token = token;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");
 
@@ -249,4 +243,82 @@ class MPlayerTest {
         assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 0}), "check SPlayer 1 token position");
         assertEquals(3, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
+
+    //Run a tournament with three players
+    //Player 1 uses Random strategy
+    //Player 2 uses LeastSymmetric strategy
+    //Player 3 uses MostSymmetric Strategy
+    //This test case might not pass based on what number is assigned to variable count(line259)
+    //Error 1:
+    // infinite loop --> isGameOver condition in Server is not comprehensive
+    // there are other GameOver conditions that we didn't check for?
+    //Error 2:
+    // exception in Board.placeTile() with error message: "The location given contains another tile"
+    // something happens and breaks one of our invariance
+    // stack trace: MPlayer.playTurn() --> SPlayer.legalPlay() --> Board.placeTile()
+
+//    @Test
+//    void TournamentTest(){
+//        int winR = 0;
+//        int winLS = 0;
+//        int winMS = 0;
+//
+//        for(int count = 0; count < 100; count ++){
+//            Server server = Server.getInstance();
+//            b = new Board();
+//            Deck deck = new Deck();
+//
+//            MPlayer mP1 = new MPlayer(1, colors, "R");
+//            MPlayer mP2 = new MPlayer(2, colors, "LS");
+//            MPlayer mP3 = new MPlayer(3, colors, "MS");
+//
+//            Token t1 = mP1.placePawn(b);
+//            b.addToken(t1);
+//            Token t2 = mP2.placePawn(b);
+//            b.addToken(t2);
+//            Token t3 = mP3.placePawn(b);
+//            b.addToken(t3);
+//
+//            List<Tile> hand1 = new ArrayList<>();
+//            List<Tile> hand2 = new ArrayList<>();
+//            List<Tile> hand3 = new ArrayList<>();
+//            SPlayer sP1 = new SPlayer(t1,hand1, mP1.getName());
+//            SPlayer sP2 = new SPlayer(t2,hand2, mP2.getName());
+//            SPlayer sP3 = new SPlayer(t3,hand3, mP3.getName());
+//            for (int i = 0; i < 3; i++){
+//                sP1.draw(deck.pop());
+//                sP2.draw(deck.pop());
+//                sP3.draw(deck.pop());
+//            }
+//            sP1.link(mP1);
+//            sP2.link(mP2);
+//            sP3.link(mP3);
+//
+//            List<SPlayer> inPlayer = new ArrayList<>();
+//            List<SPlayer> outPlayer = new ArrayList<>();
+//            inPlayer.add(sP1);
+//            inPlayer.add(sP2);
+//            inPlayer.add(sP3);
+//
+//            server.init(b, inPlayer, outPlayer, deck);
+//            List<SPlayer> winners = new ArrayList<>();
+//
+//            while(!server.isGameOver()){
+//                SPlayer currentP = server.inSPlayer.get(0);
+//                Tile tileToPlay = currentP.getmPlayer().playTurn(server.board, currentP.getHand(),
+//                        server.drawPile.size());
+//                currentP.deal(tileToPlay);
+//                winners = server.playATurn(tileToPlay);
+//            }
+//
+//            for (SPlayer p: winners){
+//                if (p.getmPlayer().Strategy == "R") winR ++;
+//                else if (p.getmPlayer().Strategy == "LS") winLS ++;
+//                else winMS++;
+//            }
+//        }
+//        System.out.println("The Random Strategy has won " + winR +" times out of 100 game");
+//        System.out.println("The Least Symmetric Strategy has won " + winLS +" times out of 100 game");
+//        System.out.println("The Most Symmetric has won " + winMS +" times out of 100 game");
+//    }
 }
