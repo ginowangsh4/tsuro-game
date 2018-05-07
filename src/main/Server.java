@@ -60,7 +60,7 @@ public class Server {
         // check condition (2) above
         Token currentT = p.getToken();
         int[] location = getAdjacentLocation(currentT);
-        System.out.println("Player " + p.getMPlayer().getName() + " tried to placed tile at " + "x=" + location[0] + " y=" + location[1]);
+        // System.out.println("Player " + p.getMPlayer().getName() + " tried to placed tile at " + "x=" + location[0] + " y=" + location[1]);
         b.placeTile(t, location[0], location[1]);
         Token newT = simulateMove(currentT, b);
         b.deleteTile(location[0], location[1]);
@@ -120,7 +120,7 @@ public class Server {
         Token currentT = currentP.getToken();
         int[] location = getAdjacentLocation(currentT);
         board.placeTile(t, location[0], location[1]);
-        System.out.println("Player " + currentP.getMPlayer().getName() + " placed tile at " + "x=" + location[0] + " y=" + location[1]);
+        // System.out.println("Player " + currentP.getMPlayer().getName() + " placed tile at " + "x=" + location[0] + " y=" + location[1]);
 
         // move the token
         currentT = simulateMove(currentT, board);
@@ -144,8 +144,8 @@ public class Server {
             }
             inSPlayer.remove(0);
             inSPlayer.add(currentP);
-            System.out.println("current player " + currentP.getMPlayer().getName() + " is moved to the end");
-            System.out.println("current player " + currentP.getMPlayer().getName() + " is at index " + inSPlayer.indexOf(currentP));
+            // System.out.println("current player " + currentP.getMPlayer().getName() + " is moved to the end");
+            // System.out.println("current player " + currentP.getMPlayer().getName() + " is at index " + inSPlayer.indexOf(currentP));
 
         }
 
@@ -267,7 +267,7 @@ public class Server {
         dead.add(p);
         // players draw and pass dragon
         drawAndPassDragon();
-        System.out.println("Eliminated player " + p.getMPlayer().getName());
+        // System.out.println("Eliminated player " + p.getMPlayer().getName());
     }
 
     /**
@@ -306,7 +306,6 @@ public class Server {
                 return;
             }
             dragonHolder = inSPlayer.get(index);
-            System.out.println("Dragonholder hand size" + dragonHolder.getHand().size());
         }
     }
 
