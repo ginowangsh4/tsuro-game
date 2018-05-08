@@ -148,7 +148,7 @@ class MPlayerTest {
         mPlayer.state = MPlayer.State.PLACE;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
-
+        SPlayer.deal(t);
         server.playATurn(t);
 
         assertEquals(1, inSPlayer.size(), "check inSPlayer list");
@@ -194,7 +194,7 @@ class MPlayerTest {
         mPlayer.state = MPlayer.State.PLACE;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
-
+        SPlayer.deal(t);
         server.playATurn(t);
 
         assertEquals(1, inSPlayer.size(), "check inSPlayer list");
@@ -240,6 +240,7 @@ class MPlayerTest {
         mPlayer.state = MPlayer.State.PLACE;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");
+        SPlayer.deal(t);
 
         server.playATurn(t);
 

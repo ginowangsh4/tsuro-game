@@ -327,41 +327,34 @@ public class Server {
         List<Tile> pile = drawPile.getPile();
         List<Tile> onBoard = board.getTileList();
         List<Tile> inHands = new ArrayList<>();
-        for (SPlayer player: inSPlayer){
+        for (SPlayer player : inSPlayer) {
             inHands.addAll(player.getHand());
         }
 
         for (Tile playerTile : hand) {
             // not already on board
-            int count = 0;
-            for (Tile t: onBoard){
-                if (t.isSameTile(playerTile)){
-                    count ++;
-                    if (count >= 2) {
-                        throw new IllegalArgumentException("Player's hand illegal: tile exists on board");
-                    }
+            for (Tile t : onBoard) {
+                if (t.isSameTile(playerTile)) {
+                    throw new IllegalArgumentException("Player's hand illegal: tile exists on board");
                 }
             }
             // not in the draw pile
-            count = 0;
-            for (Tile t: pile){
-                if (t.isSameTile(playerTile)){
-                    count ++;
-                    if (count >= 2) {
-                        throw new IllegalArgumentException("Player's hand illegal: tile exists in draw pile");
-                    }
+            for (Tile t : pile) {
+                if (t.isSameTile(playerTile)) {
+                    throw new IllegalArgumentException("Player's hand illegal: tile exists in draw pile");
                 }
             }
-            // not in other player's hands
-            count = 0;
-            for (Tile t: inHands){
-                if (t.isSameTile(playerTile)){
+
+            int count = 0;
+            for (Tile t : inHands) {
+                if (t.isSameTile(playerTile)) {
                     count ++;
-                    if (count >= 2) {
+                    if (count > 1) {
                         throw new IllegalArgumentException("Player's hand illegal: tile exists in other player's hand");
                     }
                 }
             }
+
         }
     }
 
