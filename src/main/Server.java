@@ -321,35 +321,47 @@ public class Server {
         }
         // no more than three tiles
         else if (hand.size() > 3) {
-            throw new IllegalArgumentException("Error: More than 3 tiles on hand");
+            throw new IllegalArgumentException("Player's hand illegal: more than 3 tiles on hand");
         }
-        Deck tiles = new Deck();
+
+        List<Tile> pile = drawPile.getPile();
+        List<Tile> onBoard = board.getTileList();
+        List<Tile> inHands = new ArrayList<>();
+        for (SPlayer player: inSPlayer){
+            inHands.addAll(player.getHand());
+        }
+
         for (Tile playerTile : hand) {
             // not already on board
-            if (board.containTile(playerTile)) {
-                throw new IllegalArgumentException("Error: Tile already on board");
-            }
-            // no more than one same tile in original deck
-            // not tile should be a rotation of any other tile
             int count = 0;
-            for (Tile t: tiles.getPile()) {
-                if (t.isSameTile(playerTile)) {
-                    count++;
+            for (Tile t: onBoard){
+                if (t.isSameTile(playerTile)){
+                    count ++;
                     if (count >= 2) {
-                        throw new IllegalArgumentException("Error: Deck has duplicate tiles");
+                        throw new IllegalArgumentException("Player's hand illegal: tile exists on board");
                     }
                 }
             }
-        }
-        // each tile in hand must be unique
-        for (int i = 0; i < 3; i++) {
-            Tile playerTile = hand.remove(0);
-            for (Tile t : hand) {
-                if (t.isSameTile(playerTile)) {
-                    throw new IllegalArgumentException("Error: Player has duplicate tiles");
+            // not in the draw pile
+            count = 0;
+            for (Tile t: pile){
+                if (t.isSameTile(playerTile)){
+                    count ++;
+                    if (count >= 2) {
+                        throw new IllegalArgumentException("Player's hand illegal: tile exists in draw pile");
+                    }
                 }
             }
-            hand.add(playerTile);
+            // not in other player's hands
+            count = 0;
+            for (Tile t: inHands){
+                if (t.isSameTile(playerTile)){
+                    count ++;
+                    if (count >= 2) {
+                        throw new IllegalArgumentException("Player's hand illegal: tile exists in other player's hand");
+                    }
+                }
+            }
         }
     }
 
