@@ -59,7 +59,14 @@ public class SPlayer {
      *
      * @param t tile to be added to the player's hand
      */
-    public void draw(Tile t) { hand.add(t); }
+    public void draw(Tile t) {
+        for (Tile tile: hand) {
+            if (t.isSameTile(tile)) {
+                throw new IllegalArgumentException("The tile to be drew is already in player's hand");
+            }
+        }
+        hand.add(t);
+    }
 
     /**
      * Player deals a tile
@@ -72,6 +79,7 @@ public class SPlayer {
                 return;
             }
         }
+        throw new IllegalArgumentException("The tile to be dealt is not in player's hand");
     }
 
     /**

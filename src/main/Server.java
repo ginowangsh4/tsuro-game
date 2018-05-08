@@ -119,12 +119,11 @@ public class Server {
      *         (drawPile, inSPlayer, outSPlayer are themselves updated and updated in server's status through private fields)
      */
     public List<SPlayer> playATurn(Tile t) {
-        // place a tile path
+
         SPlayer currentP = inSPlayer.get(0);
-        // check against player hand contract
+        //Check if this player's hand is legal at the start of this turn
         legalHand(currentP);
 
-        //Token currentT = currentP.getToken();
         int[] location = getAdjacentLocation(currentP.getToken());
         board.placeTile(t, location[0], location[1]);
 
@@ -138,23 +137,27 @@ public class Server {
             board.updateToken(token);
             if (token.isOffBoard()) {
                 eliminatePlayer(player, deadP);
+                i--;
                 playerCount --;
             }
             else {
-                if (player.getToken().getColor() == currentP.getToken().getColor()){
+                if (i == 0 &&
+                        player.getToken().getColor() == currentP.getToken().getColor()){
                     inSPlayer.remove(0);
                     inSPlayer.add(player);
+                    if (!drawPile.isEmpty()) {
+                        player.draw(drawPile.pop());
+                    }
+                    else {
+                        giveDragon(player);
+                    }
                     i--;
-                    playerCount --;
-                }
-                if (!drawPile.isEmpty()) {
-                    player.draw(drawPile.pop());
-                }
-                else {
-                    giveDragon(player);
+                    playerCount--;
                 }
             }
         }
+        //Check if this player's hand is legal at the end of this turn
+        legalHand(currentP);
 
         // determine whether game is over
         if (board.isFull()) {
