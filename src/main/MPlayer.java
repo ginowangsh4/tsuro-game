@@ -6,11 +6,12 @@ import java.util.Random;
 public class MPlayer implements IPlayer {
     private String name;
     private int color;
-    // A list of player's colors in the order that the game will be played
-    private List<Integer> colors;
-    // Machine player's strategy
-    public String Strategy;
+    private List<Integer> colors; // A list of player's colors in the order that the game will be played
+    public String Strategy; // Machine player's strategy
     private boolean isWinner;
+    public State state;
+
+    public enum State { INIT, PLACE, PLAY, END;}
 
     MPlayer (String Strategy) {
         if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS"))) {
@@ -28,12 +29,21 @@ public class MPlayer implements IPlayer {
                 throw new IllegalArgumentException("Player list contains invalid" + "player color");
             }
         }
+        if (!(state == State.END || state == null)){
+            throw new IllegalArgumentException("Player cheated: cannot initialize at this time");
+        }
         this.color = color;
         this.name = Token.colorMap.get(color);
         this.colors = colors;
+        state = State.INIT;
     }
 
     public Token placePawn(Board b) {
+        if (state != State.INIT) {
+            throw new IllegalArgumentException("Player cheated: cannot place pawn at this time");
+        }
+        this.state = State.PLACE;
+
         if (!colors.contains(this.color)){
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
@@ -91,15 +101,12 @@ public class MPlayer implements IPlayer {
         return newToken;
     }
 
-    public void endGame(Board b, List<Integer> colors) {
-        this.colors = colors;
-        if (colors.contains(this.color)) {
-            this.isWinner = true;
-        }
-        this.isWinner = false;
-    }
-
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) {
+        if (state != State.PLACE && state != State.PLAY) {
+            throw new IllegalArgumentException("Player cheated: cannot play turn at this time");
+        }
+        state = State.PLAY;
+
         if (!colors.contains(this.color)){
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
@@ -139,6 +146,19 @@ public class MPlayer implements IPlayer {
                 throw new IllegalArgumentException("Input strategy cannot be identified");
             }
         }
+    }
+
+    public void endGame(Board b, List<Integer> colors) {
+        if (state != State.PLAY) {
+            throw new IllegalArgumentException("Player cheated: cannot end game at this time");
+        }
+        state = State.END;
+
+        this.colors = colors;
+        if (colors.contains(this.color)) {
+            this.isWinner = true;
+        }
+        this.isWinner = false;
     }
 
     public String getName() {

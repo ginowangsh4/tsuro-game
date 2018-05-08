@@ -1,12 +1,7 @@
 import org.junit.jupiter.api.Test;
-
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-// The following only covers the simplest test cases
-// More complicate ones need to be build later to cover different logical aspects.
 class MPlayerTest {
 
     static Board b;
@@ -150,6 +145,7 @@ class MPlayerTest {
         MPlayer mPlayer = new MPlayer("LS");
         colors.add(1);
         mPlayer.initialize(1, colors);
+        mPlayer.state = MPlayer.State.PLACE;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
 
@@ -195,6 +191,7 @@ class MPlayerTest {
         MPlayer mPlayer = new MPlayer("LS");
         colors.add(1);
         mPlayer.initialize(1, colors);
+        mPlayer.state = MPlayer.State.PLACE;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
 
@@ -240,6 +237,7 @@ class MPlayerTest {
         MPlayer mPlayer = new MPlayer( "MS");
         colors.add(1);
         mPlayer.initialize(1, colors);
+        mPlayer.state = MPlayer.State.PLACE;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");
 
@@ -250,6 +248,4 @@ class MPlayerTest {
         assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 0}), "check SPlayer 1 token position");
         assertEquals(3, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
-
-
 }
