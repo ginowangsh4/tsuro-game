@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,6 +20,7 @@ class MPlayerTest {
     @Test
     void placePawnTest(){
         Board b = new Board();
+        colors.addAll(Arrays.asList(0,1,2,3,4,5,6));
         for (int i = 0; i < 7; i++){
             MPlayer p = new MPlayer("R");
             p.initialize(i, colors);
@@ -146,6 +148,7 @@ class MPlayerTest {
         server.setState(b, inSPlayer, outSPlayer, deck);
 
         MPlayer mPlayer = new MPlayer("LS");
+        colors.add(1);
         mPlayer.initialize(1, colors);
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
@@ -190,6 +193,7 @@ class MPlayerTest {
         server.setState(b, inSPlayer, outSPlayer, deck);
 
         MPlayer mPlayer = new MPlayer("LS");
+        colors.add(1);
         mPlayer.initialize(1, colors);
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
@@ -234,6 +238,7 @@ class MPlayerTest {
         server.setState(b, inSPlayer, outSPlayer, deck);
 
         MPlayer mPlayer = new MPlayer( "MS");
+        colors.add(1);
         mPlayer.initialize(1, colors);
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");

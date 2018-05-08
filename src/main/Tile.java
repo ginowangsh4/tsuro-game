@@ -18,7 +18,9 @@ public class Tile {
         if (paths.length != 4 || paths[0].length != 2) {
             throw new IllegalArgumentException("Path is not a 4 x 2 matrix");
         }
-        if (!legalPaths(paths)) throw new IllegalArgumentException("Paths invalid");
+        if (!legalPaths(paths)) {
+            throw new IllegalArgumentException("Paths invalid");
+        }
         this.paths = new int[4][2];
         for (int i = 0; i < paths.length; i++) {
             this.paths[i][0] = paths[i][0];

@@ -66,8 +66,12 @@ public class SPlayer {
      * @param t tile to be deal
      */
     public void deal(Tile t) {
-        if (hasTile(t)) hand.remove(t);
-        else throw new IllegalArgumentException("The tile to deal is not in player's hand");
+        for (Tile tile : hand) {
+            if (t.isSameTile(tile)) {
+                hand.remove(tile);
+                return;
+            }
+        }
     }
 
     /**

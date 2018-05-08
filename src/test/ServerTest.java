@@ -20,7 +20,7 @@ public class ServerTest {
         int winR = 0;
         int winLS = 0;
         int winMS = 0;
-        int total = 1000;
+        int total = 10000;
 
         for(int count = 0; count < total; count++){
             b = new Board();

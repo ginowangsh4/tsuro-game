@@ -79,6 +79,22 @@ public class Board {
     }
 
     /**
+     * Return if the board contains the given tile
+     * @param t a tile to be checked
+     * @return
+     */
+    public boolean containTile(Tile t){
+        t.reorderPath();
+        for (int x = 0; x < 6; x++){
+            for (int y = 0; y < 6; y++)
+                if (getTile(x,y) != null && getTile(x,y).isSameTile(t)) {
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    /**
      * Return if a given token exists on board
      * @param inT a token to be checked
      */

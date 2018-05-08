@@ -18,9 +18,13 @@ public class Token {
     }};
 
     Token (int color, int indexOnTile, int[] position) {
-        if (color < 0 || color > 7) throw new IllegalArgumentException("Invalid token color");
+        if (color < 0 || color > 7) {
+            throw new IllegalArgumentException("Invalid token color");
+        }
+        if (!legalTokenLocation(indexOnTile, position)) {
+            throw new IllegalArgumentException("Invalid token position");
+        }
         this.color = color;
-        if (!legalTokenLocation(indexOnTile, position)) throw new IllegalArgumentException("Invalid token position");
         this.indexOnTile = indexOnTile;
         this.position = position;
     }

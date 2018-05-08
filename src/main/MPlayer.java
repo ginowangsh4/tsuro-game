@@ -6,7 +6,7 @@ import java.util.Random;
 public class MPlayer implements IPlayer {
     private String name;
     private int color;
-    // A lost of player's colors in the order that the game will be played
+    // A list of player's colors in the order that the game will be played
     private List<Integer> colors;
     // Machine player's strategy
     public String Strategy;
@@ -34,6 +34,9 @@ public class MPlayer implements IPlayer {
     }
 
     public Token placePawn(Board b) {
+        if (!colors.contains(this.color)){
+            throw new IllegalArgumentException("Player is not authorized to place pawn");
+        }
         Random rand = new Random();
         int x = Integer.MAX_VALUE;
         int y = Integer.MAX_VALUE;
@@ -97,6 +100,9 @@ public class MPlayer implements IPlayer {
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) {
+        if (!colors.contains(this.color)){
+            throw new IllegalArgumentException("Player is not authorized to place pawn");
+        }
         List<Tile> legalMoves = new ArrayList<>();
         List<Tile> legalTiles = new ArrayList<>();
         for (Tile t : hand) {

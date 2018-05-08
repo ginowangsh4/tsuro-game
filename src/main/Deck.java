@@ -90,6 +90,8 @@ public class Deck {
         return pile == null ? 0 : pile.size();
     }
 
+    public List<Tile> getPile() {return pile;}
+
     public Tile get(int index) {
         return pile.get(index);
     }

@@ -121,6 +121,8 @@ public class Server {
     public List<SPlayer> playATurn(Tile t) {
         // place a tile path
         SPlayer currentP = inSPlayer.get(0);
+        // check against player hand contract
+        legalHand(currentP);
         Token currentT = currentP.getToken();
         int[] location = getAdjacentLocation(currentT);
         board.placeTile(t, location[0], location[1]);
@@ -171,7 +173,7 @@ public class Server {
             gameOver = true;
             if (inSPlayer.size() == 0) {
                 inSPlayer.addAll(deadP);
-                return deadP;
+                return inSPlayer;
             } else {
                 outSPlayer.addAll(deadP);
                 return inSPlayer;
@@ -315,6 +317,50 @@ public class Server {
             i++;
         }
         return -1;
+    }
+
+    /**
+     *
+     * @param p
+     * @return
+     */
+    private void legalHand(SPlayer p) {
+        List<Tile> hand = p.getHand();
+        if (hand.size() == 0 || hand == null) {
+            return;
+        }
+        // no more than three tiles
+        else if (hand.size() > 3) {
+            throw new IllegalArgumentException("Error: More than 3 tiles on hand");
+        }
+        Deck tiles = new Deck();
+        for (Tile playerTile : hand) {
+            // not already on board
+            if (board.containTile(playerTile)) {
+                throw new IllegalArgumentException("Error: Tile already on board");
+            }
+            // no more than one same tile in original deck
+            // not tile should be a rotation of any other tile
+            int count = 0;
+            for (Tile t: tiles.getPile()) {
+                if (t.isSameTile(playerTile)) {
+                    count++;
+                    if (count >= 2) {
+                        throw new IllegalArgumentException("Error: Deck has duplicate tiles");
+                    }
+                }
+            }
+        }
+        // each tile in hand must be unique
+        for (int i = 0; i < 3; i++) {
+            Tile playerTile = hand.remove(0);
+            for (Tile t : hand) {
+                if (t.isSameTile(playerTile)) {
+                    throw new IllegalArgumentException("Error: Player has duplicate tiles");
+                }
+            }
+            hand.add(playerTile);
+        }
     }
 
     /**
