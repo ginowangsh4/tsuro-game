@@ -96,10 +96,6 @@ public class Deck {
         return pile.get(index);
     }
 
-    public void remove(int index) {
-        pile.remove(index);
-    }
-
     public boolean isEmpty() {
         return pile.isEmpty();
     }

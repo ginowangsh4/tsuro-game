@@ -21,7 +21,7 @@ public class Token {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid token color");
         }
-        if (!legalTokenLocation(indexOnTile, position)) {
+        if (!legalTokenPlacement(indexOnTile, position)) {
             throw new IllegalArgumentException("Invalid token position");
         }
         this.color = color;
@@ -35,7 +35,7 @@ public class Token {
      * @param posn posn [x,y]
      * @return
      */
-    public boolean legalTokenLocation(int index, int[] posn) {
+    public boolean legalTokenPlacement(int index, int[] posn) {
         int x = posn[0];
         int y = posn[1];
 

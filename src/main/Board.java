@@ -5,14 +5,17 @@ public class Board {
     private Tile[][] board;
     private final int SIZE = 6;
     private List<Token> tokenList;
+    private List<Tile> tileList;
 
     Board() {
         this.board = new Tile[SIZE][SIZE];
         this.tokenList = new ArrayList<>();
+        this.tileList = new ArrayList<>();
     }
 
     /**
      * Get the tile on a given location on board
+     *
      * @param x x-coordinate
      * @param y y-coordinate
      * @return tile on a given location; null is not on board or indices are invalid
@@ -28,13 +31,18 @@ public class Board {
         return tokenList;
     }
 
+    public List<Tile> getTileList() {
+        return tileList;
+    }
+
     /**
      * Return the token with the given color
+     *
      * @param color color of the token
      * @return
      */
     public Token getToken(int color) {
-        for (Token t: this.tokenList){
+        for (Token t : this.tokenList) {
             if (t.getColor() == color) return t;
         }
         throw new IllegalArgumentException("Token with this color does not exist on board");
@@ -42,18 +50,19 @@ public class Board {
 
     /**
      * Place the given tile in the given location
+     *
      * @param t a tile to be placed
      * @param x the x-coordinate of the given location
      * @param y the y-coordinate of the given location
      */
     public void placeTile(Tile t, int x, int y) {
-        try{
+        try {
             if (board[x][y] != null) {
                 throw new IllegalArgumentException("The location given contains another tile");
             }
             this.board[x][y] = t;
-        }
-        catch (ArrayIndexOutOfBoundsException e){
+            tileList.add(t);
+        } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("The location given is outside of board");
             throw e;
         }
@@ -62,17 +71,23 @@ public class Board {
     /**
      * Delete the tile in the given location if it currently has a tile
      * Should only be used in Server.legalPlay()
+     *
      * @param x the x-coordinate of the given location
      * @param y the y-coordinate of the given location
      */
     public void deleteTile(int x, int y) {
-        try{
+        try {
             if (board[x][y] == null) {
                 throw new IllegalArgumentException("The location given doesn't contain a tile");
             }
+            for (Tile t: tileList){
+                if (t.isSameTile(board[x][y])){
+                    tileList.remove(t);
+                    break;
+                }
+            }
             this.board[x][y] = null;
-        }
-        catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("The location given is outside of board");
             throw e;
         }
@@ -80,17 +95,16 @@ public class Board {
 
     /**
      * Return if the board contains the given tile
+     *
      * @param t a tile to be checked
      * @return
      */
-    public boolean containTile(Tile t){
+    public boolean containTile(Tile t) {
         t.reorderPath();
-        for (int x = 0; x < 6; x++){
-            for (int y = 0; y < 6; y++)
-                if (getTile(x,y) != null && getTile(x,y).isSameTile(t)) {
-                    return true;
-                }
-        }
+        for (Tile tileOnBoard : tileList)
+            if (tileOnBoard.isSameTile(t)) {
+                return true;
+            }
         return false;
     }
 

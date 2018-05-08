@@ -11,7 +11,7 @@ public class MPlayer implements IPlayer {
     private boolean isWinner;
     public State state;
 
-    public enum State { INIT, PLACE, PLAY, END;}
+    public enum State { INIT, PLACE, PLAY, END}
 
     MPlayer (String Strategy) {
         if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS"))) {
@@ -30,7 +30,7 @@ public class MPlayer implements IPlayer {
             }
         }
         if (!(state == State.END || state == null)){
-            throw new IllegalArgumentException("Player cheated: cannot initialize at this time");
+            throw new IllegalArgumentException("Cannot initialize at this time");
         }
         this.color = color;
         this.name = Token.colorMap.get(color);
@@ -40,7 +40,7 @@ public class MPlayer implements IPlayer {
 
     public Token placePawn(Board b) {
         if (state != State.INIT) {
-            throw new IllegalArgumentException("Player cheated: cannot place pawn at this time");
+            throw new IllegalArgumentException("Cannot place pawn at this time");
         }
         this.state = State.PLACE;
 
@@ -103,7 +103,7 @@ public class MPlayer implements IPlayer {
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) {
         if (state != State.PLACE && state != State.PLAY) {
-            throw new IllegalArgumentException("Player cheated: cannot play turn at this time");
+            throw new IllegalArgumentException("Cannot play turn at this time");
         }
         state = State.PLAY;
 
@@ -146,7 +146,7 @@ public class MPlayer implements IPlayer {
 
     public void endGame(Board b, List<Integer> colors) {
         if (state != State.PLAY) {
-            throw new IllegalArgumentException("Player cheated: cannot end game at this time");
+            throw new IllegalArgumentException("Cannot end game at this time");
         }
         state = State.END;
 
