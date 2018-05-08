@@ -20,10 +20,9 @@ public class ServerTest {
         int winR = 0;
         int winLS = 0;
         int winMS = 0;
-        int total = 100;
+        int total = 1000;
 
         for(int count = 0; count < total; count++){
-            // System.out.println("Tournament" + count);
             b = new Board();
             inSPlayer = new ArrayList<>();
             outSPlayer = new ArrayList<>();
@@ -43,9 +42,7 @@ public class ServerTest {
 
             List<SPlayer> winners = new ArrayList<>();
 
-            int i = 0;
             while(!server.isGameOver()) {
-                // System.out.println(i++);
                 SPlayer currentP = server.inSPlayer.get(0);
                 Tile tileToPlay = currentP.getMPlayer().playTurn(server.board, currentP.getHand(), server.drawPile.size());
                 currentP.deal(tileToPlay);

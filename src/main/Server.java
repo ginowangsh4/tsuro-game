@@ -60,7 +60,6 @@ public class Server {
         // check condition (2) above
         Token currentT = p.getToken();
         int[] location = getAdjacentLocation(currentT);
-        // System.out.println("Player " + p.getMPlayer().getName() + " tried to placed tile at " + "x=" + location[0] + " y=" + location[1]);
         b.placeTile(t, location[0], location[1]);
         Token newT = simulateMove(currentT, b);
         b.deleteTile(location[0], location[1]);
@@ -120,7 +119,6 @@ public class Server {
         Token currentT = currentP.getToken();
         int[] location = getAdjacentLocation(currentT);
         board.placeTile(t, location[0], location[1]);
-        // System.out.println("Player " + currentP.getMPlayer().getName() + " placed tile at " + "x=" + location[0] + " y=" + location[1]);
 
         // move the token
         currentT = simulateMove(currentT, board);
@@ -144,8 +142,6 @@ public class Server {
             }
             inSPlayer.remove(0);
             inSPlayer.add(currentP);
-            // System.out.println("current player " + currentP.getMPlayer().getName() + " is moved to the end");
-            // System.out.println("current player " + currentP.getMPlayer().getName() + " is at index " + inSPlayer.indexOf(currentP));
 
         }
 
@@ -154,17 +150,7 @@ public class Server {
         {
             currentP = inSPlayer.get(i);
             currentT = currentP.getToken();
-//            System.out.println("other player " + currentP.getMPlayer().getName() + " is at index " + i);
-//            System.out.println("other player is " + currentP.getMPlayer().getName());
-//            System.out.println("other player " + currentP.getMPlayer().getName() + " BEFORE at " + "x=" + currentT.getPosition()[0] + " y=" + currentT.getPosition()[1]);
-//            // At the start of the game, new players stand outside the board
-//            // Make sure don't eliminate them
-//            if (currentT.getPosition()[0] < 0 || currentT.getPosition()[0] > 5 ||
-//                    currentT.getPosition()[1] < 0 || currentT.getPosition()[1] > 5) {
-//                continue;
-//            }
             currentT = simulateMove(currentT, board);
-//            System.out.println("other player " + currentP.getMPlayer().getName() + " AFTER at " + "x=" + currentT.getPosition()[0] + " y=" + currentT.getPosition()[1]);
             currentP.updateToken(currentT);
             board.updateToken(currentT);
             if (currentT.isOffBoard()) {
