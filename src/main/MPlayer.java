@@ -111,7 +111,6 @@ public class MPlayer implements IPlayer {
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
         List<Tile> legalMoves = new ArrayList<>();
-        List<Tile> legalTiles = new ArrayList<>();
         for (Tile t : hand) {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
@@ -119,9 +118,6 @@ public class MPlayer implements IPlayer {
                 tempPlayer.link(this);
                 if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());
-                    if (!legalTiles.contains(t)) {
-                        legalTiles.add(t);
-                    }
                 }
                 copy.rotateTile();
             }

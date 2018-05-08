@@ -123,48 +123,36 @@ public class Server {
         SPlayer currentP = inSPlayer.get(0);
         // check against player hand contract
         legalHand(currentP);
-        Token currentT = currentP.getToken();
-        int[] location = getAdjacentLocation(currentT);
+
+        //Token currentT = currentP.getToken();
+        int[] location = getAdjacentLocation(currentP.getToken());
         board.placeTile(t, location[0], location[1]);
 
-        // move the token
-        currentT = simulateMove(currentT, board);
-        // update player's and board's copy of the token
-        currentP.updateToken(currentT);
-        board.updateToken(currentT);
-
-        // eliminate current player & recycle tiles in hand
         List<SPlayer> deadP = new ArrayList<>();
-        if (currentT.isOffBoard()) {
-            eliminatePlayer(currentP, deadP);
-        }
-        // add to tail & draw tile
-        else {
-            if (drawPile.isEmpty()) {
-                // player gets dragon if it is not dealt to another player
-                giveDragon(currentP);
+        int playerCount = inSPlayer.size();
+        for(int i = 0; i < playerCount; i++)
+        {
+            SPlayer player = inSPlayer.get(i);
+            Token token = simulateMove(player.getToken(), board);
+            player.updateToken(token);
+            board.updateToken(token);
+            if (token.isOffBoard()) {
+                eliminatePlayer(player, deadP);
+                playerCount --;
             }
             else {
-                currentP.draw(drawPile.pop());
-            }
-            inSPlayer.remove(0);
-            inSPlayer.add(currentP);
-
-        }
-
-        // check if other players can make a move because of the placement of this tile t
-        for (int i = 0; i < inSPlayer.size(); i++)
-        {
-            currentP = inSPlayer.get(i);
-            currentT = currentP.getToken();
-            currentT = simulateMove(currentT, board);
-            currentP.updateToken(currentT);
-            board.updateToken(currentT);
-            if (currentT.isOffBoard()) {
-                eliminatePlayer(currentP, deadP);
-                // if a player is eliminated, overall size of inSPlayer list decrements by 1
-                // so need to make sure all players are moved by decrementing for loop index by 1
-                i--;
+                if (player.getToken().getColor() == currentP.getToken().getColor()){
+                    inSPlayer.remove(0);
+                    inSPlayer.add(player);
+                    i--;
+                    playerCount --;
+                }
+                if (!drawPile.isEmpty()) {
+                    player.draw(drawPile.pop());
+                }
+                else {
+                    giveDragon(player);
+                }
             }
         }
 
