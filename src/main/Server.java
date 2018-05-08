@@ -141,8 +141,7 @@ public class Server {
                 playerCount --;
             }
             else {
-                if (i == 0 &&
-                        player.getToken().getColor() == currentP.getToken().getColor()){
+                if (i == 0 && player.isSamePlayer(currentP)){
                     inSPlayer.remove(0);
                     inSPlayer.add(player);
                     if (!drawPile.isEmpty()) {

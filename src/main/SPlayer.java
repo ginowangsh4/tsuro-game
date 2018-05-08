@@ -24,6 +24,9 @@ public class SPlayer {
 
     public MPlayer getMPlayer() { return this.MPlayer; }
 
+    public boolean isSamePlayer(SPlayer player) {
+        return this.getToken().getColor() == player.getToken().getColor();
+    }
     /**
      * Check if a player has this input tile on hand
      * @param tile to be checked
