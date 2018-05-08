@@ -4,6 +4,8 @@ import java.util.Map;
 public class Token {
 
     private final int color;
+    private int indexOnTile;
+    private int[] position;
     public final static Map<Integer, String> colorMap = new HashMap<Integer, String>() {{
             put(0, "blue");
             put(1, "red");
@@ -14,21 +16,21 @@ public class Token {
             put(6, "darkgreen");
             put(7, "purple");
     }};
-    private int indexOnTile;
-    private int[] position;
-
-    Token (int color) {
-        this.color = color;
-    }
 
     Token (int color, int indexOnTile, int[] position) {
         if (color < 0 || color > 7) throw new IllegalArgumentException("Invalid token color");
         this.color = color;
-        if (!legalTokenLocation(indexOnTile, position)) throw  new IllegalArgumentException("Invalid token position");
+        if (!legalTokenLocation(indexOnTile, position)) throw new IllegalArgumentException("Invalid token position");
         this.indexOnTile = indexOnTile;
         this.position = position;
     }
 
+    /**
+     * Check if index and posn are valid inputs.
+     * @param index index on tile
+     * @param posn posn [x,y]
+     * @return
+     */
     public boolean legalTokenLocation(int index, int[] posn) {
         int x = posn[0];
         int y = posn[1];
@@ -58,13 +60,12 @@ public class Token {
     public int[] getPosition() { return position; }
 
     /**
-     * Check whether two tokens are the same
+     * Check whether two tokens are the same based on color
      * @param t a token to be checked against
      * @return true of the two tokens are the same; false if not
      */
     public boolean equals(Token t) {
-        if (this.color == t.color) return true;
-        return false;
+        return this.color == t.color ? true:false;
     }
 
     /**

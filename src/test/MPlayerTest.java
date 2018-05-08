@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class MPlayerTest {
 
     static Board b;
-    static Tile tile;
     static List<Tile> pile;
     static Deck deck;
     static List<SPlayer> inSPlayer;
@@ -21,10 +20,10 @@ class MPlayerTest {
     void placePawnTest(){
         Board b = new Board();
         for (int i = 0; i < 7; i++){
-            MPlayer p = new MPlayer(i, colors, "R");
+            MPlayer p = new MPlayer("R");
+            p.initialize(i, colors);
             Token t = p.placePawn(b);
             b.addToken(t);
-            // System.out.println("At [" + t.getPosition()[0] + ", " + t.getPosition()[1] + "], index = " + t.getIndex());
             assertTrue(t.legalTokenLocation(t.getIndex(), t.getPosition()), "Error: illegal token placement");
         }
     }
@@ -144,9 +143,10 @@ class MPlayerTest {
         deck = new Deck(pile);
         inSPlayer.add(SPlayer);
 
-        server.init(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer(1,colors, "LS");
+        MPlayer mPlayer = new MPlayer("LS");
+        mPlayer.initialize(1, colors);
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
 
@@ -187,9 +187,10 @@ class MPlayerTest {
         deck = new Deck(pile);
         inSPlayer.add(SPlayer);
 
-        server.init(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer(1,colors, "LS");
+        MPlayer mPlayer = new MPlayer("LS");
+        mPlayer.initialize(1, colors);
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
 
@@ -230,9 +231,10 @@ class MPlayerTest {
         deck = new Deck(pile);
         inSPlayer.add(SPlayer);
 
-        server.init(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer(1,colors, "MS");
+        MPlayer mPlayer = new MPlayer( "MS");
+        mPlayer.initialize(1, colors);
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");
 

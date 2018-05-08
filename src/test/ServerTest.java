@@ -27,14 +27,17 @@ public class ServerTest {
             inSPlayer = new ArrayList<>();
             outSPlayer = new ArrayList<>();
             deck = new Deck();
-            server.init(b, inSPlayer, outSPlayer, deck);
+            server.setState(b, inSPlayer, outSPlayer, deck);
 
+            MPlayer mP1 = new MPlayer("R");
+            MPlayer mP2 = new MPlayer("LS");
+            MPlayer mP3 = new MPlayer("MS");
             colors.add(1);
             colors.add(2);
             colors.add(3);
-            MPlayer mP1 = new MPlayer(1, colors, "R");
-            MPlayer mP2 = new MPlayer(2, colors, "LS");
-            MPlayer mP3 = new MPlayer(3, colors, "MS");
+            mP1.initialize(1, colors);
+            mP2.initialize(2, colors);
+            mP3.initialize(3, colors);
 
             server.registerPlayer(mP1);
             server.registerPlayer(mP2);
@@ -43,8 +46,8 @@ public class ServerTest {
             List<SPlayer> winners = new ArrayList<>();
 
             while(!server.isGameOver()) {
-                SPlayer currentP = server.inSPlayer.get(0);
-                Tile tileToPlay = currentP.getMPlayer().playTurn(server.board, currentP.getHand(), server.drawPile.size());
+                SPlayer currentP = inSPlayer.get(0);
+                Tile tileToPlay = currentP.getMPlayer().playTurn(b, currentP.getHand(), deck.size());
                 currentP.deal(tileToPlay);
                 winners = server.playATurn(tileToPlay);
             }

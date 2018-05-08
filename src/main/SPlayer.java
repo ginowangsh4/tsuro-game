@@ -12,6 +12,10 @@ public class SPlayer {
         this.name = name;
     }
 
+    /**
+     * Link SPlayer to its corresponding MPlayer based on color
+     * @param mPlayer
+     */
     public void link(MPlayer mPlayer){
         if (mPlayer.getColor() != this.token.getColor())
             throw new IllegalArgumentException("SPlayer and MPlayer mismatch");
@@ -44,28 +48,26 @@ public class SPlayer {
      * Update a player's token
      * @param token new token
      */
-    public void updateToken(Token token) { this.token = token; }
+    public void updateToken(Token token) {
+        if (!token.equals(this.token))
+            throw new IllegalArgumentException("The given token doesn't belong to this player");
+        this.token = token;
+;    }
 
     /**
      * SPlayer draws a tile
      *
      * @param t tile to be added to the player's hand
      */
-    public void draw(Tile t) {
-        hand.add(t);
-    }
+    public void draw(Tile t) { hand.add(t); }
 
     /**
-     * Simulate player choosing a tile to place
-     * @param t tile to be placed
+     * Player deals a tile
+     * @param t tile to be deal
      */
     public void deal(Tile t) {
-        for (Tile tile : hand) {
-            if (t.isSameTile(tile)) {
-                hand.remove(tile);
-                return;
-            }
-        }
+        if (hasTile(t)) hand.remove(t);
+        else throw new IllegalArgumentException("The tile to deal is not in player's hand");
     }
 
     /**

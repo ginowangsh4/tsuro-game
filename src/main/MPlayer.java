@@ -12,7 +12,14 @@ public class MPlayer implements IPlayer {
     public String Strategy;
     private boolean isWinner;
 
-    MPlayer (int color, List<Integer> colors, String Strategy) {
+    MPlayer (String Strategy) {
+        if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS"))) {
+            throw new IllegalArgumentException("Invalid strategy type for machine player");
+        }
+        this.Strategy = Strategy;
+    }
+
+    public void initialize (int color, List<Integer> colors) {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid player's color");
         }
@@ -21,22 +28,6 @@ public class MPlayer implements IPlayer {
                 throw new IllegalArgumentException("Player list contains invalid" + "player color");
             }
         }
-        if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS"))) {
-            throw new IllegalArgumentException("Invalid strategy type for machine player");
-        }
-        this.color = color;
-        this.name = Token.colorMap.get(color);
-        this.colors = colors;
-        this.Strategy = Strategy;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getColor() {return this.color;}
-
-    public void initialize (int color, List<Integer> colors) {
         this.color = color;
         this.name = Token.colorMap.get(color);
         this.colors = colors;
@@ -143,4 +134,10 @@ public class MPlayer implements IPlayer {
             }
         }
     }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getColor() {return this.color;}
 }

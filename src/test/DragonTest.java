@@ -44,7 +44,7 @@ public class DragonTest {
         inSPlayer.add(p3);
         Tile t = p1.getHand().get(2);
         p1.deal(t);
-        server.init(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck);
         server.playATurn(t);
         assertEquals(3, p1.getHand().size(),"Error: player 1 didn't draw new tile");
         assertEquals(25, deck.size(),"Error: more than one player drew in a turn" );
@@ -110,7 +110,7 @@ public class DragonTest {
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.init(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck);
         // give player 2 dragon tile
         server.giveDragon(p2);
         Tile t = p1.getHand().get(2);
@@ -158,7 +158,7 @@ public class DragonTest {
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.init(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck);
         // give player 1 dragon tile
         server.giveDragon(p1);
         Tile t = p1.getHand().get(0);
@@ -211,7 +211,7 @@ public class DragonTest {
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.init(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck);
         // give player 2 dragon tile
         server.giveDragon(p2);
         Tile t = p1.getHand().get(0);
@@ -263,7 +263,7 @@ public class DragonTest {
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.init(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck);
         // give player 1 dragon tile
         server.giveDragon(p1);
         Tile t = p1.getHand().get(0);

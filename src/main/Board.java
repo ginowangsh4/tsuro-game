@@ -28,6 +28,11 @@ public class Board {
         return tokenList;
     }
 
+    /**
+     * Return the token with the given color
+     * @param color color of the token
+     * @return
+     */
     public Token getToken(int color) {
         for (Token t: this.tokenList){
             if (t.getColor() == color) return t;
@@ -56,6 +61,7 @@ public class Board {
 
     /**
      * Delete the tile in the given location if it currently has a tile
+     * Should only be used in Server.legalPlay()
      * @param x the x-coordinate of the given location
      * @param y the y-coordinate of the given location
      */
@@ -73,14 +79,24 @@ public class Board {
     }
 
     /**
-     * Add a token to the board
-     * @param t a token to be added
+     * Return if a given token exists on board
+     * @param inT a token to be checked
      */
-    public void addToken(Token t){
-        if (tokenList.contains(t)) {
-            throw new IllegalArgumentException("The token given already exists on board");
+    public boolean containToken(Token inT){
+        for (Token token: this.tokenList){
+            if (token.equals(inT)) return true;
         }
-        this.tokenList.add(t);
+        return false;
+    }
+
+    /**
+     * Add a token to the board
+     * @param inT a token to be added
+     */
+    public void addToken(Token inT){
+        if(containToken(inT))
+            throw new IllegalArgumentException("The token given already exists on board");
+        this.tokenList.add(inT);
     }
 
     /**
@@ -88,9 +104,9 @@ public class Board {
      * @param inT a token to be removed
      */
     public void removeToken(Token inT) {
-        if (!tokenList.remove(inT)) {
+        if (!containToken(inT))
             throw new IllegalArgumentException("The token given doesn't exist on board");
-        }
+        this.tokenList.remove(inT);
     }
 
     /**

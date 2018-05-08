@@ -2,10 +2,10 @@ import java.util.*;
 
 public class Server {
 
-    public Board board;
-    public Deck drawPile;
-    public List<SPlayer> inSPlayer;
-    public List<SPlayer> outSPlayer;
+    private Board board;
+    private Deck drawPile;
+    private List<SPlayer> inSPlayer;
+    private List<SPlayer> outSPlayer;
     private SPlayer dragonHolder = null;
     private boolean gameOver = false;
 
@@ -20,7 +20,8 @@ public class Server {
         return server;
     }
 
-    public void init(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, Deck drawPile) {
+
+    public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, Deck drawPile) {
         this.board = board;
         this.inSPlayer = inSPlayer;
         this.outSPlayer = outSPlayer;
@@ -29,6 +30,10 @@ public class Server {
         this.gameOver = false;
     }
 
+    /**
+     * Register a MPlayer with Server: create a SPlayer instance based on the given MPlayer
+     * @param mP a given MPlayer
+     */
     public void registerPlayer(MPlayer mP) {
         Token t = mP.placePawn(board);
         board.addToken(t);

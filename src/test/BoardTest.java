@@ -1,8 +1,5 @@
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Executable;
 import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
@@ -72,9 +69,10 @@ class BoardTest {
     @Test
     void addTokenThrowExceptionTest() {
         b = new Board();
-        Token t = new Token(1, 3, new int[]{0, 1});
-        b.addToken(t);
-        assertThrows(IllegalArgumentException.class, () -> b.addToken(t));
+        Token t1 = new Token(1, 5, new int[]{3, 5});
+        Token t2 = new Token(1, 2, new int[]{0, 4});
+        b.addToken(t1);
+        assertThrows(IllegalArgumentException.class, () -> b.addToken(t2));
     }
 
     @Test
