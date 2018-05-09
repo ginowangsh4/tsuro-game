@@ -1,4 +1,3 @@
-import javax.sound.midi.Soundbank;
 import java.util.*;
 
 public class Server {
@@ -38,11 +37,10 @@ public class Server {
         List<Tile> hand = new ArrayList<>();
         SPlayer sP = new SPlayer(t, hand, mP.getName());
         sP.link(mP);
-
         // check if starting position is legal
         if (!t.isStartingPosition()) {
             System.err.println("Caught cheating: Player starts the game at an illegal position");
-            playerCheat(sP);
+            playerCheatIllegalPawn(sP);
         }
         inSPlayer.add(sP);
         board.addToken(sP.getToken());
@@ -129,14 +127,13 @@ public class Server {
         currentP.draw(t);
         if (!legalPlay(currentP, board, t)) {
             System.err.println("Caught cheating: Player tried to play an illegal tile while holding at least one other legal tile");
-            playerCheat(currentP);
+            t = playerCheatIllegalTile(currentP, t);
         }
         currentP.deal(t);
         // check if this player's hand is legal at the start of this turn
         legalHand(currentP);
         int[] location = getAdjacentLocation(currentP.getToken());
         board.placeTile(t, location[0], location[1]);
-
         List<SPlayer> deadP = new ArrayList<>();
         int playerCount = inSPlayer.size();
         for(int i = 0; i < playerCount; i++)
@@ -167,7 +164,6 @@ public class Server {
         }
         // check if this player's hand is legal at the end of this turn
         legalHand(currentP);
-
         // determine whether game is over
         if (board.isFull()) {
             gameOver = true;
@@ -263,12 +259,27 @@ public class Server {
         // System.out.println("Eliminated player " + p.getMPlayer().getName());
     }
 
-    public void playerCheat(SPlayer p) {
+    public void playerCheatIllegalPawn(SPlayer p) {
         System.out.println("Player " + p.getMPlayer().getName() + " cheated and is replaced by a random machine player");
         p.getMPlayer().Strategy = "R";
         if (p.getMPlayer().state == MPlayer.State.INIT) {
             p.updateToken(p.getMPlayer().placePawn(board));
         }
+        else throw new IllegalArgumentException("Sequence Contracts: Cannot place pawn at this point");
+
+    }
+
+    public Tile playerCheatIllegalTile(SPlayer p, Tile oldTile) {
+        System.out.println("Player " + p.getMPlayer().getName() + " cheated and is replaced by a random machine player");
+        p.getMPlayer().Strategy = "R";
+        p.deal(oldTile);
+        if (p.getMPlayer().state == MPlayer.State.PLACE ||
+                p.getMPlayer().state == MPlayer.State.PLAY) {
+            Tile newTile = p.getMPlayer().playTurn(board, p.getHand(), drawPile.size());
+            return newTile;
+        }
+        else throw new IllegalArgumentException("Sequence Contracts: Cannot play turn at this time");
+
     }
 
     /**
@@ -363,6 +374,7 @@ public class Server {
                 }
             }
 
+            // not in other player's hand or the current player's hand does not contain duplicate tiles
             int count = 0;
             for (Tile t : inHands) {
                 if (t.isSameTile(playerTile)) {

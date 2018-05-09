@@ -124,8 +124,12 @@ public class Board {
      * @param inT a token to be added
      */
     public void addToken(Token inT){
-        if(containsToken(inT))
+        if (!inT.legalTokenPlacement(inT.getIndex(), inT.getPosition())){
+            throw new IllegalArgumentException("The token's position and index are not legal");
+        }
+        if(containsToken(inT)){
             throw new IllegalArgumentException("The token given already exists on board");
+        }
         this.tokenList.add(inT);
     }
 
