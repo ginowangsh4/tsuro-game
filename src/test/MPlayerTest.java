@@ -21,7 +21,7 @@ class MPlayerTest {
             p.initialize(i, colors);
             Token t = p.placePawn(b);
             b.addToken(t);
-            assertTrue(t.legalTokenPlacement(t.getIndex(), t.getPosition()), "Error: illegal token placement");
+            assertTrue(t.isStartingPosition(), "Error: illegal token placement");
         }
     }
 
@@ -249,4 +249,6 @@ class MPlayerTest {
         assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 0}), "check SPlayer 1 token position");
         assertEquals(3, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
+
+
 }

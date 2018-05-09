@@ -99,7 +99,7 @@ public class Board {
      * @param t a tile to be checked
      * @return
      */
-    public boolean containTile(Tile t) {
+    public boolean containsTile(Tile t) {
         t.reorderPath();
         for (Tile tileOnBoard : tileList)
             if (tileOnBoard.isSameTile(t)) {
@@ -112,9 +112,9 @@ public class Board {
      * Return if a given token exists on board
      * @param inT a token to be checked
      */
-    public boolean containToken(Token inT){
+    public boolean containsToken(Token inT){
         for (Token token: this.tokenList){
-            if (token.equals(inT)) return true;
+            if (token.sameColor(inT)) return true;
         }
         return false;
     }
@@ -124,7 +124,7 @@ public class Board {
      * @param inT a token to be added
      */
     public void addToken(Token inT){
-        if(containToken(inT))
+        if(containsToken(inT))
             throw new IllegalArgumentException("The token given already exists on board");
         this.tokenList.add(inT);
     }
@@ -134,7 +134,7 @@ public class Board {
      * @param inT a token to be removed
      */
     public void removeToken(Token inT) {
-        if (!containToken(inT))
+        if (!containsToken(inT))
             throw new IllegalArgumentException("The token given doesn't exist on board");
         this.tokenList.remove(inT);
     }
@@ -147,7 +147,7 @@ public class Board {
         Token oldT = null;
         for (Token t: tokenList)
         {
-            if (t.equals(newT)) {
+            if (t.sameColor(newT)) {
                 oldT = t;
                 break;
             }

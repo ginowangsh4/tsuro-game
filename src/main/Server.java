@@ -1,3 +1,4 @@
+import javax.sound.midi.Soundbank;
 import java.util.*;
 
 public class Server {
@@ -20,7 +21,6 @@ public class Server {
         return server;
     }
 
-
     public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, Deck drawPile) {
         this.board = board;
         this.inSPlayer = inSPlayer;
@@ -34,13 +34,18 @@ public class Server {
      * Register a MPlayer with Server: create a SPlayer instance based on the given MPlayer
      * @param mP a given MPlayer
      */
-    public void registerPlayer(MPlayer mP) {
-        Token t = mP.placePawn(board);
-        board.addToken(t);
+    public void registerPlayer(MPlayer mP, Token t) {
         List<Tile> hand = new ArrayList<>();
         SPlayer sP = new SPlayer(t, hand, mP.getName());
         sP.link(mP);
+
+        // check if starting position is legal
+        if (!t.isStartingPosition()) {
+            System.err.println("Caught cheating: Player starts the game at an illegal position");
+            playerCheat(sP);
+        }
         inSPlayer.add(sP);
+        board.addToken(sP.getToken());
         for (int i = 0; i < 3; i++){
             sP.draw(drawPile.pop());
         }
@@ -119,11 +124,16 @@ public class Server {
      *         (drawPile, inSPlayer, outSPlayer are themselves updated and updated in server's status through private fields)
      */
     public List<SPlayer> playATurn(Tile t) {
-
         SPlayer currentP = inSPlayer.get(0);
-        //Check if this player's hand is legal at the start of this turn
+        // check if player is cheating
+        currentP.draw(t);
+        if (!legalPlay(currentP, board, t)) {
+            System.err.println("Caught cheating: Player tried to play an illegal tile while holding at least one other legal tile");
+            playerCheat(currentP);
+        }
+        currentP.deal(t);
+        // check if this player's hand is legal at the start of this turn
         legalHand(currentP);
-
         int[] location = getAdjacentLocation(currentP.getToken());
         board.placeTile(t, location[0], location[1]);
 
@@ -155,7 +165,7 @@ public class Server {
                 }
             }
         }
-        //Check if this player's hand is legal at the end of this turn
+        // check if this player's hand is legal at the end of this turn
         legalHand(currentP);
 
         // determine whether game is over
@@ -251,6 +261,14 @@ public class Server {
         // players draw and pass dragon
         drawAndPassDragon();
         // System.out.println("Eliminated player " + p.getMPlayer().getName());
+    }
+
+    public void playerCheat(SPlayer p) {
+        System.out.println("Player " + p.getMPlayer().getName() + " cheated and is replaced by a random machine player");
+        p.getMPlayer().Strategy = "R";
+        if (p.getMPlayer().state == MPlayer.State.INIT) {
+            p.updateToken(p.getMPlayer().placePawn(board));
+        }
     }
 
     /**
@@ -370,3 +388,5 @@ public class Server {
      */
     public void setGameOver(boolean b) {this.gameOver = b; }
 }
+
+
