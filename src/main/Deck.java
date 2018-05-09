@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Deck {
-
     private List<Tile> pile;
 
     Deck () {
@@ -55,10 +54,6 @@ public class Deck {
         this.pile = pile;
     }
 
-    /**
-     * Remove the top tile of the deck
-     * @return the top tile
-     */
     public Tile pop() {
         if (isEmpty()) {
             throw new NoSuchElementException("Error: Can't draw tile from an empty deck");
@@ -66,10 +61,6 @@ public class Deck {
         return pile.remove(0);
     }
 
-    /**
-     * See the top tile of the deck
-     * @return the top tile
-     */
     public Tile peek() {
         if (isEmpty()) {
             throw new NoSuchElementException("Error: Can't draw tile from an empty deck");

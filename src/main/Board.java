@@ -15,7 +15,6 @@ public class Board {
 
     /**
      * Get the tile on a given location on board
-     *
      * @param x x-coordinate
      * @param y y-coordinate
      * @return tile on a given location; null is not on board or indices are invalid
@@ -37,7 +36,6 @@ public class Board {
 
     /**
      * Return the token with the given color
-     *
      * @param color color of the token
      * @return
      */
@@ -50,7 +48,6 @@ public class Board {
 
     /**
      * Place the given tile in the given location
-     *
      * @param t a tile to be placed
      * @param x the x-coordinate of the given location
      * @param y the y-coordinate of the given location
@@ -71,7 +68,6 @@ public class Board {
     /**
      * Delete the tile in the given location if it currently has a tile
      * Should only be used in Server.legalPlay()
-     *
      * @param x the x-coordinate of the given location
      * @param y the y-coordinate of the given location
      */
@@ -95,7 +91,6 @@ public class Board {
 
     /**
      * Return if the board contains the given tile
-     *
      * @param t a tile to be checked
      * @return
      */
@@ -163,6 +158,10 @@ public class Board {
         tokenList.add(newT);
     }
 
+    /**
+     * Check whether the board is full
+     * @return true if the board is full
+     */
     public boolean isFull(){
         int count = 0;
         for (int x = 0; x < 6; x++){

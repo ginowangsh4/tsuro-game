@@ -14,9 +14,9 @@ public class SPlayer {
 
     /**
      * Link SPlayer to its corresponding MPlayer based on color
-     * @param mPlayer
+     * @param mPlayer machine player to be linked
      */
-    public void link(MPlayer mPlayer){
+    public void linkMPlayer(MPlayer mPlayer){
         if (mPlayer.getColor() != this.token.getColor())
             throw new IllegalArgumentException("SPlayer and MPlayer mismatch");
         this.MPlayer = mPlayer;

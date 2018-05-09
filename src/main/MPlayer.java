@@ -32,10 +32,10 @@ public class MPlayer implements IPlayer {
         if (!(state == State.END || state == null)){
             throw new IllegalArgumentException("Sequence Contracts: Cannot initialize at this time");
         }
+        state = State.INIT;
         this.color = color;
         this.name = Token.colorMap.get(color);
         this.colors = colors;
-        state = State.INIT;
     }
 
     public Token placePawn(Board b) {
@@ -115,7 +115,7 @@ public class MPlayer implements IPlayer {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
                 SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand, getName());
-                tempPlayer.link(this);
+                tempPlayer.linkMPlayer(this);
                 if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());
                 }
@@ -127,17 +127,14 @@ public class MPlayer implements IPlayer {
                 Random rand = new Random();
                 return legalMoves.get(rand.nextInt(legalMoves.size()));
             }
-
             case "MS": {
                 Collections.sort(legalMoves, new SymmetricComparator());
                 return legalMoves.get(0);
             }
-
             case "LS": {
                 Collections.sort(legalMoves, new SymmetricComparator());
                 return legalMoves.get(legalMoves.size() - 1);
             }
-
             default: {
                 throw new IllegalArgumentException("Input strategy cannot be identified");
             }

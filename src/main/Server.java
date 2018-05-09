@@ -36,7 +36,7 @@ public class Server {
     public void registerPlayer(MPlayer mP, Token t) {
         List<Tile> hand = new ArrayList<>();
         SPlayer sP = new SPlayer(t, hand, mP.getName());
-        sP.link(mP);
+        sP.linkMPlayer(mP);
         // check if starting position is legal
         if (!t.isStartingPosition()) {
             System.err.println("Caught cheating: Player starts the game at an illegal position");
@@ -75,15 +75,17 @@ public class Server {
             return true;
         }
         else {
-            for (Tile tile : p.getHand()) {
+            for (Tile tile : p.getHand())
+            {
                 Tile copy = tile.copyTile();
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < 4; i++)
+                {
                     copy.rotateTile();
                     b.placeTile(copy, location[0], location[1]);
                     newT = simulateMove(currentT, b);
                     b.deleteTile(location[0], location[1]);
                     if (!newT.isOffBoard()) {
-                        // original rotation is illegal, as there are at least one
+                        // original rotation is illegal, as there is at least one
                         // 1. other legal rotation of this tile
                         // 2. other legal tile
                         return false;
@@ -91,7 +93,7 @@ public class Server {
                 }
             }
         }
-        // all possible moves lead to elimination, return true
+        // all possible moves lead to elimination
         return true;
     }
 
@@ -103,7 +105,10 @@ public class Server {
      */
     public List<SPlayer> playATurn(Tile t) {
         SPlayer currentP = inSPlayer.get(0);
-        // check if player is cheating
+        // *****************************************
+        // ****** Step 1: Contract Validation ******
+        // *****************************************
+        // check if player is cheating by purposefully playing an illegal move
         currentP.draw(t);
         if (!legalPlay(currentP, board, t)) {
             System.err.println("Caught cheating: Player tried to play an illegal tile while holding at least one other legal tile");
@@ -112,8 +117,14 @@ public class Server {
         currentP.deal(t);
         // check if this player's hand is legal at the start of this turn
         legalHand(currentP);
+
+        // ***********************************************
+        // ****** Step 2: Board & Player Operation *******
+        // ***********************************************
+        // place tile on the board
         int[] location = getAdjacentLocation(currentP.getToken());
         board.placeTile(t, location[0], location[1]);
+        // move all remaining players
         List<SPlayer> deadP = new ArrayList<>();
         int playerCount = inSPlayer.size();
         for(int i = 0; i < playerCount; i++)
@@ -128,6 +139,7 @@ public class Server {
                 playerCount --;
             }
             else {
+                // if this player is active player, do something
                 if (i == 0 && player.isSamePlayer(currentP)){
                     inSPlayer.remove(0);
                     inSPlayer.add(player);
@@ -144,7 +156,11 @@ public class Server {
         }
         // check if this player's hand is legal at the end of this turn
         legalHand(currentP);
-        // determine whether game is over
+
+        // ****************************************
+        // ** Step 3: Update Game Over Condition **
+        // ****************************************
+        // game over if board is full
         if (board.isFull()) {
             gameOver = true;
             if (inSPlayer.size() == 0) {
@@ -155,12 +171,13 @@ public class Server {
                 return inSPlayer;
             }
         }
+        // game over if only one player remains
         else if (inSPlayer.size() == 1) {
             gameOver = true;
             outSPlayer.addAll(deadP);
             return inSPlayer;
         }
-        // everyone is eliminated at this round
+        // game over if all remaining players are eliminated at this round
         else if (inSPlayer.size() == 0) {
             gameOver = true;
             inSPlayer.addAll(deadP);
@@ -245,7 +262,7 @@ public class Server {
         if (p.getMPlayer().state == MPlayer.State.INIT) {
             p.updateToken(p.getMPlayer().placePawn(board));
         }
-        else throw new IllegalArgumentException("Sequence Contracts: Cannot place pawn at this point");
+        else throw new IllegalArgumentException("Error: Sequence Contracts - cannot place pawn at this point");
 
     }
 
@@ -258,8 +275,54 @@ public class Server {
             Tile newTile = p.getMPlayer().playTurn(board, p.getHand(), drawPile.size());
             return newTile;
         }
-        else throw new IllegalArgumentException("Sequence Contracts: Cannot play turn at this time");
+        else {
+            throw new IllegalArgumentException("Error: Sequence Contracts - cannot play turn at this time");
+        }
+    }
 
+    /**
+     * Check whether player's hand is legal against behavior contracts
+     * @param p current player
+     */
+    private void legalHand(SPlayer p) {
+        List<Tile> hand = p.getHand();
+        if (hand.size() == 0 || hand == null) {
+            return;
+        }
+        // no more than three tiles
+        else if (hand.size() > 3) {
+            throw new IllegalArgumentException("Player's hand illegal: more than 3 tiles on hand");
+        }
+        List<Tile> pile = drawPile.getPile();
+        List<Tile> onBoard = board.getTileList();
+        List<Tile> inHands = new ArrayList<>();
+        for (SPlayer player : inSPlayer) {
+            inHands.addAll(player.getHand());
+        }
+        for (Tile playerTile : hand) {
+            // not already on board
+            for (Tile t : onBoard) {
+                if (t.isSameTile(playerTile)) {
+                    throw new IllegalArgumentException("Player's hand illegal: tile exists on board");
+                }
+            }
+            // not in the draw pile
+            for (Tile t : pile) {
+                if (t.isSameTile(playerTile)) {
+                    throw new IllegalArgumentException("Player's hand illegal: tile exists in draw pile");
+                }
+            }
+            // not in other player's hand or the current player's hand does not contain duplicate tiles
+            int count = 0;
+            for (Tile t : inHands) {
+                if (t.isSameTile(playerTile)) {
+                    count ++;
+                    if (count > 1) {
+                        throw new IllegalArgumentException("Player's hand illegal: tile exists in other player's hand");
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -316,56 +379,6 @@ public class Server {
             i++;
         }
         return -1;
-    }
-
-    /**
-     *
-     * @param p
-     * @return
-     */
-    private void legalHand(SPlayer p) {
-        List<Tile> hand = p.getHand();
-        if (hand.size() == 0 || hand == null) {
-            return;
-        }
-        // no more than three tiles
-        else if (hand.size() > 3) {
-            throw new IllegalArgumentException("Player's hand illegal: more than 3 tiles on hand");
-        }
-
-        List<Tile> pile = drawPile.getPile();
-        List<Tile> onBoard = board.getTileList();
-        List<Tile> inHands = new ArrayList<>();
-        for (SPlayer player : inSPlayer) {
-            inHands.addAll(player.getHand());
-        }
-
-        for (Tile playerTile : hand) {
-            // not already on board
-            for (Tile t : onBoard) {
-                if (t.isSameTile(playerTile)) {
-                    throw new IllegalArgumentException("Player's hand illegal: tile exists on board");
-                }
-            }
-            // not in the draw pile
-            for (Tile t : pile) {
-                if (t.isSameTile(playerTile)) {
-                    throw new IllegalArgumentException("Player's hand illegal: tile exists in draw pile");
-                }
-            }
-
-            // not in other player's hand or the current player's hand does not contain duplicate tiles
-            int count = 0;
-            for (Tile t : inHands) {
-                if (t.isSameTile(playerTile)) {
-                    count ++;
-                    if (count > 1) {
-                        throw new IllegalArgumentException("Player's hand illegal: tile exists in other player's hand");
-                    }
-                }
-            }
-
-        }
     }
 
     /**

@@ -2,7 +2,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Token {
-
     private final int color;
     private int indexOnTile;
     private int[] position;
