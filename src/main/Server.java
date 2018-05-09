@@ -59,7 +59,6 @@ public class Server {
      * @param t the tile that the player wishes to place on the board
      * @return true if this play is legal
      */
-    @SuppressWarnings("Duplicates")
     public boolean legalPlay(SPlayer p, Board b, Tile t) {
         // check condition (1) above
         if (!p.hasTile(t)) {
@@ -76,37 +75,18 @@ public class Server {
             return true;
         }
         else {
-            Tile copy = t.copyTile();
-            for (int i =0; i < 3; i++){
-                copy.rotateTile();
-                b.placeTile(copy, location[0], location[1]);
-                newT = simulateMove(currentT, b);
-                b.deleteTile(location[0], location[1]);
-                if (!newT.isOffBoard()) {
-                    // original rotation is illegal, as there is another legal rotation
-                    return false;
-                }
-            }
-            if (p.getHand().size() <= 1) {
-                // original rotation is legal as
-                // 1. only one tile in player's hand
-                // 2. all rotations of this tile leads to elimination
-                return true;
-            }
-            else {
-                for (Tile pt: p.getHand()){
-                    if (!t.isSameTile(pt)){
-                        copy = pt.copyTile();
-                        for (int i = 0; i < 4; i++) {
-                            copy.rotateTile();
-                            b.placeTile(copy, location[0], location[1]);
-                            newT = simulateMove(currentT, b);
-                            b.deleteTile(location[0], location[1]);
-                            if (!newT.isOffBoard()) {
-                                // original rotation is illegal, as there is another legal move
-                                return false;
-                            }
-                        }
+            for (Tile tile : p.getHand()) {
+                Tile copy = tile.copyTile();
+                for (int i = 0; i < 4; i++) {
+                    copy.rotateTile();
+                    b.placeTile(copy, location[0], location[1]);
+                    newT = simulateMove(currentT, b);
+                    b.deleteTile(location[0], location[1]);
+                    if (!newT.isOffBoard()) {
+                        // original rotation is illegal, as there are at least one
+                        // 1. other legal rotation of this tile
+                        // 2. other legal tile
+                        return false;
                     }
                 }
             }
