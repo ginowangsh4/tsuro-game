@@ -1,13 +1,18 @@
+package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class BoardTest {
+public class BoardTest {
 
     static Board b;
 
     @Test
-    void constructorTest() {
+    public void constructorTest() {
         b = new Board();
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
@@ -17,7 +22,7 @@ class BoardTest {
     }
 
     @Test
-    void placeDeleteTest() {
+    public void placeDeleteTest() {
         b = new Board();
         Tile tile1 = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         Tile tile2 = new Tile(new int[][]{{0, 5}, {1, 2}, {3, 6}, {4, 7}});
@@ -29,7 +34,7 @@ class BoardTest {
     }
 
     @Test
-    void placeTileThrowExceptionTest() {
+    public void placeTileThrowExceptionTest() {
         b = new Board();
         Tile tile1 = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         Tile tile2 = new Tile(new int[][]{{0, 5}, {1, 2}, {3, 6}, {4, 7}});
@@ -39,14 +44,14 @@ class BoardTest {
     }
 
     @Test
-    void deleteTileThrowExceptionTest() {
+    public void deleteTileThrowExceptionTest() {
         b = new Board();
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> b.deleteTile(9, 3));
         assertThrows(IllegalArgumentException.class, () -> b.deleteTile(3, 5));
     }
 
     @Test
-    void addRemoveUpdateTokenTest() {
+    public void addRemoveUpdateTokenTest() {
         b = new Board();
         Token t1 = new Token(1, 3, new int[]{0, 1});
         Token t2 = new Token(2, 7, new int[]{2, 3});
@@ -67,7 +72,7 @@ class BoardTest {
     }
 
     @Test
-    void addTokenThrowExceptionTest() {
+    public void addTokenThrowExceptionTest() {
         b = new Board();
         Token t1 = new Token(1, 5, new int[]{3, 5});
         Token t2 = new Token(1, 2, new int[]{0, 4});
@@ -76,14 +81,14 @@ class BoardTest {
     }
 
     @Test
-    void removeTokenThrowExceptionTest() {
+    public void removeTokenThrowExceptionTest() {
         b = new Board();
         Token t = new Token(1, 3, new int[]{0, 1});
         assertThrows(IllegalArgumentException.class, () -> b.removeToken(t));
     }
 
     @Test
-    void updateTokenThrowExceptionTest() {
+    public void updateTokenThrowExceptionTest() {
         b = new Board();
         Token t1 = new Token(1, 3, new int[]{0, 1});
         Token t2 = new Token(2, 7, new int[]{2, 3});

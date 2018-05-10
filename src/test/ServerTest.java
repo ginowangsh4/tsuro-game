@@ -1,3 +1,4 @@
+package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +17,7 @@ public class ServerTest {
     // Player 2 uses LeastSymmetric strategy
     // Player 3 uses MostSymmetric Strategy
     @Test
-    void TournamentTest(){
+    public void TournamentTest(){
         int winR = 0;
         int winLS = 0;
         int winMS = 0;
@@ -73,7 +74,7 @@ public class ServerTest {
     }
 
     @Test
-    void cheatIllegalStartingPosnTest() {
+    public void cheatIllegalStartingPosnTest() {
         int total = 10;
         for(int count = 0; count < total; count++) {
             b = new Board();
@@ -114,7 +115,7 @@ public class ServerTest {
     }
 
     @Test
-    void cheatIllegalTileTest() {
+    public void cheatIllegalTileTest() {
         Tile t1 = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t2 = new Tile(new int[][] {{0, 1}, {2, 4}, {3, 6}, {5, 7}});
         Tile t3 = new Tile(new int[][] {{0, 6}, {1, 5}, {2, 4}, {3, 7}});

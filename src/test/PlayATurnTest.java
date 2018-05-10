@@ -1,3 +1,4 @@
+package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +20,7 @@ public class PlayATurnTest {
     // Making a move where multiple players move at once
     // Making a move where multiple players are eliminated
     @Test
-    void playATurnTest1() {
+    public void playATurnTest1() {
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
         Tile tile2 = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
@@ -63,7 +64,7 @@ public class PlayATurnTest {
     // Making a move that causes a token to cross multiple tiles
     // Making a move where multiple players move at once
     @Test
-    void playATurnTest2() {
+    public void playATurnTest2() {
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
         tile = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
@@ -106,7 +107,7 @@ public class PlayATurnTest {
     // Making a move that causes a token to cross multiple tiles
     // Making a move where multiple players move at once
     @Test
-    void playATurnTest3() {
+    public void playATurnTest3() {
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,3}, {1,4}, {2,7}, {5,6}});
         Tile tile2 = new Tile(new int[][] {{0,7}, {1,5}, {2,6}, {3,4}});
@@ -149,7 +150,7 @@ public class PlayATurnTest {
     //         player 2 moves from an edge, doesn't get eliminated, and game is not over
     // Making a move from the edge
     @Test
-    void playATurnTest4(){
+    public void playATurnTest4(){
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile2 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});

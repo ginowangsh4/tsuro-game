@@ -1,10 +1,11 @@
+package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LegalPlayTest {
+public class LegalPlayTest {
 
     static Board b;
     static Token token;
@@ -15,7 +16,7 @@ class LegalPlayTest {
     // Test 1: original position is legal, and token is simulated to cross one tile
     // Making a legal move where tile is placed in its original position
     @Test
-    void legalPlayTest1() {
+    public void legalPlayTest1() {
         b = new Board();
         token = new Token(0, 4, new int[]{0, 0});
         tile = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
@@ -28,7 +29,7 @@ class LegalPlayTest {
     // Test 2: original position is legal, and token is simulated to cross two tiles
     // Making a legal move where tile is placed in its original position
     @Test
-    void legalPlayTest2() {
+    public void legalPlayTest2() {
         b = new Board();
         token = new Token(0, 4,new int[] {0,0});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
@@ -45,7 +46,7 @@ class LegalPlayTest {
     // Test 3: all rotations are legal, tile is rotated once, not placed in its original position
     // Making a legal move where the tile is not placed in its original position
     @Test
-    void legalPlayTest3() {
+    public void legalPlayTest3() {
         b = new Board();
         token = new Token(0, 1, new int[]{0, 1});
         Tile tile1 = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
@@ -62,7 +63,7 @@ class LegalPlayTest {
     // Test 4: original position is illegal, but no other tile is legal, and token is simulated to move to the edge
     // Making a legal move when all possible moves are illegal
     @Test
-    void legalPlayTest4() {
+    public void legalPlayTest4() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
@@ -79,7 +80,7 @@ class LegalPlayTest {
     // Test 5: tile is not in player's hand
     // Making a illegal move when player doesn't have this tile
     @Test
-    void legalPlayTest5() {
+    public void legalPlayTest5() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
@@ -93,7 +94,7 @@ class LegalPlayTest {
     // Test 6: original position is illegal, but other legal position exists for this tile
     // Making an illegal move where the move is an elimination move, but there are non-elimination move
     @Test
-    void legalPlayTest6() {
+    public void legalPlayTest6() {
         b = new Board();
         token = new Token(0, 4,new int[] {0,0});
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
@@ -108,7 +109,7 @@ class LegalPlayTest {
     // Test 7: all positions are illegal for this tile, but exists legal tiles in hand
     // Making an illegal move where the move is an elimination move, but there are non-elimination move
     @Test
-    void legalPlayTest7() {
+    public void legalPlayTest7() {
         b = new Board();
         token = new Token(0, 1,new int[] {0,1});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});

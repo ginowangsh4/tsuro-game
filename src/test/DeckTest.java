@@ -1,3 +1,4 @@
+package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
@@ -5,18 +6,18 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DeckTest {
+public class DeckTest {
 
     static Deck deck;
 
     @Test
-    void defaultConstructorTest() {
+    public void defaultConstructorTest() {
         deck = new Deck();
         assertEquals(35, deck.size(), "Error: Default deck constructor failed");
     }
 
     @Test
-    void customConstructorTest() {
+    public void customConstructorTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t2 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t3 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
@@ -31,7 +32,7 @@ class DeckTest {
     }
 
     @Test
-    void popTest() {
+    public void popTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t2 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t3 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
@@ -59,7 +60,7 @@ class DeckTest {
     }
 
     @Test
-    void peekTest() {
+    public void peekTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t2 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t3 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
@@ -76,7 +77,7 @@ class DeckTest {
     }
 
     @Test
-    void addAndShuffleTest() {
+    public void addAndShuffleTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t2 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t3 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});

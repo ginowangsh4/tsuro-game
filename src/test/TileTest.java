@@ -1,25 +1,26 @@
+package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TileTest {
+public class TileTest {
 
     static Board b;
 
     @Test
-    void constructorTest() {
+    public void constructorTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         assertTrue(Arrays.deepEquals(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t1.paths), "Error: Tile constructor failed");
     }
 
     @Test
-    void constructorThrowExceptionTest() {
+    public void constructorThrowExceptionTest() {
         assertThrows(IllegalArgumentException.class, () -> new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}, {8, 9}}));
         assertThrows(IllegalArgumentException.class, () -> new Tile(new int[][]{{0, 1, 2}, {2, 3}, {4, 5}, {6, 7}, {8, 9}}));
     }
 
     @Test
-    void rotateTileTest() {
+    public void rotateTileTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         t1.rotateTile();
         assertTrue(Arrays.deepEquals(new int[][]{{2, 3}, {4, 5}, {6, 7}, {0, 1}}, t1.paths), "Error: Rotate tile once failed");
@@ -39,21 +40,21 @@ class TileTest {
     }
 
     @Test
-    void isSameTileTest() {
+    public void isSameTileTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t2 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         assertTrue(t1.isSameTile(t2), "Error: Same tile check failed");
     }
 
     @Test
-    void copyTileTest() {
+    public void copyTileTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t2 = t1.copyTile();
         assertTrue(t1.isSameTile(t2), "Error: Copy tile failed");
     }
 
     @Test
-    void getTilePathEndTest() {
+    public void getTilePathEndTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         assertEquals(0, t1.getPathEnd(1));
         assertEquals(1, t1.getPathEnd(0));
@@ -67,6 +68,5 @@ class TileTest {
         assertThrows(IllegalArgumentException.class, () -> t1.getPathEnd(8));
         assertThrows(IllegalArgumentException.class, () -> t1.getPathEnd(Integer.MIN_VALUE));
         assertThrows(IllegalArgumentException.class, () -> t1.getPathEnd(Integer.MAX_VALUE));
-
     }
 }

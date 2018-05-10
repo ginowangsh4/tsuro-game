@@ -1,8 +1,9 @@
+package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class MPlayerTest {
+public class MPlayerTest {
 
     static Board b;
     static List<Tile> pile;
@@ -13,7 +14,7 @@ class MPlayerTest {
     static Server server = Server.getInstance();
 
     @Test
-    void placePawnTest(){
+    public void placePawnTest(){
         Board b = new Board();
         colors.addAll(Arrays.asList(0,1,2,3,4,5,6));
         for (int i = 0; i < 7; i++){
@@ -26,7 +27,7 @@ class MPlayerTest {
     }
 
     @Test
-    void reorderPathTest(){
+    public void reorderPathTest(){
         //This tile has two different ways it might be placed
         int[][] path1 = new int[][] {{0,4}, {1,5}, {2,7}, {3,6}}; // First way
         int[][] path2 = new int[][] {{0,5}, {1,4}, {2,6}, {3,7}}; // Second way
@@ -64,7 +65,7 @@ class MPlayerTest {
     }
 
     @Test
-    void countDiffPathsTest(){
+    public void countDiffPathsTest(){
         // this tile has only one way to be placed
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         assertEquals(1, symmetricTile.countDiffPaths(), "Error: a symmetric tile has " +
@@ -85,7 +86,7 @@ class MPlayerTest {
     }
 
     @Test
-    void sortSymmetricTilesTest() {
+    public void sortSymmetricTilesTest() {
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile halfSymmetricTile = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
         Tile asymmetricTile = new Tile(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}});
@@ -118,7 +119,7 @@ class MPlayerTest {
     // rotate twice legal and rotate three times legal
     // Expect return the third tile after two rotations
     @Test
-    void leastSymmetricStrategyTest1() {
+    public void leastSymmetricStrategyTest1() {
         b = new Board();
         Tile tile0 = new Tile(new int[][] {{0, 7}, {1, 4}, {2, 6}, {3, 5}});
         b.placeTile(tile0, 0, 0);
@@ -164,7 +165,7 @@ class MPlayerTest {
     // rotate twice illegal and rotate three times legal
     // Expect return the third tile after three rotations
     @Test
-    void leastSymmetricStrategyTest2() {
+    public void leastSymmetricStrategyTest2() {
         b = new Board();
         Tile tile0 = new Tile(new int[][] {{0, 7}, {1, 4}, {2, 6}, {3, 5}});
         b.placeTile(tile0, 0, 0);
@@ -210,7 +211,7 @@ class MPlayerTest {
     // rotate twice legal and rotate three times legal
     // Expect return first tile in original rotation.
     @Test
-    void mostSymmetricStrategyTest() {
+    public void mostSymmetricStrategyTest() {
         b = new Board();
         Tile tile0 = new Tile(new int[][] {{0, 7}, {1, 4}, {2, 6}, {3, 5}});
         b.placeTile(tile0, 0, 0);

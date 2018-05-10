@@ -1,3 +1,4 @@
+package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class DragonTest {
 
     // Moving where no player has the dragon tile before or after
     @Test
-    void dragonTest1(){
+    public void dragonTest1(){
         b = new Board();
         deck = new Deck();
         t1 = new Token(1, 4, new int[]{0, -1});
@@ -63,7 +64,7 @@ public class DragonTest {
     // This means in SPlayer A plays a card but cannot draw any as SPlayer B has the dragon tile
     // and the deck is empty
     @Test
-    void dragonTest2() {
+    public void dragonTest2() {
         b = new Board();
         List<Tile> pile = new ArrayList<>();
         Tile tile1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
@@ -122,7 +123,7 @@ public class DragonTest {
 
     // Moving where the player that has the dragon tile makes a move that causes an elimination (of another player)
     @Test
-    void dragonTest3() {
+    public void dragonTest3() {
         b = new Board();
         //Tiles that are already on board
         Tile tb1 = new Tile(new int[][] {{0, 3}, {1, 4}, {2, 7}, {5, 6}});
@@ -175,7 +176,7 @@ public class DragonTest {
     // Moving where a player that does not have the dragon tile makes a move and it causes an elimination of
     // the player that has the dragon tile
     @Test
-    void dragonTest4() {
+    public void dragonTest4() {
         b = new Board();
         //Tiles that are already on board
         Tile tb1 = new Tile(new int[][] {{0, 3}, {1, 4}, {2, 7}, {5, 6}});
@@ -227,7 +228,7 @@ public class DragonTest {
 
     // Moving where the player that has the dragon tile makes a move that causes themselves to be eliminated
     @Test
-    void dragonTest5() {
+    public void dragonTest5() {
         b = new Board();
         //Tiles that are already on board
         Tile tb1 = new Tile(new int[][] {{0, 3}, {1, 4}, {2, 7}, {5, 6}});

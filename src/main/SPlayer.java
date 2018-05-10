@@ -1,3 +1,4 @@
+package tsuro;
 import java.util.*;
 
 public class SPlayer {
