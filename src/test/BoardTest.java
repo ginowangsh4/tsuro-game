@@ -1,9 +1,7 @@
 package tsuro;
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 import static org.junit.jupiter.api.Assertions.*;
 

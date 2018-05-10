@@ -1,10 +1,12 @@
 ## Tsuro-Game
 
-Implementation of classic board game Tsuro with Java 7
+Implementation of board game Tsuro with Java
 
 * Jin Han jinhan2019@u.northwestern.edu
 * Gino Wang ginowang.sh@u.northwestern.edu
 
-Run with IntelliJ IDEA: Open Project -> Right Click "test/" -> Click "Run All Test"
+Run all tests: Navigate to `./` and run with `make test`
 
-Run with command line: `javac -classpath lib/ -d bin/ src/main/*.java`, `javac -classpath lib/ -d bin/ src/test/*.java`, to be finished
+Run a single test: Compile with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java` -> Run with `java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c TESTNAME` 
+
+Run with IntelliJ IDEA: Open project -> Right click `test/` -> Click "Run All Test"
