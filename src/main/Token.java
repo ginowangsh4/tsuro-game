@@ -17,7 +17,7 @@ public class Token {
             put(7, "PURPLE");
     }};
 
-    Token (int color, int indexOnTile, int[] position) {
+    Token(int color, int indexOnTile, int[] position) {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid token color");
         }
@@ -29,13 +29,17 @@ public class Token {
         this.position = position;
     }
 
-    public int getColor(){ return this.color; }
+    public int getColor() {
+        return this.color;
+    }
 
-    public String getColorStr(){ return this.colorMap.get(this.color); }
+    public int getIndex() {
+        return indexOnTile;
+    }
 
-    public int getIndex() { return indexOnTile; }
-
-    public int[] getPosition() { return position; }
+    public int[] getPosition() {
+        return position;
+    }
 
     /**
      * Check whether two tokens are the same based on color
@@ -43,7 +47,7 @@ public class Token {
      * @return true of the two tokens are the same; false if not
      */
     public boolean sameColor(Token t) {
-        return this.color == t.color ? true:false;
+        return this.color == t.color;
     }
 
     /**
@@ -52,11 +56,10 @@ public class Token {
      * @return true of the two tokens are the same; false if not
      */
     public boolean equals(Token t) {
-        return (this.color == t.color &&
+        return this.color == t.color &&
                 this.indexOnTile == t.indexOnTile &&
                 this.position[0] == t.position[0] &&
-                this.position[1] == t.position[1])
-                ? true : false;
+                this.position[1] == t.position[1];
     }
 
     /**

@@ -15,7 +15,7 @@ public class Tile {
         put(7, 2);
     }};
 
-    Tile (int[][] paths) {
+    Tile(int[][] paths) {
         if (paths.length != 4 || paths[0].length != 2) {
             throw new IllegalArgumentException("Path is not a 4 x 2 matrix");
         }

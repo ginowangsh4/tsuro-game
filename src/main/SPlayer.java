@@ -13,21 +13,20 @@ public class SPlayer {
         this.name = name;
     }
 
-    /**
-     * Link SPlayer to its corresponding MPlayer based on color
-     * @param mPlayer machine player to be linked
-     */
     public void linkMPlayer(MPlayer mPlayer){
         if (mPlayer.getColor() != this.token.getColor())
             throw new IllegalArgumentException("SPlayer and MPlayer mismatch");
         this.MPlayer = mPlayer;
     }
 
-    public MPlayer getMPlayer() { return this.MPlayer; }
+    public MPlayer getMPlayer() {
+        return this.MPlayer;
+    }
 
     public boolean isSamePlayer(SPlayer player) {
         return this.getToken().getColor() == player.getToken().getColor();
     }
+
     /**
      * Check if a player has this input tile on hand
      * @param tile to be checked
@@ -46,7 +45,9 @@ public class SPlayer {
      * Get a player's token
      * @return a token
      */
-    public Token getToken() { return this.token; }
+    public Token getToken() {
+        return this.token;
+    }
 
     /**
      * Update a player's token
@@ -60,13 +61,12 @@ public class SPlayer {
 
     /**
      * SPlayer draws a tile
-     *
      * @param t tile to be added to the player's hand
      */
     public void draw(Tile t) {
         for (Tile tile: hand) {
             if (t.isSameTile(tile)) {
-                throw new IllegalArgumentException("The tile to be drew is already in player's hand");
+                throw new IllegalArgumentException("The tile to be drawn is already in player's hand");
             }
         }
         hand.add(t);

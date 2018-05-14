@@ -76,11 +76,9 @@ public class Server {
             return true;
         }
         else {
-            for (Tile tile : p.getHand())
-            {
+            for (Tile tile : p.getHand()) {
                 Tile copy = tile.copyTile();
-                for (int i = 0; i < 4; i++)
-                {
+                for (int i = 0; i < 4; i++) {
                     copy.rotateTile();
                     b.placeTile(copy, location[0], location[1]);
                     newT = simulateMove(currentT, b);
@@ -128,7 +126,7 @@ public class Server {
         // move all remaining players
         List<SPlayer> deadP = new ArrayList<>();
         int playerCount = inSPlayer.size();
-        for(int i = 0; i < playerCount; i++)
+        for (int i = 0; i < playerCount; i++)
         {
             SPlayer player = inSPlayer.get(i);
             Token token = simulateMove(player.getToken(), board);
@@ -386,13 +384,17 @@ public class Server {
      * Check whether a game is over
      * @return true if game is over
      */
-    public boolean isGameOver() { return this.gameOver; }
+    public boolean isGameOver() {
+        return this.gameOver;
+    }
 
     /**
      * Set status of the game, mainly used by unit tests
      * @param b boolean value to set
      */
-    public void setGameOver(boolean b) {this.gameOver = b; }
+    public void setGameOver(boolean b) {
+        this.gameOver = b;
+    }
 }
 
 

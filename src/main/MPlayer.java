@@ -7,14 +7,14 @@ import java.util.Random;
 public class MPlayer implements IPlayer {
     private String name;
     private int color;
-    private List<Integer> colors; // A list of player's colors in the order that the game will be played
-    public String Strategy; // Machine player's strategy
+    private List<Integer> colors;
     private boolean isWinner;
+
+    public String Strategy;
     public State state;
+    public enum State { INIT, PLACE, PLAY, END }
 
-    public enum State { INIT, PLACE, PLAY, END}
-
-    MPlayer (String Strategy) {
+    MPlayer(String Strategy) {
         if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS"))) {
             throw new IllegalArgumentException("Invalid strategy type for machine player");
         }
@@ -159,5 +159,7 @@ public class MPlayer implements IPlayer {
         return this.name;
     }
 
-    public int getColor() {return this.color;}
+    public int getColor() {
+        return this.color;
+    }
 }
