@@ -68,20 +68,20 @@ public class MPlayerTest {
     public void countDiffPathsTest(){
         // this tile has only one way to be placed
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
-        assertEquals(1, symmetricTile.countDiffPaths(), "Error: a symmetric tile has " +
+        assertEquals(1, symmetricTile.countSymmetricPaths(), "Error: a symmetric tile has " +
                 " only one way to be placed" );
 
         // this tile has two ways to be placed
         Tile halfSymmetricTile = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
-        assertEquals(2, halfSymmetricTile.countDiffPaths(), "Error: a half symmetric tile has" +
+        assertEquals(2, halfSymmetricTile.countSymmetricPaths(), "Error: a half symmetric tile has" +
                 " two ways to be placed" );
 
         // this tile has four ways to be placed
         Tile asymmetricTile1 = new Tile(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}});
-        assertEquals(4, asymmetricTile1.countDiffPaths(), "Error: a asymmetric tile has" +
+        assertEquals(4, asymmetricTile1.countSymmetricPaths(), "Error: a asymmetric tile has" +
                 " four ways to be placed" );
         Tile asymmetricTile2 = new Tile(new int[][] {{0, 4}, {1, 6}, {2, 7}, {3, 5}});
-        assertEquals(4, asymmetricTile2.countDiffPaths(), "Error: a asymmetric tile has" +
+        assertEquals(4, asymmetricTile2.countSymmetricPaths(), "Error: a asymmetric tile has" +
                 " four ways to be placed" );
     }
 

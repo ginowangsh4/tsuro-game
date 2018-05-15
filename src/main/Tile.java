@@ -47,6 +47,7 @@ public class Tile {
 
     /**
      * Rotate a given tile clockwise by 90 degrees
+     * Mutate the path of this tile
      */
     public void rotateTile() {
         for (int side = 0; side < paths.length; side++) {
@@ -57,7 +58,7 @@ public class Tile {
     }
 
     /**
-     * Duplicate a given tile
+     * Duplicate a given tile which remains unchanged after being copied
      * @return a copy of a given tile
      */
     public Tile copyTile(){
@@ -70,17 +71,18 @@ public class Tile {
     }
 
     /**
-     * Check whether two tiles are equal
+     * Check whether two tiles are equal; both tiles' path is unchanged
      * @param tile the tile to be checked against
      * @return true if equal; false if not
      */
     public boolean isSameTile(Tile tile) {
-        reorderPath();
+        Tile aTile = copyTile();
+        aTile.reorderPath();
         Tile tempTile = tile.copyTile();
         for (int i = 0; i < 4; i++) {
             tempTile.rotateTile();
             tempTile.reorderPath();
-            if (Arrays.deepEquals(tempTile.paths, this.paths)) {
+            if (Arrays.deepEquals(tempTile.paths, aTile.paths)) {
                 return true;
             }
         }
@@ -116,7 +118,7 @@ public class Tile {
      * Count the number of ways a given tile can be placed
      * @return the number of ways it can be placed
      */
-    public int countDiffPaths(){
+    public int countSymmetricPaths(){
         // make sure every tile has correct path order before be placed on board
         reorderPath();
         int count = 1;
@@ -144,6 +146,28 @@ public class Tile {
         }
         Arrays.sort(this.paths, new ListFirstElementComparator());
     }
+
+    public void print() {
+        System.out.print("{ ");
+        for (int i = 0; i < 4; i++) {
+            System.out.print("{" + paths[i][0] + ", " + paths[i][1] + "}");
+            if (i != 3) {
+                System.out.print(" , ");
+            }
+        }
+        System.out.println(" }");
+    }
+
+    public static void main(String[] args) {
+        Tile t;
+        t = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
+        //t = new Tile(new int[][] {{0, 1}, {2, 4}, {3, 6}, {5, 7}});
+        t.print();
+        t.rotateTile();
+        t.print();
+        t.reorderPath();
+        t.print();
+    }
 }
 
 /**
@@ -158,10 +182,10 @@ class SymmetricComparator implements Comparator<Tile> {
     // else return 0
     // order is from most symmetric to least symmetric
     public int compare(Tile a, Tile b){
-        if (a.countDiffPaths() == b.countDiffPaths()){
+        if (a.countSymmetricPaths() == b.countSymmetricPaths()){
             return 0;
         }
-        return a.countDiffPaths() < b.countDiffPaths() ? -1 : 1;
+        return a.countSymmetricPaths() < b.countSymmetricPaths() ? -1 : 1;
     }
 }
 
