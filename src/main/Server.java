@@ -194,8 +194,8 @@ public class Server {
      */
     private Token simulateMove(Token token, Board board) {
         // next location the token can go on
-        int[] location = getAdjacentLocation(token);
-        Tile nextTile = board.getTile(location[0], location[1]);
+        int[] newPosition = getAdjacentLocation(token);
+        Tile nextTile = board.getTile(newPosition[0], newPosition[1]);
         // base case, return if reached the end of path
         if (nextTile == null) {
             return token;
@@ -204,7 +204,7 @@ public class Server {
         int pathStart = nextTile.neighborIndex.get(token.getIndex());
         int pathEnd = nextTile.getPathEnd(pathStart);
         // recursion step
-        Token nt = new Token(token.getColor(), pathEnd, location);
+        Token nt = new Token(token.getColor(), pathEnd, newPosition);
         return simulateMove(nt, board);
     }
 

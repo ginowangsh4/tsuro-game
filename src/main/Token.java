@@ -37,9 +37,14 @@ public class Token {
         return indexOnTile;
     }
 
+    public void setIndex(int indexOnTile) { this.indexOnTile = indexOnTile; }
+
     public int[] getPosition() {
         return position;
     }
+
+    public void setPosition(int[] position) { this.position = position; }
+
 
     /**
      * Check whether two tokens are the same based on color

@@ -2,9 +2,9 @@
 
 Implementation of board game Tsuro with Java
 
-* Jennifer Liu jenniferliu2018@u.northwestern.edu (current)
-* Gino Wang ginowang.sh@u.northwestern.edu (current)
-* Jin Han jinhan2019@u.northwestern.edu (past)
+* Jennifer Liu - jenniferliu2018@u.northwestern.edu 
+* Gino Wang - ginowang.sh@u.northwestern.edu 
+* Jin Han - jinhan2019@u.northwestern.edu
 
 Run all tests: Navigate to `./` and run with `make test`
 
