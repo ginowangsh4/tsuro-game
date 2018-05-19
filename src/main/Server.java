@@ -1,4 +1,10 @@
 package tsuro;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 
 public class Server {
@@ -12,7 +18,12 @@ public class Server {
 
     // singleton pattern
     private static Server server = null;
-    private Server() {}
+    private Server() {
+        this.board = new Board();
+        this.drawPile = new Deck();
+        this.inSPlayer = new ArrayList<>();
+        this.outSPlayer = new ArrayList<>();
+    }
 
     public static Server getInstance() {
         if (server == null) {
@@ -21,6 +32,7 @@ public class Server {
         return server;
     }
 
+    // mainly used by unit tests
     public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, Deck drawPile) {
         this.board = board;
         this.inSPlayer = inSPlayer;
@@ -30,19 +42,64 @@ public class Server {
         this.gameOver = false;
     }
 
+    public void startGame() throws Exception {
+        ServerSocket listenerSocket = new ServerSocket(6666);
+        Socket socket = listenerSocket.accept();
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            List<Integer> colors = new ArrayList<>();
+
+            RemotePlayer rP = new RemotePlayer(0, socket, db);
+            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
+            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
+            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS);
+            colors.add(0);
+            colors.add(1);
+            colors.add(2);
+            colors.add(3);
+            rP.initialize(0, colors);
+            mP1.initialize(1, colors);
+            mP2.initialize(2, colors);
+            mP3.initialize(3, colors);
+            Token t0 = rP.placePawn(board);
+            server.registerPlayer(rP, t0);
+            Token t1 = mP1.placePawn(board);
+            server.registerPlayer(mP1, t1);
+            Token t2 = mP2.placePawn(board);
+            server.registerPlayer(mP2, t2);
+            Token t3 = mP3.placePawn(board);
+            server.registerPlayer(mP3, t3);
+
+            while(!server.isGameOver()) {
+                SPlayer currentP = inSPlayer.get(0);
+                Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
+                currentP.deal(tileToPlay);
+                server.playATurn(tileToPlay);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } finally {
+            listenerSocket.close();
+        }
+    }
+
     /**
      * Register a MPlayer with Server: create a SPlayer instance based on the given MPlayer
-     * @param mP a given MPlayer
+     * @param player a given player
      */
-    public void registerPlayer(MPlayer mP, Token t) {
+    public void registerPlayer(IPlayer player, Token t) {
         List<Tile> hand = new ArrayList<>();
-        SPlayer sP = new SPlayer(t, hand, mP.getName());
-        sP.linkMPlayer(mP);
+        SPlayer sP = new SPlayer(t, hand, player.getName());
+        sP.linkMPlayer(player);
         // check if starting position is legal
-        if (!t.isStartingPosition()) {
-            System.err.println("Caught cheating: Player starts the game at an illegal position");
-            playerCheatIllegalPawn(sP);
-        }
+//        if (!t.isStartingPosition()) {
+//            System.err.println("Caught cheating: Player starts the game at an illegal position");
+//            playerCheatIllegalPawn(sP);
+//        }
         inSPlayer.add(sP);
         board.addToken(sP.getToken());
         for (int i = 0; i < 3; i++){
@@ -116,13 +173,13 @@ public class Server {
         // *****************************************
         // ****** Step 1: Contract Validation ******
         // *****************************************
-        // check if player is cheating by purposefully playing an illegal move
-        currentP.draw(t);
-        if (!legalPlay(currentP, board, t)) {
-            System.err.println("Caught cheating: Player tried to play an illegal tile while holding at least one other legal tile");
-            t = playerCheatIllegalTile(currentP, t);
-        }
-        currentP.deal(t);
+//        // check if player is cheating by purposefully playing an illegal move
+//        currentP.draw(t);
+//        if (!legalPlay(currentP, board, t)) {
+//            System.err.println("Caught cheating: Player tried to play an illegal tile while holding at least one other legal tile");
+//            t = playerCheatIllegalTile(currentP, t);
+//        }
+//        currentP.deal(t);
         // check if this player's hand is legal at the start of this turn
         legalHand(currentP);
 
@@ -264,29 +321,28 @@ public class Server {
         // System.out.println("Eliminated player " + p.getMPlayer().getName());
     }
 
-    public void playerCheatIllegalPawn(SPlayer p) {
-        System.out.println("Player " + p.getMPlayer().getName() + " cheated and is replaced by a random machine player");
-        p.getMPlayer().strategy = "R";
-        if (p.getMPlayer().state == MPlayer.State.INIT) {
-            p.updateToken(p.getMPlayer().placePawn(board));
-        }
-        else throw new IllegalArgumentException("Error: Sequence Contracts - cannot place pawn at this point");
-
-    }
-
-    public Tile playerCheatIllegalTile(SPlayer p, Tile oldTile) {
-        System.out.println("Player " + p.getMPlayer().getName() + " cheated and is replaced by a random machine player");
-        p.getMPlayer().strategy = "R";
-        p.deal(oldTile);
-        if (p.getMPlayer().state == MPlayer.State.PLACE ||
-                p.getMPlayer().state == MPlayer.State.PLAY) {
-            Tile newTile = p.getMPlayer().playTurn(board, p.getHand(), drawPile.size());
-            return newTile;
-        }
-        else {
-            throw new IllegalArgumentException("Error: Sequence Contracts - cannot play turn at this time");
-        }
-    }
+//    public void playerCheatIllegalPawn(SPlayer p) {
+//        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
+//        p.getPlayer().strategy = "R";
+//        if (p.getPlayer().state == MPlayer.State.INIT) {
+//            p.updateToken(p.getPlayer().placePawn(board));
+//        }
+//        else throw new IllegalArgumentException("Error: Sequence Contracts - cannot place pawn at this point");
+//    }
+//
+//    public Tile playerCheatIllegalTile(SPlayer p, Tile oldTile) {
+//        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
+//        p.getPlayer().strategy = MPlayer.Strategy.R;
+//        p.deal(oldTile);
+//        if (p.getPlayer().state == MPlayer.State.PLACE ||
+//                p.getPlayer().state == MPlayer.State.PLAY) {
+//            Tile newTile = p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
+//            return newTile;
+//        }
+//        else {
+//            throw new IllegalArgumentException("Error: Sequence Contracts - cannot play turn at this time");
+//        }
+//    }
 
     /**
      * Check whether player's hand is legal against behavior contracts

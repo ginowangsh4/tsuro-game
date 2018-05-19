@@ -5,7 +5,7 @@ public class SPlayer {
     private Token token;
     private List<Tile> hand;
     private String name;
-    private MPlayer MPlayer;
+    private IPlayer player;
 
     SPlayer(Token token, List<Tile> hand, String name) {
         this.token = token;
@@ -13,14 +13,18 @@ public class SPlayer {
         this.name = name;
     }
 
-    public void linkMPlayer(MPlayer mPlayer){
-        if (mPlayer.getColor() != this.token.getColor())
+    public void linkMPlayer(IPlayer player){
+        if (player.getName() != name)
             throw new IllegalArgumentException("SPlayer and MPlayer mismatch");
-        this.MPlayer = mPlayer;
+        this.player = player;
+    }
+
+    public IPlayer getPlayer() {
+        return this.player;
     }
 
     public MPlayer getMPlayer() {
-        return this.MPlayer;
+        return (MPlayer) this.player;
     }
 
     public boolean isSamePlayer(SPlayer player) {

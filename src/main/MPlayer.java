@@ -10,16 +10,21 @@ public class MPlayer implements IPlayer {
     private List<Integer> colors;
     private boolean isWinner;
 
-    public String strategy;
+    public Strategy strategy;
     public enum Strategy { R, MS, LS }
     public State state;
     public enum State { INIT, PLACE, PLAY, END }
 
-    MPlayer(String Strategy) {
-        if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS"))) {
-            throw new IllegalArgumentException("Invalid strategy type for machine player");
-        }
-        this.strategy = Strategy;
+    MPlayer(Strategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getColor() {
+        return this.color;
     }
 
     public void initialize (int color, List<Integer> colors) {
@@ -125,15 +130,15 @@ public class MPlayer implements IPlayer {
             }
         }
         switch (strategy) {
-            case "R": {
+            case R: {
                 Random rand = new Random();
                 return legalMoves.get(rand.nextInt(legalMoves.size()));
             }
-            case "MS": {
+            case MS: {
                 Collections.sort(legalMoves, new SymmetricComparator());
                 return legalMoves.get(0);
             }
-            case "LS": {
+            case LS: {
                 Collections.sort(legalMoves, new SymmetricComparator());
                 return legalMoves.get(legalMoves.size() - 1);
             }
@@ -154,13 +159,5 @@ public class MPlayer implements IPlayer {
             this.isWinner = true;
         }
         this.isWinner = false;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getColor() {
-        return this.color;
     }
 }

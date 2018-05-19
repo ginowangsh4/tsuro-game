@@ -18,7 +18,7 @@ public class MPlayerTest {
         Board b = new Board();
         colors.addAll(Arrays.asList(0,1,2,3,4,5,6));
         for (int i = 0; i < 7; i++){
-            MPlayer p = new MPlayer("R");
+            MPlayer p = new MPlayer(MPlayer.Strategy.R);
             p.initialize(i, colors);
             Token t = p.placePawn(b);
             b.addToken(t);
@@ -143,7 +143,7 @@ public class MPlayerTest {
 
         server.setState(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer("LS");
+        MPlayer mPlayer = new MPlayer(MPlayer.Strategy.LS);
         colors.add(1);
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLACE;
@@ -189,7 +189,7 @@ public class MPlayerTest {
 
         server.setState(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer("LS");
+        MPlayer mPlayer = new MPlayer(MPlayer.Strategy.LS);
         colors.add(1);
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLACE;
@@ -235,7 +235,7 @@ public class MPlayerTest {
 
         server.setState(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mPlayer = new MPlayer( "MS");
+        MPlayer mPlayer = new MPlayer( MPlayer.Strategy.MS);
         colors.add(1);
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLACE;

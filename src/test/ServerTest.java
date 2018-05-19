@@ -30,9 +30,9 @@ public class ServerTest {
             deck = new Deck();
             server.setState(b, inSPlayer, outSPlayer, deck);
 
-            MPlayer mP1 = new MPlayer("R");
-            MPlayer mP2 = new MPlayer("LS");
-            MPlayer mP3 = new MPlayer("MS");
+            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
+            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
+            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS);
             colors.add(1);
             colors.add(2);
             colors.add(3);
@@ -51,14 +51,14 @@ public class ServerTest {
 
             while(!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
-                Tile tileToPlay = currentP.getMPlayer().playTurn(b, currentP.getHand(), deck.size());
+                Tile tileToPlay = currentP.getPlayer().playTurn(b, currentP.getHand(), deck.size());
                 currentP.deal(tileToPlay);
                 winners = server.playATurn(tileToPlay);
             }
 
-            for (SPlayer p: winners){
-                if (p.getMPlayer().strategy == "R") winR ++;
-                else if (p.getMPlayer().strategy == "LS") winLS ++;
+            for (SPlayer p: winners) {
+                if (p.getMPlayer().strategy.equals(MPlayer.Strategy.R)) winR ++;
+                else if (p.getMPlayer().strategy.equals(MPlayer.Strategy.LS)) winLS ++;
                 else winMS++;
             }
         }
@@ -83,9 +83,9 @@ public class ServerTest {
             deck = new Deck();
             server.setState(b, inSPlayer, outSPlayer, deck);
 
-            MPlayer mP1 = new MPlayer("R");
-            MPlayer mP2 = new MPlayer("LS");
-            MPlayer mP3 = new MPlayer("MS");
+            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
+            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
+            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS);
             colors.add(1);
             colors.add(2);
             colors.add(3);
@@ -102,14 +102,14 @@ public class ServerTest {
 
             while (!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
-                Tile tileToPlay = currentP.getMPlayer().playTurn(b, currentP.getHand(), deck.size());
+                Tile tileToPlay = currentP.getPlayer().playTurn(b, currentP.getHand(), deck.size());
                 currentP.deal(tileToPlay);
                 server.playATurn(tileToPlay);
             }
 
-            assertEquals("R", mP1.strategy, "Error: Player 1's cheating is not caught");
-            assertEquals("R", mP2.strategy, "Error: Player 2's cheating is not caught");
-            assertEquals("R", mP3.strategy, "Error: Player 3's cheating is not caught");
+            assertEquals(MPlayer.Strategy.R, mP1.strategy, "Error: Player 1's cheating is not caught");
+            assertEquals(MPlayer.Strategy.R, mP2.strategy, "Error: Player 2's cheating is not caught");
+            assertEquals(MPlayer.Strategy.R, mP3.strategy, "Error: Player 3's cheating is not caught");
             assertEquals(true, server.isGameOver());
         }
     }
@@ -128,7 +128,7 @@ public class ServerTest {
 
         server.setState(b, inSPlayer, outSPlayer, deck);
 
-        MPlayer mP = new MPlayer("LS");
+        MPlayer mP = new MPlayer(MPlayer.Strategy.LS);
         colors.add(1);
         mP.initialize(1, colors);
         Token token = mP.placePawn(b);
@@ -139,7 +139,7 @@ public class ServerTest {
         currentP.deal(tileToPlay);
         server.playATurn(tileToPlay);
 
-        assertEquals("R", mP.strategy, "Error: Player's cheating is not caught");
+        assertEquals(MPlayer.Strategy.R, mP.strategy, "Error: Player's cheating is not caught");
         assertEquals(true, server.isGameOver());
     }
 }
