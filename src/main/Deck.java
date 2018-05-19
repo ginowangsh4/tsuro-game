@@ -69,6 +69,15 @@ public class Deck {
         return pile.get(0);
     }
 
+    public boolean containsTile(Tile tile) {
+        for (Tile t : pile) {
+            if (tile.isSameTile(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void shuffle() {
         Collections.shuffle(pile);
     }

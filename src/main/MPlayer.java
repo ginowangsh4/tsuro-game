@@ -10,7 +10,8 @@ public class MPlayer implements IPlayer {
     private List<Integer> colors;
     private boolean isWinner;
 
-    public String Strategy;
+    public String strategy;
+    public enum Strategy { R, MS, LS }
     public State state;
     public enum State { INIT, PLACE, PLAY, END }
 
@@ -18,7 +19,7 @@ public class MPlayer implements IPlayer {
         if (!(Strategy.equals("R") || Strategy.equals("MS") || Strategy.equals("LS"))) {
             throw new IllegalArgumentException("Invalid strategy type for machine player");
         }
-        this.Strategy = Strategy;
+        this.strategy = Strategy;
     }
 
     public void initialize (int color, List<Integer> colors) {
@@ -60,7 +61,7 @@ public class MPlayer implements IPlayer {
             int sideIndex = rand.nextInt(12);
             switch (side) {
                 case 0: {
-                    x = sideIndex / 2; //from 1 to 5
+                    x = sideIndex / 2; //from 0 to 5
                     y = -1;
                     indexOnTile = sideIndex % 2 + 4;
                     break;
@@ -115,15 +116,15 @@ public class MPlayer implements IPlayer {
         for (Tile t : hand) {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
-                SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand, getName());
-                tempPlayer.linkMPlayer(this);
-                if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
+//                SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand, getName());
+//                tempPlayer.linkMPlayer(this);
+                if (Server.getInstance().legalPlay(this, b, copy)) {
                     legalMoves.add(copy.copyTile());
                 }
                 copy.rotateTile();
             }
         }
-        switch (Strategy) {
+        switch (strategy) {
             case "R": {
                 Random rand = new Random();
                 return legalMoves.get(rand.nextInt(legalMoves.size()));

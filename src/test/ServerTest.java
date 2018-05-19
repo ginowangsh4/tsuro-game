@@ -21,7 +21,7 @@ public class ServerTest {
         int winR = 0;
         int winLS = 0;
         int winMS = 0;
-        int total = 100;
+        int total = 10;
 
         for(int count = 0; count < total; count++){
             b = new Board();
@@ -57,8 +57,8 @@ public class ServerTest {
             }
 
             for (SPlayer p: winners){
-                if (p.getMPlayer().Strategy == "R") winR ++;
-                else if (p.getMPlayer().Strategy == "LS") winLS ++;
+                if (p.getMPlayer().strategy == "R") winR ++;
+                else if (p.getMPlayer().strategy == "LS") winLS ++;
                 else winMS++;
             }
         }
@@ -107,9 +107,9 @@ public class ServerTest {
                 server.playATurn(tileToPlay);
             }
 
-            assertEquals("R", mP1.Strategy, "Error: Player 1's cheating is not caught");
-            assertEquals("R", mP2.Strategy, "Error: Player 2's cheating is not caught");
-            assertEquals("R", mP3.Strategy, "Error: Player 3's cheating is not caught");
+            assertEquals("R", mP1.strategy, "Error: Player 1's cheating is not caught");
+            assertEquals("R", mP2.strategy, "Error: Player 2's cheating is not caught");
+            assertEquals("R", mP3.strategy, "Error: Player 3's cheating is not caught");
             assertEquals(true, server.isGameOver());
         }
     }
@@ -139,7 +139,7 @@ public class ServerTest {
         currentP.deal(tileToPlay);
         server.playATurn(tileToPlay);
 
-        assertEquals("R", mP.Strategy, "Error: Player's cheating is not caught");
+        assertEquals("R", mP.strategy, "Error: Player's cheating is not caught");
         assertEquals(true, server.isGameOver());
     }
 }

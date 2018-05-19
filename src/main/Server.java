@@ -96,6 +96,15 @@ public class Server {
         return true;
     }
 
+    public boolean legalPlay(MPlayer mp, Board b, Tile t) {
+        for (SPlayer sp : inSPlayer) {
+            if (mp.getColor() == sp.getToken().getColor()) {
+                return legalPlay(sp, b, t);
+            }
+        }
+        throw new IllegalArgumentException("Caught cheating: Dead player tries to play turn");
+    }
+
     /**
      * Computes the state of the game after the completion of a turn given the state of the game before the turn
      * @param t the tile to be placed on that board
@@ -257,7 +266,7 @@ public class Server {
 
     public void playerCheatIllegalPawn(SPlayer p) {
         System.out.println("Player " + p.getMPlayer().getName() + " cheated and is replaced by a random machine player");
-        p.getMPlayer().Strategy = "R";
+        p.getMPlayer().strategy = "R";
         if (p.getMPlayer().state == MPlayer.State.INIT) {
             p.updateToken(p.getMPlayer().placePawn(board));
         }
@@ -267,7 +276,7 @@ public class Server {
 
     public Tile playerCheatIllegalTile(SPlayer p, Tile oldTile) {
         System.out.println("Player " + p.getMPlayer().getName() + " cheated and is replaced by a random machine player");
-        p.getMPlayer().Strategy = "R";
+        p.getMPlayer().strategy = "R";
         p.deal(oldTile);
         if (p.getMPlayer().state == MPlayer.State.PLACE ||
                 p.getMPlayer().state == MPlayer.State.PLAY) {
@@ -292,7 +301,6 @@ public class Server {
         else if (hand.size() > 3) {
             throw new IllegalArgumentException("Player's hand illegal: more than 3 tiles on hand");
         }
-        List<Tile> pile = drawPile.getPile();
         List<Tile> onBoard = board.getTileList();
         List<Tile> inHands = new ArrayList<>();
         for (SPlayer player : inSPlayer) {
@@ -305,11 +313,9 @@ public class Server {
                     throw new IllegalArgumentException("Player's hand illegal: tile exists on board");
                 }
             }
-            // not in the draw pile
-            for (Tile t : pile) {
-                if (t.isSameTile(playerTile)) {
-                    throw new IllegalArgumentException("Player's hand illegal: tile exists in draw pile");
-                }
+            // not in the current draw pile
+            if (drawPile.containsTile(playerTile)) {
+                throw new IllegalArgumentException("Player's hand illegal: tile exists in draw pile");
             }
             // not in other player's hand or the current player's hand does not contain duplicate tiles
             int count = 0;
@@ -320,6 +326,13 @@ public class Server {
                         throw new IllegalArgumentException("Player's hand illegal: tile exists in other player's hand");
                     }
                 }
+            }
+        }
+        // make sure tile is a valid tile in the original deck
+        Deck tempDeck = new Deck();
+        for (Tile t : hand) {
+            if (!tempDeck.containsTile(t)) {
+                throw new IllegalArgumentException("Player's hand illegal: tile is not a legal tile");
             }
         }
     }
