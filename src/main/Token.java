@@ -17,7 +17,7 @@ public class Token {
             put(7, "purple");
     }};
 
-    Token(int color, int indexOnTile, int[] position) {
+    public Token(int color, int indexOnTile, int[] position) {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid token color");
         }
@@ -44,6 +44,13 @@ public class Token {
     }
 
     public void setPosition(int[] position) { this.position = position; }
+
+    public String getColorString(){
+        if (color < 0 || color > 7) {
+            throw new IllegalArgumentException("Invalid token color index");
+        }
+        return colorMap.get(color);
+    }
 
 
     /**
