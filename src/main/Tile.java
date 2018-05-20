@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Tile {
     //protected field for the purpose of testing
-    protected int[][] paths;
+    public int[][] paths;
     public final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
         put(0, 5);
         put(1, 4);
@@ -15,7 +15,7 @@ public class Tile {
         put(7, 2);
     }};
 
-    Tile(int[][] paths) {
+    public Tile(int[][] paths) {
         if (paths.length != 4 || paths[0].length != 2) {
             throw new IllegalArgumentException("Path is not a 4 x 2 matrix");
         }
@@ -94,7 +94,7 @@ public class Tile {
      * @param tile the tile whose path to be check against
      * @return true if equal; false if not
      */
-    public boolean equalPath(Tile tile){
+    public boolean equals(Tile tile){
         return Arrays.deepEquals(this.paths, tile.paths);
     }
 
@@ -126,7 +126,7 @@ public class Tile {
         for (int i = 0; i < 3; i++ ){
             copy.rotateTile();
             copy.reorderPath();
-            if (!this.equalPath(copy)) count++;
+            if (!this.equals(copy)) count++;
         }
         // if we have count = 3, it means we have two pathways that are different from the original
         // but these two pathways must be the same

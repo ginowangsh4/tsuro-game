@@ -78,9 +78,7 @@ public class Server {
                 currentP.deal(tileToPlay);
                 server.playATurn(tileToPlay);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException | IOException e) {
             e.printStackTrace();
         } finally {
             listenerSocket.close();
@@ -91,7 +89,7 @@ public class Server {
      * Register a MPlayer with Server: create a SPlayer instance based on the given MPlayer
      * @param player a given player
      */
-    public void registerPlayer(IPlayer player, Token t) {
+    public void registerPlayer(IPlayer player, Token t) throws Exception {
         List<Tile> hand = new ArrayList<>();
         SPlayer sP = new SPlayer(t, hand, player.getName());
         sP.linkMPlayer(player);

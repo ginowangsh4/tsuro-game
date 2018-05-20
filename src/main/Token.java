@@ -7,14 +7,14 @@ public class Token {
     private int indexOnTile;
     private int[] position;
     public final static Map<Integer, String> colorMap = new HashMap<Integer, String>() {{
-            put(0, "BLUE");
-            put(1, "RED");
-            put(2, "GREEN");
-            put(3, "ORANGE");
-            put(4, "SIENNA");
-            put(5, "HOTPINK");
-            put(6, "DARKGREEN");
-            put(7, "PURPLE");
+            put(0, "blue");
+            put(1, "red");
+            put(2, "green");
+            put(3, "orange");
+            put(4, "sienna");
+            put(5, "hotpink");
+            put(6, "darkgreen");
+            put(7, "purple");
     }};
 
     Token(int color, int indexOnTile, int[] position) {

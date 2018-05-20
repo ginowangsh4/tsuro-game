@@ -56,7 +56,7 @@ public class TileParserTest {
         expected = db.parse(is);
         actual = parser.buildXML(t);
         // System.out.println(Parser.documentToString(actual));
-        assertTrue(expected.isEqualNode(actual), "Build XML from tile failed to build correctly");
+        assertTrue(expected.isEqualNode(actual), "Failed to build XML from tile");
     }
 
     @Test
@@ -83,6 +83,6 @@ public class TileParserTest {
         Tile expected = new Tile(new int[][] {{0,4},{1,7},{2,3},{5,6}});
         Document doc = db.parse(is);
         Tile actual = parser.fromXML(doc);
-        assertTrue(expected.equals(actual), "Build tile from XML failed to build correctly");
+        assertTrue(expected.equals(actual), "Failed to build tile from XML");
     }
 }

@@ -1,5 +1,8 @@
 package tsuro;
 
+import org.w3c.dom.Document;
+import tsuro.parser.Parser;
+
 import javax.xml.parsers.DocumentBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,28 +26,51 @@ public class RemotePlayer implements IPlayer {
         this.printWriter = new PrintWriter(socket.getOutputStream(), true);
     }
 
-    public String getName() {
-
+    public String getName() throws Exception {
+        // to socket
+        Document inDoc = Parser.buildGetNameXML(db);
+        printWriter.println(Parser.documentToString(inDoc));
+        // from socket
+        Document outDoc = db.parse(bufferedReader.readLine());
+        String name = Parser.fromGetNameXML(db, outDoc);
+        return name;
     }
 
-    public void initialize(int color, List<Integer> colors) {
-
+    public void initialize(int color, List<Integer> colors) throws Exception {
+        // to socket
+        Document inDoc = Parser.buildInitializeXML(db, color, colors);
+        printWriter.println(Parser.documentToString(inDoc));
     }
 
-    public Token placePawn(Board b) {
-
+    public Token placePawn(Board b) throws Exception {
+        // to socket
+        Document inDoc = Parser.buildPlacePawnXML(db, b);
+        printWriter.println(Parser.documentToString(inDoc));
+        // from socket
+        Document outDoc = db.parse(bufferedReader.readLine());
+        Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, outDoc);
+        Token token = new Token(this.color, pair.second, pair.first);
+        return token;
     }
 
-    public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) {
+    public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         Set<Tile> handSet = new HashSet<>();
         handSet.addAll(hand);
-
+        // to socket
+        Document inDoc = Parser.buildPlayTurnXML(db, b, handSet, tilesLeft);
+        printWriter.println(Parser.documentToString(inDoc));
+        // from socket
+        Document outDoc = db.parse(bufferedReader.readLine());
+        Tile tile = Parser.fromPlayTurnXML(db, outDoc);
+        return tile;
     }
 
-    public void endGame(Board b, List<Integer> colors) {
+    public void endGame(Board b, List<Integer> colors) throws Exception {
         Set<Integer> colorsSet = new HashSet<>();
         colorsSet.addAll(colors);
-
+        // to socket
+        Document inDoc = Parser.buildEndGameXML(db, b, colorsSet);
+        printWriter.println(Parser.documentToString(inDoc));
     }
 
 
