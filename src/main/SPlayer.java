@@ -13,9 +13,10 @@ public class SPlayer {
         this.name = name;
     }
 
-    public void linkMPlayer(IPlayer player) throws Exception {
-        if (player.getName() != name)
-            throw new IllegalArgumentException("SPlayer and MPlayer mismatch");
+    public void linkPlayer(IPlayer player) throws Exception {
+        if (!player.getName().equals(name)) {
+            throw new IllegalArgumentException("SPlayer and Player mismatch");
+        }
         this.player = player;
     }
 

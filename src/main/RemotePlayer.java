@@ -32,7 +32,7 @@ public class RemotePlayer implements IPlayer {
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         String name = Parser.fromGetNameXML(db, outDoc);
 
-        System.out.println("getName complete - player name" + name);
+//        System.out.println("Server: getName complete - player name" + name);
         return name;
     }
 
@@ -41,20 +41,27 @@ public class RemotePlayer implements IPlayer {
         Document inDoc = Parser.buildInitializeXML(db, color, colors);
         printWriter.println(Parser.documentToString(inDoc));
 
-        System.out.println("initialize complete");
+        // from socket, must be void
+        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
+        if (!outDoc.getFirstChild().getNodeName().equals("void")) {
+            throw new IllegalArgumentException("Response is not void!");
+        }
+//        System.out.println("Server: initialize complete");
     }
 
     public Token placePawn(Board b) throws Exception {
         // to socket
         Document inDoc = Parser.buildPlacePawnXML(db, b);
         printWriter.println(Parser.documentToString(inDoc));
+        System.out.println(Parser.documentToString(inDoc));
+
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         System.out.println(Parser.documentToString(outDoc));
         Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, outDoc);
         Token token = new Token(this.color, pair.second, pair.first);
 
-        System.out.println("placePawn complete player at " + token.getPosition().toString() + token.getIndex());
+//        System.out.println("Server: placePawn complete player at [" + token.getPosition()[0] + ", " + token.getPosition()[1] + "], " + token.getIndex());
         return token;
     }
 
@@ -64,6 +71,7 @@ public class RemotePlayer implements IPlayer {
         // to socket
         Document inDoc = Parser.buildPlayTurnXML(db, b, handSet, tilesLeft);
         printWriter.println(Parser.documentToString(inDoc));
+
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         Tile tile = Parser.fromPlayTurnXML(db, outDoc);
@@ -76,5 +84,11 @@ public class RemotePlayer implements IPlayer {
         // to socket
         Document inDoc = Parser.buildEndGameXML(db, b, colorsSet);
         printWriter.println(Parser.documentToString(inDoc));
+
+        // from socket, must be void
+        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
+        if (!outDoc.getFirstChild().getNodeName().equals("void")) {
+            throw new IllegalArgumentException("Response is not void!");
+        }
     }
 }

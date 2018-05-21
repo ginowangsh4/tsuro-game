@@ -61,7 +61,6 @@ public class BoardParser {
     public Board fromXML(Document doc) throws Exception{
         Board board = new Board();
         Node pawn = doc.getFirstChild();
-        System.out.println(pawn.getNodeName());
         if(!pawn.getNodeName().equals("board")){
             throw new Exception("trying to parse XML document that is not <ent></ent>");
         }

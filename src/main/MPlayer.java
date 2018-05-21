@@ -108,7 +108,7 @@ public class MPlayer implements IPlayer {
         return newToken;
     }
 
-    public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) {
+    public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         if (state != State.PLACE && state != State.PLAY) {
             throw new IllegalArgumentException("Sequence Contracts: Cannot play turn at this time");
         }
@@ -121,9 +121,9 @@ public class MPlayer implements IPlayer {
         for (Tile t : hand) {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
-//                SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand, getName());
-//                tempPlayer.linkMPlayer(this);
-                if (Server.getInstance().legalPlay(this, b, copy)) {
+                SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand, getName());
+                tempPlayer.linkPlayer(this);
+                if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());
                 }
                 copy.rotateTile();

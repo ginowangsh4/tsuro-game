@@ -119,7 +119,7 @@ public class MPlayerTest {
     // rotate twice legal and rotate three times legal
     // Expect return the third tile after two rotations
     @Test
-    public void leastSymmetricStrategyTest1() {
+    public void leastSymmetricStrategyTest1() throws Exception {
         b = new Board();
         Tile tile0 = new Tile(new int[][] {{0, 7}, {1, 4}, {2, 6}, {3, 5}});
         b.placeTile(tile0, 0, 0);
@@ -165,7 +165,7 @@ public class MPlayerTest {
     // rotate twice illegal and rotate three times legal
     // Expect return the third tile after three rotations
     @Test
-    public void leastSymmetricStrategyTest2() {
+    public void leastSymmetricStrategyTest2() throws Exception {
         b = new Board();
         Tile tile0 = new Tile(new int[][] {{0, 7}, {1, 4}, {2, 6}, {3, 5}});
         b.placeTile(tile0, 0, 0);
@@ -211,7 +211,7 @@ public class MPlayerTest {
     // rotate twice legal and rotate three times legal
     // Expect return first tile in original rotation.
     @Test
-    public void mostSymmetricStrategyTest() {
+    public void mostSymmetricStrategyTest() throws Exception {
         b = new Board();
         Tile tile0 = new Tile(new int[][] {{0, 7}, {1, 4}, {2, 6}, {3, 5}});
         b.placeTile(tile0, 0, 0);

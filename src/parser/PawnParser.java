@@ -31,7 +31,6 @@ public class PawnParser {
 
     public Token fromXML(Document doc, Board board) throws Exception{
         Node pawn = doc.getFirstChild();
-        System.out.println(pawn.getNodeName());
         if(!pawn.getNodeName().equals("ent")){
             throw new Exception("trying to parse XML document that is not <ent></ent>");
         }

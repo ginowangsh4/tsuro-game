@@ -4,7 +4,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.*;
 
 public class Server {
@@ -43,7 +42,7 @@ public class Server {
     }
 
     public void startGame() throws Exception {
-        ServerSocket socketListener = new ServerSocket(52656);
+        ServerSocket socketListener = new ServerSocket(6666);
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -73,7 +72,7 @@ public class Server {
 
             while(!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
-                System.out.println("Player " + currentP.getPlayer().getName());
+                System.out.println("Current player = " + currentP.getPlayer().getName());
                 Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
                 currentP.deal(tileToPlay);
                 server.playATurn(tileToPlay);
@@ -81,18 +80,23 @@ public class Server {
 
             List<Integer> winners = server.getWinners();
             for (SPlayer sPlayer : inSPlayer) {
+                System.out.println("End game for player = " + sPlayer.getPlayer().getName());
+                sPlayer.getPlayer().endGame(server.board, winners);
+            }
+            for (SPlayer sPlayer : outSPlayer) {
+                System.out.println("End game for player = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winners);
             }
 
-            System.out.println(server.gameOver);
+            System.out.println("Game over = " + server.gameOver);
             for (SPlayer sPlayer : server.inSPlayer) {
-                System.out.println(sPlayer.getPlayer().getName());
+                System.out.println("Winner = " + sPlayer.getPlayer().getName());
             }
+
+            socketListener.close();
 
         } catch (ParserConfigurationException | IOException e) {
             e.printStackTrace();
-        } finally {
-            socketListener.close();
         }
     }
 
@@ -103,7 +107,7 @@ public class Server {
     public void registerPlayer(IPlayer player, Token t) throws Exception {
         List<Tile> hand = new ArrayList<>();
         SPlayer sP = new SPlayer(t, hand, player.getName());
-        sP.linkMPlayer(player);
+        sP.linkPlayer(player);
         // check if starting position is legal
 //        if (!t.isStartingPosition()) {
 //            System.err.println("Caught cheating: Player starts the game at an illegal position");
@@ -177,7 +181,7 @@ public class Server {
      * @return the list of winner if the game is over; otherwise return null
      *         (drawPile, inSPlayer, outSPlayer are themselves updated and updated in server's status through private fields)
      */
-    public List<SPlayer> playATurn(Tile t) {
+    public List<SPlayer> playATurn(Tile t) throws Exception {
         SPlayer currentP = inSPlayer.get(0);
         // *****************************************
         // ****** Step 1: Contract Validation ******
@@ -313,7 +317,7 @@ public class Server {
      * Handle elimination mechanism of a server player
      * @param p the player to eliminate from the game
      */
-    private void eliminatePlayer(SPlayer p, List<SPlayer> dead){
+    private void eliminatePlayer(SPlayer p, List<SPlayer> dead) throws Exception {
         int pIndex = inSPlayer.indexOf(p);
         drawPile.addAndShuffle(p.getHand());
         p.getHand().clear();
@@ -327,6 +331,7 @@ public class Server {
         dead.add(p);
         // players draw and pass dragon
         drawAndPassDragon();
+        System.out.println("Player " + p.getPlayer().getName() + " eliminated!");
     }
 
 //    public void playerCheatIllegalPawn(SPlayer p) {
