@@ -1,7 +1,6 @@
 package tsuro.parser;
 
 import jdk.internal.org.xml.sax.SAXException;
-import junit.framework.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;

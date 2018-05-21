@@ -61,7 +61,7 @@ public class TileParserTest {
 
     @Test
     public void fromXMLTest() throws IOException, SAXException {
-        String s = "<ent><tile>" +
+        String s = "<tile>" +
                         "<connect>" +
                             "<n>0</n>" +
                             "<n>4</n>" +
@@ -78,7 +78,7 @@ public class TileParserTest {
                             "<n>5</n>" +
                             "<n>6</n>" +
                         "</connect>" +
-                    "</tile></ent>";
+                    "</tile>";
         InputStream is = new ByteArrayInputStream(s.getBytes());
         Tile expected = new Tile(new int[][] {{0,4},{1,7},{2,3},{5,6}});
         Document doc = db.parse(is);

@@ -3,10 +3,10 @@ import java.util.*;
 import java.util.List;
 
 public class Board {
-    private Tile[][] board;
-    private final int SIZE = 6;
-    private List<Token> tokenList;
-    private List<Tile> tileList;
+    public Tile[][] board;
+    public final int SIZE = 6;
+    public List<Token> tokenList;
+    public List<Tile> tileList;
 
     Board() {
         this.board = new Tile[SIZE][SIZE];

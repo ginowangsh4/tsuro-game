@@ -72,6 +72,4 @@ public class RemotePlayer implements IPlayer {
         Document inDoc = Parser.buildEndGameXML(db, b, colorsSet);
         printWriter.println(Parser.documentToString(inDoc));
     }
-
-
 }

@@ -27,7 +27,6 @@ public class PawnParser {
         pawn.appendChild(pawnLoc);
         doc.appendChild(pawn);
         return doc;
-
     }
 
     public Token fromXML(Document doc) throws Exception{
