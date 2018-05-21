@@ -178,6 +178,5 @@ public class BoardParserTest {
         for(int i = 0; i < board.getTokenList().size(); i++) {
             assertTrue(board.getTokenList().get(i).equals(expected.getTokenList().get(i)),"generated board is different from expected");
         }
-
     }
 }
