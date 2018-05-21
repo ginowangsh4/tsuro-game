@@ -70,7 +70,6 @@ public class PawnParser {
         Element n2 = doc.createElement("n");
         n2.appendChild(doc.createTextNode(Integer.toString(newPos[1])));
 
-
         if(horizontal){
             Element h = doc.createElement("h");
             pawnLoc.appendChild(h);

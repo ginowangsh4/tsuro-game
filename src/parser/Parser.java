@@ -15,9 +15,14 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class Parser {
+    // ******************************* Network Architecture ***********************************
+    //                   ----->              ---||-->        ----->
+    //              Admin        RemotePlayer   ||     NAdmin        MPlayer
+    //                   <-----              <--||---        <-----
+    // ****************************************************************************************
 
     // ****************************************************************************************
-    // ****************************** Build XML functions *************************************
+    // *********************** Build XML for Outgoing Inputs to NAdmin ************************
     // ****************************************************************************************
     public static Document buildGetNameXML(DocumentBuilder db) {
         Document doc = db.newDocument();
@@ -48,30 +53,111 @@ public class Parser {
     }
 
     public static Document buildPlacePawnXML(DocumentBuilder db, Board board) {
-        return db.newDocument();
+        BoardParser boardParser = new BoardParser(db);
+
+        Document doc = db.newDocument();
+        Element placePawn = doc.createElement("place-pawn");
+        Node b = doc.importNode(boardParser.buildXML(board).getFirstChild(), true);
+
+        placePawn.appendChild(b);
+        doc.appendChild(placePawn);
+        return doc;
     }
 
     public static Document buildPlayTurnXML(DocumentBuilder db, Board board, Set<Tile> tiles, int tilesLeft) {
-        return db.newDocument();
+        BoardParser boardParser = new BoardParser(db);
+        TileParser tileParser = new TileParser(db);
+
+        Document doc = db.newDocument();
+        Element playTurn = doc.createElement("play-turn");
+        Node b = doc.importNode(boardParser.buildXML(board).getFirstChild(), true);
+
+        Element set = doc.createElement("set");
+        for (Tile tile : tiles) {
+            Node t = doc.importNode(tileParser.buildXML(tile).getFirstChild(), true);
+            set.appendChild(t);
+        }
+
+        Element n = doc.createElement("n");
+        n.appendChild(doc.createTextNode(Integer.toString(tilesLeft)));
+
+        playTurn.appendChild(b);
+        playTurn.appendChild(set);
+        playTurn.appendChild(n);
+        doc.appendChild(playTurn);
+        return doc;
     }
 
     public static Document buildEndGameXML(DocumentBuilder db, Board board, Set<Integer> colors) {
-        return db.newDocument();
+        Document doc = db.newDocument();
+        BoardParser boardParser = new BoardParser(db);
+        Element endGame = doc.createElement("end-game");
+
+        Node b = doc.importNode(boardParser.buildXML(board).getFirstChild(), true);
+
+        Element cSet =  doc.createElement("set");
+        for (Integer item : colors) {
+            Element c = doc.createElement("color");
+            c.appendChild(doc.createTextNode(Token.colorMap.get(item)));
+            cSet.appendChild(c);
+        }
+
+        endGame.appendChild(b);
+        endGame.appendChild(cSet);
+        doc.appendChild(endGame);
+
+        return doc;
     }
 
     // ****************************************************************************************
-    // **************************** Decompose XML functions ***********************************
+    // ******************** Build XML for Outgoing Outputs to Admin ***************************
+    // ****************************************************************************************
+    public static Document buildVoidXML(DocumentBuilder db) {
+        Document doc = db.newDocument();
+        doc.appendChild(doc.createElement("void"));
+        return doc;
+    }
+
+    public static Document buildPawnLocXML(DocumentBuilder db, int[] position, int indexOnTile) {
+        Document doc = db.newDocument();
+        PawnParser pawnParser = new PawnParser(db);
+        doc.appendChild(pawnParser.buildPawnElement(doc, position, indexOnTile));
+        return doc;
+    }
+    // ****************************************************************************************
+    // **************** Decompose XML from Incoming Input from Admin **************************
+    // ****************************************************************************************
+
+
+    // ****************************************************************************************
+    // **************** Decompose XML from Incoming Outputs from NAdmin ***********************
     // ****************************************************************************************
     public static String fromGetNameXML(DocumentBuilder db, Document doc) {
         return doc.getFirstChild().getTextContent();
     }
 
     public static Pair<int[], Integer> fromPlacePawnXML(DocumentBuilder db, Document doc) {
-        return new Pair<>(new int[] {0,0}, 1);
+        PawnParser pawnParser = new PawnParser(db);
+        Node pawnLoc = doc.getFirstChild();
+        if (!pawnLoc.getNodeName().equals("pawn-loc")) {
+            throw new IllegalArgumentException("Parse Error: Cannot find <pawn-loc></pawn-loc>");
+        }
+        Node hv = pawnLoc.getFirstChild();
+        String hvs = hv.getNodeName();
+        boolean horizontal = hvs.equals("h");
+        Node index1 = hv.getNextSibling();
+        Node index2 = index1.getNextSibling();
+
+        int[] oldPos = pawnParser.getOldPos(Integer.parseInt(index1.getNodeName()),
+                                            Integer.parseInt(index2.getNodeName()),
+                                            horizontal);
+
+        return new Pair<>(new int[] {oldPos[0], oldPos[1]}, oldPos[2]);
     }
 
     public static Tile fromPlayTurnXML(DocumentBuilder db, Document doc) {
-        return new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
+        TileParser tileParser = new TileParser(db);
+        return tileParser.fromXML(doc);
     }
 
     public static String documentToString(Document doc) throws Exception {
