@@ -29,7 +29,7 @@ public class PawnParser {
         return doc;
     }
 
-    public Token fromXML(Document doc) throws Exception{
+    public Token fromXML(Document doc, Board board) throws Exception{
         Node pawn = doc.getFirstChild();
         System.out.println(pawn.getNodeName());
         if(!pawn.getNodeName().equals("ent")){
@@ -42,7 +42,7 @@ public class PawnParser {
         Node pawnLoc = color.getNextSibling();
         Boolean horizontal = false;
         Node orientation = pawnLoc.getFirstChild();
-        if(pawn.getNodeName().equals("h")) {
+        if(orientation.getNodeName().equals("h")) {
             horizontal = true;
         }
         Node n1 = orientation.getNextSibling();
@@ -50,16 +50,24 @@ public class PawnParser {
         int index1 = Integer.parseInt(n1.getTextContent());
         int index2 = Integer.parseInt(n2.getTextContent());
 
-        int colorIndex = getColorInt(colorName);
+        int colorIndex = Token.getColorInt(colorName);
 
-        int[] oldPos = getOldPos(index1, index2, horizontal);
+        int[] oldPos = getOldPos(index1, index2, horizontal, board);
         int index = oldPos[2];
         int[] pos= new int[]{oldPos[0], oldPos[1]};
         Token token = new Token(colorIndex, index, pos);
 
         return token;
+
     }
 
+    /**
+     * generate pawn-loc element using token location
+     * @param doc
+     * @param pos int[2] that represents player's location on board
+     * @param index the index on tile where the player is at
+     * @return pawn-loc element
+     */
     public Element buildPawnElement(Document doc, int[] pos, int index){
         Element pawnLoc = doc.createElement("pawn-loc");
 
@@ -83,6 +91,10 @@ public class PawnParser {
         return pawnLoc;
     }
 
+    /**
+     * @param index the index on a line
+     * @return true if on a horizontal line
+     */
     public Boolean isHorizontal(int index){
         if(index > 7 || index < 0){
             throw new IllegalArgumentException("index is out of bound");
@@ -94,6 +106,20 @@ public class PawnParser {
         return false;
     }
 
+    /**
+     * index    n2      hv  n1
+     * 0        0+2x    h   y
+     * 1        1+2x    h   y
+     * 4        1+2x    h   y+1
+     * 5        0+2x    h   y+1
+     * 2        0+2y    v   x+1
+     * 3        1+2y    v   x+1
+     * 6        1+2y    v   x
+     * 7        0+2y    v   x
+     * @param pos int[2] that represents player's location on board
+     * @param index the index on tile where the player is at
+     * @return new int[3] as new position
+     */
     public int[] getNewPos(int[]pos, int index){
         if(index < 0 || index > 7){
             throw new IllegalArgumentException("index is out of bound");
@@ -138,50 +164,94 @@ public class PawnParser {
         return newPos;
     }
 
-    public int[] getOldPos(int index1, int index2, Boolean horizontal){
+    /**
+     *
+     * @param index1 line number
+     * @param index2 the index on line
+     * @param horizontal whether the pawn is at a horizontal line or vertical line
+     * @param b board with tiles placed on it
+     * @return {x,y,index} as old position
+     */
+    public static int[] getOldPos(int index1, int index2, Boolean horizontal, Board b){
         int[] oldPos = new int[3];
         if(horizontal){
-            if(index1 == 0){
-                oldPos[1] = -1;
-                int temp = index2 % 2;
-                if(temp == 1) oldPos[2] = 4;
-                else oldPos[2] = 5;
+            int downIndex = index2 % 2;
+            int upIndex = Tile.neighborIndex.get(downIndex);
+            int upRow = index1 - 1;
+            int downRow = index1;
+            int column = index2 / 2;
+            int[] upPos = new int[]{column,upRow};
+            int[] downPos = new int[]{column,downRow};
+            if(b.isOutOfBoard(downPos)){//if tile location below this pos is out of bound
+                if(b.board[upPos[0]][upPos[1]] != null){//pawn at upTilePos
+                    oldPos[1] = upRow;
+                    oldPos[2] = upIndex;
+                }
+                else{//pawn at starting position aka downTilePos
+                    oldPos[1] = downRow;
+                    oldPos[2] = downIndex;
+                }
             }
-            else if(index1 == 6){
-                oldPos[1] = 6;
-                oldPos[2] = index2 % 2;
+            else{//
+                if(b.board[downPos[0]][downPos[1]] == null){
+                    oldPos[1] = upRow;
+                    oldPos[2] = upIndex;
+                }
+                else{
+                    oldPos[1] = downRow;
+                    oldPos[2] = downIndex;
+                }
             }
-            else{
-                throw new IllegalArgumentException("this returned position is not a starting position");
-            }
-            oldPos[0] = index2 / 2;
+            oldPos[0] = column;
         }
         else{
-            if(index1 == 0){
-                oldPos[0]=-1;
-                oldPos[2] = index2 % 2 + 2;
-            }
-            else if(index1 == 6){
-                oldPos[0]=6;
-                int temp = index2 % 2;
-                if(temp == 1) oldPos[2] = 6;
-                else oldPos[2] = 7;
+            int leftIndex = index2 % 2 + 2;
+            int rightIndex = Tile.neighborIndex.get(leftIndex);
+            int leftColumn = index1 - 1;
+            int rightColumn = index1;
+            int row = index2 / 2;
+            int[] leftPos = new int[]{leftColumn,row};
+            int[] rightPos = new int[]{rightColumn,row};
+
+            if(b.isOutOfBoard(rightPos)){
+                if(b.board[leftPos[0]][leftPos[1]] != null){
+                    oldPos[0] = leftColumn;
+                    oldPos[2] = leftIndex;
+                }
+                else{//starting position
+                    oldPos[0] = rightColumn;
+                    oldPos[2] = rightIndex;
+                }
             }
             else{
-                throw new IllegalArgumentException("this returned position is not a starting position");
+                if(b.board[rightPos[0]][rightPos[1]] == null){
+                    oldPos[0] = leftColumn;
+                    oldPos[2] = leftIndex;
+                }
+                else{
+                    oldPos[0] = rightColumn;
+                    oldPos[2] = rightIndex;
+                }
             }
-            oldPos[1] = index2 / 2;
+            oldPos[1] = row;
         }
         return oldPos;
     }
 
-    public int getColorInt(String colorName){
-        for(Integer key : Token.colorMap.keySet()){
-            if (Token.colorMap.get(key).equals(colorName)){
-                return key;
-            }
-        }
-        throw new IllegalArgumentException("Invalid color name");
+    public static void main(String[] args) {
+        Board expected = new Board();
+        Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
+        Tile t2 = new Tile(new int[][]{{0, 1}, {2, 4}, {3, 6}, {5, 7}});
+        Tile t3 = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
+        expected.placeTile(t1,0,5);
+        expected.placeTile(t2,3,2);
+        expected.placeTile(t3,4,1);
+        Token token1 = new Token(0, 2,new int[] {0,5});
+        Token token2 = new Token(1, 5,new int[] {4,1});
+        expected.addToken(token1);
+        expected.addToken(token2);
+        int[] a = getOldPos(2,8,true, expected);
+        System.out.println("hi");
     }
 
 

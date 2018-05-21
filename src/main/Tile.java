@@ -4,7 +4,7 @@ import java.util.*;
 public class Tile {
     //protected field for the purpose of testing
     public int[][] paths;
-    public final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
+    public static final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
         put(0, 5);
         put(1, 4);
         put(2, 7);
@@ -157,6 +157,7 @@ public class Tile {
         }
         System.out.println(" }");
     }
+
 
     public static void main(String[] args) {
         Tile t;

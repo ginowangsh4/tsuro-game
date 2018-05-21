@@ -154,4 +154,14 @@ public class Token {
         }
         return false;
     }
+
+
+    public static int getColorInt(String colorName){
+        for(Integer key : colorMap.keySet()){
+            if (colorMap.get(key).equals(colorName)){
+                return key;
+            }
+        }
+        throw new IllegalArgumentException("Invalid color name");
+    }
 }

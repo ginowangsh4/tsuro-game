@@ -277,7 +277,7 @@ public class Server {
      * @param token the token of player currently making the move
      * @return an array of location [x,y] of the adjacent tile
      */
-    private int[] getAdjacentLocation(Token token) {
+    public int[] getAdjacentLocation(Token token) {
         int[] next = new int[2];
         int x = token.getPosition()[0];
         int y = token.getPosition()[1];

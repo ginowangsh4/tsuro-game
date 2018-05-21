@@ -4,6 +4,8 @@ import jdk.internal.org.xml.sax.SAXException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
+import tsuro.Board;
+import tsuro.Tile;
 import tsuro.Token;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -51,7 +53,7 @@ class PawnParserTest {
         Token token = null;
         try {
             doc = db.parse(is);
-            token = parser.fromXML(doc);
+            token = parser.fromXML(doc, new Board());
         } catch (org.xml.sax.SAXException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -94,21 +96,30 @@ class PawnParserTest {
 
     @Test
     public void getOldPosTest() {
+        Board board =  new Board();
         int[] expected = new int[]{-1,2,2};
-        int[] actual = parser.getOldPos(0,4,false);
+        int[] actual = parser.getOldPos(0,4,false, board);
         assertArrayEquals(actual,expected,"computed game position is not correct");
 
         expected = new int[]{6,4,7};
-        actual = parser.getOldPos(6,8,false);
+        actual = parser.getOldPos(6,8,false, board);
         assertArrayEquals(actual,expected,"computed game position is not correct");
 
         expected = new int[]{2,-1,4};
-        actual = parser.getOldPos(0,5,true);
+        actual = parser.getOldPos(0,5,true, board);
         assertArrayEquals(actual,expected,"computed game position is not correct");
 
         expected = new int[]{2,6,0};
-        actual = parser.getOldPos(6,4,true);
+        actual = parser.getOldPos(6,4,true, board);
         assertArrayEquals(actual,expected,"computed game position is not correct");
+
+        Tile tile = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
+        board.placeTile(tile, 0, 0);
+
+        expected = new int[]{0,0,4};
+        actual = parser.getOldPos(1,1,true, board);
+        assertArrayEquals(actual,expected,"computed game position is not correct");
+
     }
 
 }

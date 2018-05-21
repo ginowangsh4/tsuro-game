@@ -1,4 +1,6 @@
 package tsuro;
+import com.sun.javaws.exceptions.InvalidArgumentException;
+
 import java.util.*;
 import java.util.List;
 
@@ -170,5 +172,20 @@ public class Board {
                 if (getTile(x,y) != null) count++;
         }
         return count == 35? true:false;
+    }
+
+    /**
+     * check if a position is a valid board position
+     * @param pos a board position
+     * @return true if position is not a valid board position
+     */
+    public static boolean isOutOfBoard(int[] pos){
+        if(pos.length != 2){
+            throw new IllegalArgumentException("Not a valid position length");
+        }
+        if(pos[0] < 0 || pos[0] > 5 || pos[1] < 0 || pos[1] > 5){
+            return true;
+        }
+        return false;
     }
 }

@@ -3,6 +3,7 @@ package tsuro.parser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import tsuro.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -57,7 +58,44 @@ public class BoardParser {
         return doc;
     }
 
-//    public Board fromXML(Document doc) {
-//
-//    }
+    public Board fromXML(Document doc) throws Exception{
+        Board board = new Board();
+        Node pawn = doc.getFirstChild();
+        System.out.println(pawn.getNodeName());
+        if(!pawn.getNodeName().equals("board")){
+            throw new Exception("trying to parse XML document that is not <ent></ent>");
+        }
+
+        Node tiles = pawn.getFirstChild();
+        NodeList tileList = tiles.getChildNodes();
+        for(int i = 0; i < tileList.getLength(); i++){
+            Node tileEntry = tileList.item(i);
+            Node xy = tileEntry.getFirstChild();
+            Node tile = xy.getNextSibling();
+
+            Document tileDoc = db.newDocument();
+            Node imported = tileDoc.importNode(tile,true);
+            tileDoc.appendChild(imported);
+            Tile t = tileParser.fromXML(tileDoc);
+            Node x = xy.getFirstChild();
+            Node y = x.getNextSibling();
+            int xIndex = Integer.parseInt(x.getTextContent());
+            int yIndex = Integer.parseInt(y.getTextContent());
+            board.placeTile(t, xIndex, yIndex);
+        }
+
+        Node pawns = tiles.getNextSibling();
+        NodeList pawnList = pawns.getChildNodes();
+        for(int i = 0; i < pawnList.getLength(); i++) {
+            Node pawnEntry = pawnList.item(i);
+            Document pawnDoc = db.newDocument();
+            Node imported = pawnDoc.importNode(pawnEntry,true);
+            pawnDoc.appendChild(imported);
+            Token token = pawnParser.fromXML(pawnDoc, board);
+            board.addToken(token);
+        }
+
+
+        return board;
+    }
 }
