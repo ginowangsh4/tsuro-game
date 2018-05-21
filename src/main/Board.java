@@ -8,7 +8,7 @@ public class Board {
     public List<Token> tokenList;
     public List<Tile> tileList;
 
-    Board() {
+    public Board() {
         this.board = new Tile[SIZE][SIZE];
         this.tokenList = new ArrayList<>();
         this.tileList = new ArrayList<>();

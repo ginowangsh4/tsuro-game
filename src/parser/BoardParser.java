@@ -14,6 +14,8 @@ public class BoardParser {
 
     public BoardParser(DocumentBuilder db){
         this.db = db;
+        tileParser = new TileParser(db);
+        pawnParser = new PawnParser(db);
     }
 
     public Document buildXML(Board b){
@@ -34,8 +36,9 @@ public class BoardParser {
                     x.appendChild(doc.createTextNode(Integer.toString(i)));
                     y.appendChild(doc.createTextNode(Integer.toString(j)));
                     ent.appendChild(xy);
+                    Node d = tileParser.buildXML(b.board[i][j]).getFirstChild();
 
-                    Node tile = doc.importNode(tileParser.buildXML(b.board[i][j]).getFirstChild(), true);
+                    Node tile = doc.importNode(d, true);
                     ent.appendChild(tile);
 
                     map1.appendChild(ent);

@@ -32,7 +32,7 @@ public class TileParserTest {
 
     @Test
     public void buildXMLTest() throws Exception {
-        String s = "<ent><tile>" +
+        String s = "<tile>" +
                         "<connect>" +
                             "<n>0</n>" +
                             "<n>4</n>" +
@@ -49,7 +49,7 @@ public class TileParserTest {
                             "<n>5</n>" +
                             "<n>6</n>" +
                         "</connect>" +
-                    "</tile></ent>";
+                    "</tile>";
         InputStream is = new ByteArrayInputStream(s.getBytes());
         Document actual, expected;
         Tile t = new Tile(new int[][] {{0,4},{1,7},{2,3},{5,6}});
