@@ -3,11 +3,15 @@ package tsuro.parser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import tsuro.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -17,12 +21,12 @@ import javax.xml.transform.stream.StreamResult;
 public class Parser {
     // ******************************* Network Architecture ***********************************
     //                   ----->              ---||-->        ----->
-    //              Admin        RemotePlayer   ||     NAdmin        MPlayer
+    //            Server         RemotePlayer   ||     Admin        MPlayer
     //                   <-----              <--||---        <-----
     // ****************************************************************************************
 
     // ****************************************************************************************
-    // *********************** Build XML for Outgoing Inputs to NAdmin ************************
+    // *********************** Build XML for Outgoing Inputs to Admin *************************
     // ****************************************************************************************
     public static Document buildGetNameXML(DocumentBuilder db) {
         Document doc = db.newDocument();
@@ -110,8 +114,16 @@ public class Parser {
     }
 
     // ****************************************************************************************
-    // ******************** Build XML for Outgoing Outputs to Admin ***************************
+    // ******************** Build XML for Outgoing Outputs to Server **************************
     // ****************************************************************************************
+    public static Document buildPlayerNameXML(DocumentBuilder db, String s) {
+        Document doc = db.newDocument();
+        Element playerName = doc.createElement("player-name");
+        playerName.appendChild(doc.createTextNode(s));
+        doc.appendChild(playerName);
+        return doc;
+    }
+
     public static Document buildVoidXML(DocumentBuilder db) {
         Document doc = db.newDocument();
         doc.appendChild(doc.createElement("void"));
@@ -125,12 +137,36 @@ public class Parser {
         return doc;
     }
     // ****************************************************************************************
-    // **************** Decompose XML from Incoming Input from Admin **************************
+    // **************** Decompose XML from Incoming Input from Server *************************
     // ****************************************************************************************
+    public static List<Integer> fromColorListSetXML(DocumentBuilder db, Document doc) {
+        Node listSet = doc.getFirstChild();
+        NodeList colorsListSet = listSet.getChildNodes();
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < colorsListSet.getLength(); i++) {
+            Node color = colorsListSet.item(i);
+            result.add(Token.getColorInt(color.getTextContent()));
+        }
+        return result;
+    }
 
+    public static List<Tile> fromTileSetXML(DocumentBuilder db, Document doc) {
+        TileParser tileParser = new TileParser(db);
+        Node list = doc.getFirstChild();
+        NodeList tileSet = list.getChildNodes();
+        List<Tile> result = new ArrayList<>();
+        for (int i = 0; i < tileSet.getLength(); i++) {
+            Node tile = tileSet.item(i);
+            Document tileDoc = db.newDocument();
+            Node imported = tileDoc.importNode(tile, true);
+            tileDoc.appendChild(imported);
+            result.add(tileParser.fromXML(tileDoc));
+        }
+        return result;
+    }
 
     // ****************************************************************************************
-    // **************** Decompose XML from Incoming Outputs from NAdmin ***********************
+    // **************** Decompose XML from Incoming Outputs from Admin ************************
     // ****************************************************************************************
     public static String fromGetNameXML(DocumentBuilder db, Document doc) {
         return doc.getFirstChild().getTextContent();
@@ -148,8 +184,8 @@ public class Parser {
         Node index1 = hv.getNextSibling();
         Node index2 = index1.getNextSibling();
 
-        int[] oldPos = pawnParser.getOldPos(Integer.parseInt(index1.getNodeName()),
-                                            Integer.parseInt(index2.getNodeName()),
+        int[] oldPos = pawnParser.getOldPos(Integer.parseInt(index1.getTextContent()),
+                                            Integer.parseInt(index2.getTextContent()),
                                             horizontal,
                                             Server.getInstance().getBoard());
 
@@ -162,15 +198,17 @@ public class Parser {
     }
 
     public static String documentToString(Document doc) throws Exception {
-        StringWriter sw = new StringWriter();
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        StreamResult result = new StreamResult(new StringWriter());
+        DOMSource source = new DOMSource(doc);
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty(OutputKeys.METHOD, "html");
+        transformer.transform(source, result);
+        return result.getWriter().toString();
+    }
 
-        transformer.transform(new DOMSource(doc), new StreamResult(sw));
-        return sw.toString();
+    public static Document stringToDocument(DocumentBuilder db, String string) throws Exception {
+        InputStream is = new ByteArrayInputStream(string.getBytes());
+        return db.parse(is);
     }
 }

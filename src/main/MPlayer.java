@@ -15,7 +15,7 @@ public class MPlayer implements IPlayer {
     public State state;
     public enum State { INIT, PLACE, PLAY, END }
 
-    MPlayer(Strategy strategy) {
+    public MPlayer(Strategy strategy) {
         this.strategy = strategy;
     }
 

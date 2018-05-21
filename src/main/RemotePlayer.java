@@ -4,22 +4,19 @@ import org.w3c.dom.Document;
 import tsuro.parser.Parser;
 
 import javax.xml.parsers.DocumentBuilder;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class RemotePlayer implements IPlayer {
-    int color;
+    public int color;
     Socket socket;
     DocumentBuilder db;
     BufferedReader bufferedReader;
     PrintWriter printWriter;
 
-    public RemotePlayer(int color, Socket socket, DocumentBuilder db) throws IOException {
-        this.color = color;
+    public RemotePlayer(Socket socket, DocumentBuilder db) throws IOException {
         this.socket = socket;
         this.db = db;
         this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -29,10 +26,13 @@ public class RemotePlayer implements IPlayer {
     public String getName() throws Exception {
         // to socket
         Document inDoc = Parser.buildGetNameXML(db);
-        printWriter.println(Parser.documentToString(inDoc));
+        String s = Parser.documentToString(inDoc);
+        printWriter.println(s);
         // from socket
-        Document outDoc = db.parse(bufferedReader.readLine());
+        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         String name = Parser.fromGetNameXML(db, outDoc);
+
+        System.out.println("getName complete - player name" + name);
         return name;
     }
 
@@ -40,6 +40,8 @@ public class RemotePlayer implements IPlayer {
         // to socket
         Document inDoc = Parser.buildInitializeXML(db, color, colors);
         printWriter.println(Parser.documentToString(inDoc));
+
+        System.out.println("initialize complete");
     }
 
     public Token placePawn(Board b) throws Exception {
@@ -47,9 +49,12 @@ public class RemotePlayer implements IPlayer {
         Document inDoc = Parser.buildPlacePawnXML(db, b);
         printWriter.println(Parser.documentToString(inDoc));
         // from socket
-        Document outDoc = db.parse(bufferedReader.readLine());
+        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
+        System.out.println(Parser.documentToString(outDoc));
         Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, outDoc);
         Token token = new Token(this.color, pair.second, pair.first);
+
+        System.out.println("placePawn complete player at " + token.getPosition().toString() + token.getIndex());
         return token;
     }
 
@@ -60,7 +65,7 @@ public class RemotePlayer implements IPlayer {
         Document inDoc = Parser.buildPlayTurnXML(db, b, handSet, tilesLeft);
         printWriter.println(Parser.documentToString(inDoc));
         // from socket
-        Document outDoc = db.parse(bufferedReader.readLine());
+        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         Tile tile = Parser.fromPlayTurnXML(db, outDoc);
         return tile;
     }

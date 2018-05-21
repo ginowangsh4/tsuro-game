@@ -9,7 +9,7 @@ import tsuro.*;
 import javax.xml.parsers.DocumentBuilder;
 
 public class BoardParser {
-    private DocumentBuilder db;
+    public DocumentBuilder db;
     public TileParser tileParser;
     public PawnParser pawnParser;
 

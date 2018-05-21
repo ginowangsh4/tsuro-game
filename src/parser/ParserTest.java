@@ -12,11 +12,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,7 +32,7 @@ public class ParserTest {
     }
     // ******************************* Network Architecture ***********************************
     //                   ----->              ---||-->        ----->
-    //              Admin        RemotePlayer   ||     NAdmin        MPlayer
+    //              AdminSocket        RemotePlayer   ||     NAdmin        MPlayer
     //                   <-----              <--||---        <-----
     // ****************************************************************************************
 
@@ -276,7 +274,7 @@ public class ParserTest {
         assertTrue(expected.isEqualNode(actual),"Parsing end-game does not give the expected XML");
     }
     // ****************************************************************************************
-    // ******************** Build XML for Outgoing Outputs to Admin ***************************
+    // ******************** Build XML for Outgoing Outputs to AdminSocket ***************************
     // ****************************************************************************************
     @Test
     public void buildVoidXMLTest() throws IOException, SAXException {
@@ -307,7 +305,29 @@ public class ParserTest {
         assertTrue(expected.isEqualNode(actual1),"Parsing pawn-loc does not give the expected XML");
         assertTrue(expected.isEqualNode(actual2),"Parsing pawn-loc does not give the expected XML");
     }
+    // ****************************************************************************************
+    // **************** Decompose XML from Incoming Input from Server *************************
+    // ****************************************************************************************
+    @Test
+    public void fromColorListXML() throws Exception {
+        String s = "<list>" +
+                "<color>blue</color>" +
+                "<color>red</color>" +
+                "<color>green</color>" +
+                "<color>orange</color>" +
+                "<color>sienna</color>" +
+                "<color>hotpink</color>" +
+                "<color>darkgreen</color>" +
+                "<color>purple</color>" +
+                "</list>";
+        InputStream is = new ByteArrayInputStream(s.getBytes());
+        Document doc = db.parse(is);
+        System.out.println(Parser.documentToString(doc));
+        List<Integer> actual = Parser.fromColorListSetXML(db, doc);
 
+        List<Integer> expected = new ArrayList<>(Arrays.asList(0,1,2,3,4,5,6,7));
+        assertTrue(expected.equals(actual), "Failed to build color list from XML");
+    }
     // ****************************************************************************************
     // **************** Decompose XML from Incoming Outputs from NAdmin ***********************
     // ****************************************************************************************
@@ -341,7 +361,7 @@ public class ParserTest {
 
         Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, doc);
 
-        assertEquals(new int[]{0,0}, pair.first, "Failed to build position from XML");
+        assertArrayEquals(new int[]{0,0}, pair.first, "Failed to build position from XML");
         assertEquals(new Integer(4), pair.second, "Failed to build indexOnTile from XML");
     }
 

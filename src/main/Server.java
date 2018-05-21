@@ -43,15 +43,14 @@ public class Server {
     }
 
     public void startGame() throws Exception {
-        ServerSocket listenerSocket = new ServerSocket(6666);
-        Socket socket = listenerSocket.accept();
+        ServerSocket socketListener = new ServerSocket(52656);
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
 
             List<Integer> colors = new ArrayList<>();
 
-            RemotePlayer rP = new RemotePlayer(0, socket, db);
+            RemotePlayer rP = new RemotePlayer(socketListener.accept(), db);
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
             MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS);
@@ -74,14 +73,26 @@ public class Server {
 
             while(!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
+                System.out.println("Player " + currentP.getPlayer().getName());
                 Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
                 currentP.deal(tileToPlay);
                 server.playATurn(tileToPlay);
             }
+
+            List<Integer> winners = server.getWinners();
+            for (SPlayer sPlayer : inSPlayer) {
+                sPlayer.getPlayer().endGame(server.board, winners);
+            }
+
+            System.out.println(server.gameOver);
+            for (SPlayer sPlayer : server.inSPlayer) {
+                System.out.println(sPlayer.getPlayer().getName());
+            }
+
         } catch (ParserConfigurationException | IOException e) {
             e.printStackTrace();
         } finally {
-            listenerSocket.close();
+            socketListener.close();
         }
     }
 
@@ -316,7 +327,6 @@ public class Server {
         dead.add(p);
         // players draw and pass dragon
         drawAndPassDragon();
-        // System.out.println("Eliminated player " + p.getMPlayer().getName());
     }
 
 //    public void playerCheatIllegalPawn(SPlayer p) {
@@ -469,6 +479,19 @@ public class Server {
      */
     public Board getBoard() {
         return this.board;
+    }
+
+    /**
+     * Get the winner colors of the game
+     * @return a list of winner colors
+     * @throws Exception
+     */
+    public List<Integer> getWinners() throws Exception {
+        List<Integer> winners = new ArrayList<>();
+        for (SPlayer sPlayer : inSPlayer) {
+            winners.add(Token.getColorInt(sPlayer.getPlayer().getName()));
+        }
+        return winners;
     }
 }
 
