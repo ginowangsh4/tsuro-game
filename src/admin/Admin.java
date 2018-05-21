@@ -67,7 +67,9 @@ public class Admin {
         socket.writeOutputToClient(s);
 
         while (socket.connectionEstablished()) {
-            Document doc = Parser.stringToDocument(db, socket.readInputFromClient());
+            String res = socket.readInputFromClient();
+            if (res == null) break;
+            Document doc = Parser.stringToDocument(db, res);
             if (!doc.getFirstChild().getNodeName().equals("play-turn") &&
                     !doc.getFirstChild().getNodeName().equals("end-game") &&
                     !doc.getFirstChild().getNodeName().equals("get-name")) {

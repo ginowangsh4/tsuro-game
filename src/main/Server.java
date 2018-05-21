@@ -80,11 +80,11 @@ public class Server {
 
             List<Integer> winners = server.getWinners();
             for (SPlayer sPlayer : inSPlayer) {
-                System.out.println("End game for player = " + sPlayer.getPlayer().getName());
+                System.out.println("Ending game for winners = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winners);
             }
             for (SPlayer sPlayer : outSPlayer) {
-                System.out.println("End game for player = " + sPlayer.getPlayer().getName());
+                System.out.println("Ending game for losers = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winners);
             }
 
