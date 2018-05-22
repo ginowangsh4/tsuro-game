@@ -113,6 +113,19 @@ public class Parser {
         return doc;
     }
 
+    public static Document buildTileListXML(DocumentBuilder db, List<Tile> tiles) {
+        TileParser tileParser = new TileParser(db);
+        Document doc = db.newDocument();
+
+        Element list = doc.createElement("list");
+        for (Tile tile : tiles) {
+            Node t = doc.importNode(tileParser.buildXML(tile).getFirstChild(), true);
+            list.appendChild(t);
+        }
+        doc.appendChild(list);
+        return doc;
+    }
+
     // ****************************************************************************************
     // ******************** Build XML for Outgoing Outputs to Server **************************
     // ****************************************************************************************

@@ -8,13 +8,13 @@ import java.util.*;
 
 public class Server {
 
-    private Board board;
-    private Deck drawPile;
-    private List<SPlayer> inSPlayer;
-    private List<SPlayer> outSPlayer;
-    private List<Integer> colors;
-    private SPlayer dragonHolder = null;
-    private boolean gameOver = false;
+    public Board board;
+    public Deck drawPile;
+    public List<SPlayer> inSPlayer;
+    public List<SPlayer> outSPlayer;
+    public List<Integer> colors;
+    public SPlayer dragonHolder = null;
+    public boolean gameOver = false;
 
     // singleton pattern
     private static Server server = null;
@@ -251,6 +251,11 @@ public class Server {
         // ** Step 3: Update Game Over Condition **
         // ****************************************
         // game over if board is full
+
+        System.out.println(deadP.size());
+        System.out.println(inSPlayer.size());
+        System.out.println(outSPlayer.size());
+        System.out.println(board.tokenList.size());
         if (board.isFull()) {
             gameOver = true;
             if (inSPlayer.size() == 0) {
@@ -271,6 +276,10 @@ public class Server {
         else if (inSPlayer.size() == 0) {
             gameOver = true;
             inSPlayer.addAll(deadP);
+            System.out.println(deadP.size());
+            System.out.println(inSPlayer.size());
+            System.out.println(outSPlayer.size());
+            System.out.println(board.tokenList.size());
             return inSPlayer;
         }
         outSPlayer.addAll(deadP);
@@ -333,7 +342,7 @@ public class Server {
         int pIndex = inSPlayer.indexOf(p);
         drawPile.addAndShuffle(p.getHand());
         p.getHand().clear();
-        board.removeToken(p.getToken());
+        //board.removeToken(p.getToken());
         // assign dragon holder to be the next player
         if (p.equals(dragonHolder)) {
             int index = findNextHolder(pIndex);
@@ -343,7 +352,7 @@ public class Server {
         dead.add(p);
         // players draw and pass dragon
         drawAndPassDragon();
-        System.out.println("Player " + p.getPlayer().getName() + " eliminated!");
+        System.out.println("Player " + p.getName() + " eliminated!");
     }
 
     public void playerCheatIllegalPawn(SPlayer p) throws Exception {

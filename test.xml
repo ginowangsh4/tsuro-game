@@ -1,0 +1,30 @@
+
+<example-1>
+    <input>
+        "<list><tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile></list>"
+        "<list><splayer-nodragon><color>blue</color><set></set></splayer-nodragon></list>"
+        "<list></list>"
+        "<board><map></map><map><ent><color>blue</color><pawn-loc><h></h><n>0</n><n>0</n></pawn-loc></ent></map></board>"
+        "<tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile>"
+    </input>
+    <output>
+        <list><tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile></list>
+        <list><splayer-nodragon><color>blue</color><set></set></splayer-nodragon></list>
+        <list></list>
+        <board><map><ent><xy><x>0</x><y>0</y></xy><tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile></ent></map><map><ent><color>blue</color><pawn-loc><h></h><n>0</n><n>1</n></pawn-loc></ent></map></board>
+        <list><splayer-nodragon><color>blue</color><set></set></splayer-nodragon></list>
+    </output>
+</example-1>
+
+<example-2>
+<input>
+    "<list><tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile></list>"
+
+</input>
+<output>
+
+</output>
+</example-2>
+
+
+

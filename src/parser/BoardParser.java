@@ -94,7 +94,6 @@ public class BoardParser {
             board.addToken(token);
         }
 
-
         return board;
     }
 }
