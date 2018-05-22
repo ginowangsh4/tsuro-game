@@ -28,7 +28,8 @@ public class ServerTest {
             inSPlayer = new ArrayList<>();
             outSPlayer = new ArrayList<>();
             deck = new Deck();
-            server.setState(b, inSPlayer, outSPlayer, deck);
+            colors = new ArrayList<>();
+            server.setState(b, inSPlayer, outSPlayer, deck, colors);
 
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
@@ -81,7 +82,9 @@ public class ServerTest {
             inSPlayer = new ArrayList<>();
             outSPlayer = new ArrayList<>();
             deck = new Deck();
-            server.setState(b, inSPlayer, outSPlayer, deck);
+            colors = new ArrayList<>();
+
+            server.setState(b, inSPlayer, outSPlayer, deck, colors);
 
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
@@ -107,9 +110,12 @@ public class ServerTest {
                 server.playATurn(tileToPlay);
             }
 
-            assertEquals(MPlayer.Strategy.R, mP1.strategy, "Error: Player 1's cheating is not caught");
-            assertEquals(MPlayer.Strategy.R, mP2.strategy, "Error: Player 2's cheating is not caught");
-            assertEquals(MPlayer.Strategy.R, mP3.strategy, "Error: Player 3's cheating is not caught");
+            for (SPlayer sp : inSPlayer) {
+                assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Error: Player's cheating is not caught");
+            }
+            for (SPlayer sp : outSPlayer) {
+                assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Error: Player's cheating is not caught");
+            }
             assertEquals(true, server.isGameOver());
         }
     }
@@ -125,8 +131,9 @@ public class ServerTest {
         List<Tile> pile = new ArrayList<>();
         pile.addAll(Arrays.asList(t1, t2, t3));
         deck = new Deck();
+        colors = new ArrayList<>();
 
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, deck, colors);
 
         MPlayer mP = new MPlayer(MPlayer.Strategy.LS);
         colors.add(1);
@@ -139,7 +146,7 @@ public class ServerTest {
         currentP.deal(tileToPlay);
         server.playATurn(tileToPlay);
 
-        assertEquals(MPlayer.Strategy.R, mP.strategy, "Error: Player's cheating is not caught");
+        assertEquals(MPlayer.Strategy.R, currentP.getMPlayer().strategy, "Error: Player's cheating is not caught");
         assertEquals(true, server.isGameOver());
     }
 }

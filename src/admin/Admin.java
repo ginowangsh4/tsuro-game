@@ -25,7 +25,7 @@ public class Admin {
 
         AdminSocket socket = new AdminSocket(hostname, port, db);
 
-        // 1. initialize
+        // initialize
         Document initializeXML = Parser.stringToDocument(db, socket.readInputFromClient());
         if (!initializeXML.getFirstChild().getNodeName().equals("initialize")) {
             throw new IllegalArgumentException("Message is not initialize");
@@ -47,7 +47,7 @@ public class Admin {
         System.out.println("Admin: initialize complete " + s);
         socket.writeOutputToClient(s);
 
-        // 2. place-pawn
+        // place-pawn
         s = socket.readInputFromClient();
         System.out.println(s);
         Document placePawnXML = Parser.stringToDocument(db, s);
@@ -67,7 +67,10 @@ public class Admin {
         socket.writeOutputToClient(s);
 
         while (socket.connectionEstablished()) {
-            Document doc = Parser.stringToDocument(db, socket.readInputFromClient());
+            String res = socket.readInputFromClient();
+            // server has closed the connection
+            if (res == null) break;
+            Document doc = Parser.stringToDocument(db, res);
             if (!doc.getFirstChild().getNodeName().equals("play-turn") &&
                     !doc.getFirstChild().getNodeName().equals("end-game") &&
                     !doc.getFirstChild().getNodeName().equals("get-name")) {

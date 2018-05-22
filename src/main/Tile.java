@@ -158,7 +158,6 @@ public class Tile {
         System.out.println(" }");
     }
 
-
     public static void main(String[] args) {
         Tile t;
         t = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
@@ -168,6 +167,9 @@ public class Tile {
         t.print();
         t.reorderPath();
         t.print();
+        for (String s : args) {
+            System.out.println(s);
+        }
     }
 }
 

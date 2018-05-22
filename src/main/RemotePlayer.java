@@ -6,7 +6,6 @@ import tsuro.parser.Parser;
 import javax.xml.parsers.DocumentBuilder;
 import java.io.*;
 import java.net.Socket;
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class RemotePlayer implements IPlayer {
@@ -53,7 +52,6 @@ public class RemotePlayer implements IPlayer {
         // to socket
         Document inDoc = Parser.buildPlacePawnXML(db, b);
         printWriter.println(Parser.documentToString(inDoc));
-        System.out.println(Parser.documentToString(inDoc));
 
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
@@ -75,6 +73,8 @@ public class RemotePlayer implements IPlayer {
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         Tile tile = Parser.fromPlayTurnXML(db, outDoc);
+//        System.out.println("Server: playTurn complete");
+
         return tile;
     }
 
@@ -90,5 +90,6 @@ public class RemotePlayer implements IPlayer {
         if (!outDoc.getFirstChild().getNodeName().equals("void")) {
             throw new IllegalArgumentException("Response is not void!");
         }
+//        System.out.println("Server: endGame complete");
     }
 }

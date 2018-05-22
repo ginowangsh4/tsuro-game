@@ -27,6 +27,10 @@ public class MPlayer implements IPlayer {
         return this.color;
     }
 
+    public List<Integer> getColors() {
+        return this.colors;
+    }
+
     public void initialize (int color, List<Integer> colors) {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid player's color");

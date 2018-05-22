@@ -12,6 +12,7 @@ public class Server {
     private Deck drawPile;
     private List<SPlayer> inSPlayer;
     private List<SPlayer> outSPlayer;
+    private List<Integer> colors;
     private SPlayer dragonHolder = null;
     private boolean gameOver = false;
 
@@ -36,6 +37,16 @@ public class Server {
         this.board = board;
         this.inSPlayer = inSPlayer;
         this.outSPlayer = outSPlayer;
+        this.drawPile = drawPile;
+        this.dragonHolder = null;
+        this.gameOver = false;
+    }
+
+    public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, Deck drawPile, List<Integer> colors) {
+        this.board = board;
+        this.inSPlayer = inSPlayer;
+        this.outSPlayer = outSPlayer;
+        this.colors = colors;
         this.drawPile = drawPile;
         this.dragonHolder = null;
         this.gameOver = false;
@@ -78,13 +89,13 @@ public class Server {
                 server.playATurn(tileToPlay);
             }
 
-            List<Integer> winners = server.getWinners();
+            List<Integer> winners = server.getCurrentColors();
             for (SPlayer sPlayer : inSPlayer) {
-                System.out.println("End game for player = " + sPlayer.getPlayer().getName());
+                System.out.println("Ending game for winners = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winners);
             }
             for (SPlayer sPlayer : outSPlayer) {
-                System.out.println("End game for player = " + sPlayer.getPlayer().getName());
+                System.out.println("Ending game for losers = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winners);
             }
 
@@ -109,10 +120,11 @@ public class Server {
         SPlayer sP = new SPlayer(t, hand, player.getName());
         sP.linkPlayer(player);
         // check if starting position is legal
-//        if (!t.isStartingPosition()) {
-//            System.err.println("Caught cheating: Player starts the game at an illegal position");
-//            playerCheatIllegalPawn(sP);
-//        }
+        if (!t.isStartingPosition()) {
+            System.err.println("Caught cheating: Player starts the game at an illegal position");
+            playerCheatIllegalPawn(sP);
+        }
+        colors.add(t.getColor());
         inSPlayer.add(sP);
         board.addToken(sP.getToken());
         for (int i = 0; i < 3; i++){
@@ -186,13 +198,13 @@ public class Server {
         // *****************************************
         // ****** Step 1: Contract Validation ******
         // *****************************************
-//        // check if player is cheating by purposefully playing an illegal move
-//        currentP.draw(t);
-//        if (!legalPlay(currentP, board, t)) {
-//            System.err.println("Caught cheating: Player tried to play an illegal tile while holding at least one other legal tile");
-//            t = playerCheatIllegalTile(currentP, t);
-//        }
-//        currentP.deal(t);
+        // check if player is cheating by purposefully playing an illegal move
+        currentP.draw(t);
+        if (!legalPlay(currentP, board, t)) {
+            System.err.println("Caught cheating: Player tried to play an illegal tile while holding at least one other legal tile");
+            t = playerCheatIllegalTile(currentP);
+        }
+        currentP.deal(t);
         // check if this player's hand is legal at the start of this turn
         legalHand(currentP);
 
@@ -334,28 +346,24 @@ public class Server {
         System.out.println("Player " + p.getPlayer().getName() + " eliminated!");
     }
 
-//    public void playerCheatIllegalPawn(SPlayer p) {
-//        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
-//        p.getPlayer().strategy = "R";
-//        if (p.getPlayer().state == MPlayer.State.INIT) {
-//            p.updateToken(p.getPlayer().placePawn(board));
-//        }
-//        else throw new IllegalArgumentException("Error: Sequence Contracts - cannot place pawn at this point");
-//    }
-//
-//    public Tile playerCheatIllegalTile(SPlayer p, Tile oldTile) {
-//        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
-//        p.getPlayer().strategy = MPlayer.Strategy.R;
-//        p.deal(oldTile);
-//        if (p.getPlayer().state == MPlayer.State.PLACE ||
-//                p.getPlayer().state == MPlayer.State.PLAY) {
-//            Tile newTile = p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
-//            return newTile;
-//        }
-//        else {
-//            throw new IllegalArgumentException("Error: Sequence Contracts - cannot play turn at this time");
-//        }
-//    }
+    public void playerCheatIllegalPawn(SPlayer p) throws Exception {
+        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
+        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R);
+        System.out.println(Token.getColorInt(p.getPlayer().getName()));
+        newPlayer.initialize(Token.getColorInt(p.getPlayer().getName()), colors);
+        p.linkPlayer(newPlayer);
+        p.updateToken(p.getPlayer().placePawn(board));
+    }
+
+    public Tile playerCheatIllegalTile(SPlayer p) throws Exception {
+        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
+        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R);
+        newPlayer.initialize(Token.getColorInt(p.getPlayer().getName()), colors);
+        newPlayer.state = MPlayer.State.PLAY;
+        p.linkPlayer(newPlayer);
+        Tile newTile = p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
+        return newTile;
+    }
 
     /**
      * Check whether player's hand is legal against behavior contracts
@@ -487,16 +495,32 @@ public class Server {
     }
 
     /**
-     * Get the winner colors of the game
+     * Get the current colors of the game
      * @return a list of winner colors
      * @throws Exception
      */
-    public List<Integer> getWinners() throws Exception {
-        List<Integer> winners = new ArrayList<>();
+    public List<Integer> getCurrentColors() throws Exception {
+        List<Integer> colors = new ArrayList<>();
         for (SPlayer sPlayer : inSPlayer) {
-            winners.add(Token.getColorInt(sPlayer.getPlayer().getName()));
+            colors.add(Token.getColorInt(sPlayer.getPlayer().getName()));
         }
-        return winners;
+        return colors;
+    }
+
+    /**
+     * Get the all colors of the game
+     * @return a list of winner colors
+     * @throws Exception
+     */
+    public List<Integer> getAllColors() throws Exception {
+        List<Integer> colors = new ArrayList<>();
+        for (SPlayer sPlayer : inSPlayer) {
+            if (sPlayer.getPlayer() instanceof MPlayer) {
+                return ((MPlayer) sPlayer.getPlayer()).getColors();
+            }
+            colors.add(Token.getColorInt(sPlayer.getPlayer().getName()));
+        }
+        throw new IllegalArgumentException("Cannot get all colors");
     }
 }
 
