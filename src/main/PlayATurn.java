@@ -15,17 +15,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
 
 public class PlayATurn {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        while(true){
+        while (true) {
             String deckStr = br.readLine();
-            if(deckStr == null){
-                break;
-            }
+            if (deckStr == null) break;
             String inPlayerStr = br.readLine();
             String outPlayerStr = br.readLine();
             String boardStr = br.readLine();
@@ -37,7 +33,6 @@ public class PlayATurn {
 //        System.out.println("Input board = " + boardStr);
 //        System.out.println("Input tile to place = " + tileStr);
 
-
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
 
@@ -46,7 +41,7 @@ public class PlayATurn {
             BoardParser boardParser = new BoardParser(db);
 
             // ***************************************************
-            // Parse input XML to game objects
+            // Parse input XMLs to game objects
             // ***************************************************
             Board board = boardParser.fromXML(Parser.stringToDocument(db, boardStr));
 
@@ -88,6 +83,7 @@ public class PlayATurn {
             Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, tileStr));
             List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, deckStr));
             Deck deck = new Deck(tileList);
+
             // ***************************************************
             // Play a turn
             // ***************************************************

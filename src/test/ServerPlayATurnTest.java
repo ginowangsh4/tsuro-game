@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PlayATurnTest {
+public class ServerPlayATurnTest {
 
     static Board b;
     static Tile tile;

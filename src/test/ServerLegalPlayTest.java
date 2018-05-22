@@ -5,7 +5,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LegalPlayTest {
+public class ServerLegalPlayTest {
 
     static Board b;
     static Token token;

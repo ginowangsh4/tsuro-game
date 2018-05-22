@@ -31,7 +31,7 @@ public class RemotePlayer implements IPlayer {
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         String name = Parser.fromGetNameXML(db, outDoc);
 
-        System.out.println("Server: getName complete - player name" + name);
+        System.out.println("Remote: getName complete - player name is " + name);
         return name;
     }
 
@@ -46,7 +46,7 @@ public class RemotePlayer implements IPlayer {
             throw new IllegalArgumentException("Response is not void!");
         }
 
-        System.out.println("Server: initialize complete");
+        System.out.println("Remote: initialize complete");
     }
 
     public Token placePawn(Board b) throws Exception {
@@ -56,11 +56,11 @@ public class RemotePlayer implements IPlayer {
 
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
-        System.out.println(Parser.documentToString(outDoc));
+        //System.out.println(Parser.documentToString(outDoc));
         Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, outDoc);
         Token token = new Token(this.color, pair.second, pair.first);
 
-        System.out.println("Server: placePawn complete player at [" + token.getPosition()[0] + ", " + token.getPosition()[1] + "], " + token.getIndex());
+        System.out.println("Remote: placePawn complete - player starts at [" + token.getPosition()[0] + ", " + token.getPosition()[1] + "], index " + token.getIndex());
         return token;
     }
 
@@ -75,7 +75,7 @@ public class RemotePlayer implements IPlayer {
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         Tile tile = Parser.fromPlayTurnXML(db, outDoc);
 
-        System.out.print("Server: playTurn complete - chosen tile is ");
+        System.out.print("Remote: playTurn complete - chosen tile is ");
         tile.print();
         return tile;
     }
@@ -93,6 +93,6 @@ public class RemotePlayer implements IPlayer {
             throw new IllegalArgumentException("Response is not void!");
         }
 
-        System.out.println("Server: endGame complete");
+        System.out.println("Remote: endGame complete");
     }
 }
