@@ -1,4 +1,6 @@
 package tsuro;
+import jdk.nashorn.internal.ir.annotations.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +21,7 @@ public class PlayATurnTest {
     // Making a move that causes a token to cross multiple tiles
     // Making a move where multiple players move at once
     // Making a move where multiple players are eliminated
+    @Disabled
     @Test
     public void playATurnTest1() throws Exception {
         b = new Board();
@@ -63,6 +66,7 @@ public class PlayATurnTest {
     // Test 2: player 1 and player 2 move and neither get eliminated.
     // Making a move that causes a token to cross multiple tiles
     // Making a move where multiple players move at once
+    @Disabled
     @Test
     public void playATurnTest2() throws Exception {
         b = new Board();
@@ -106,6 +110,7 @@ public class PlayATurnTest {
     // Test 3: player 2 gets eliminated, player 1 wins, and game is over
     // Making a move that causes a token to cross multiple tiles
     // Making a move where multiple players move at once
+    @Disabled
     @Test
     public void playATurnTest3() throws Exception {
         b = new Board();
@@ -149,6 +154,7 @@ public class PlayATurnTest {
     // Test 4: player 1 moves from an edge, doesn't get eliminated, and then is player 2's turn
     //         player 2 moves from an edge, doesn't get eliminated, and game is not over
     // Making a move from the edge
+    @Disabled
     @Test
     public void playATurnTest4() throws Exception {
         b = new Board();

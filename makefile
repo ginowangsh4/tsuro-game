@@ -1,5 +1,5 @@
 test: DNE
-	javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java
+	javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java src/parser/*.java src/admin/*.java
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c BoardTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c DeckTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c DragonTest

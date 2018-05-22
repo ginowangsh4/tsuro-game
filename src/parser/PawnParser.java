@@ -1,6 +1,5 @@
 package tsuro.parser;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 

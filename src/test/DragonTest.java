@@ -1,4 +1,5 @@
 package tsuro;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
@@ -251,6 +252,7 @@ public class DragonTest {
     }
 
     // Moving where the player that has the dragon tile makes a move that causes themselves to be eliminated
+    @Disabled
     @Test
     public void dragonTest5() {
         b = new Board();

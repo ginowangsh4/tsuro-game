@@ -1,6 +1,5 @@
 package tsuro.parser;
 
-import jdk.internal.org.xml.sax.SAXException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -46,7 +45,7 @@ class PawnParserTest {
     }
 
     @Test
-    public void fromXMLTest() throws IOException, SAXException {
+    public void fromXMLTest() {
         String buffer = "<ent><color>red</color><pawn-loc><v></v><n>0</n><n>4</n></pawn-loc></ent>";
         InputStream is = new ByteArrayInputStream(buffer.getBytes());
         Document doc;
