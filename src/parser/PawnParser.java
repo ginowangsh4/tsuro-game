@@ -5,7 +5,9 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import tsuro.*;
+import tsuro.Board;
+import tsuro.Tile;
+import tsuro.Token;
 
 public class PawnParser {
     private DocumentBuilder db;
@@ -229,18 +231,18 @@ public class PawnParser {
     }
 
     public static void main(String[] args) {
-        // generate example pawn xml for testing command line play-a-turn
-        Board expected = new Board();
-        Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
-        Tile t2 = new Tile(new int[][]{{0, 1}, {2, 4}, {3, 6}, {5, 7}});
-        Tile t3 = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
-        expected.placeTile(t1,0,5);
-        expected.placeTile(t2,3,2);
-        expected.placeTile(t3,4,1);
-        Token token1 = new Token(0, 2,new int[] {0,5});
-        Token token2 = new Token(1, 5,new int[] {4,1});
-        expected.addToken(token1);
-        expected.addToken(token2);
-        int[] a = getOldPos(2,8,true, expected);
+//        // generate example pawn xml for testing command line play-a-turn
+//        Board expected = new Board();
+//        Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
+//        Tile t2 = new Tile(new int[][]{{0, 1}, {2, 4}, {3, 6}, {5, 7}});
+//        Tile t3 = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
+//        expected.placeTile(t1,0,5);
+//        expected.placeTile(t2,3,2);
+//        expected.placeTile(t3,4,1);
+//        Token token1 = new Token(0, 2,new int[] {0,5});
+//        Token token2 = new Token(1, 5,new int[] {4,1});
+//        expected.addToken(token1);
+//        expected.addToken(token2);
+//        int[] a = getOldPos(2,8,true, expected);
     }
 }

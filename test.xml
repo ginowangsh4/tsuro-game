@@ -1,11 +1,11 @@
 
 <example-1>
     <input>
-        "<list><tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile></list>"
-        "<list><splayer-nodragon><color>blue</color><set></set></splayer-nodragon></list>"
-        "<list></list>"
-        "<board><map></map><map><ent><color>blue</color><pawn-loc><h></h><n>0</n><n>0</n></pawn-loc></ent></map></board>"
-        "<tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile>"
+<list><tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile></list>
+<list><splayer-nodragon><color>blue</color><set></set></splayer-nodragon></list>
+<list></list>
+<board><map></map><map><ent><color>blue</color><pawn-loc><h></h><n>0</n><n>0</n></pawn-loc></ent></map></board>
+<tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile>
     </input>
     <output>
         <list><tile><connect><n>0</n><n>1</n></connect><connect><n>2</n><n>3</n></connect><connect><n>4</n><n>5</n></connect><connect><n>6</n><n>7</n></connect></tile></list>

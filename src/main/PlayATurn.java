@@ -11,23 +11,27 @@ import tsuro.parser.TileParser;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class PlayATurn {
     public static void main(String[] args) throws Exception {
-        String deckStr = args[0];
-        String inPlayerStr = args[1];
-        String outPlayerStr = args[2];
-        String boardStr = args[3];
-        String tileStr = args[4];
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String deckStr = br.readLine();
+        String inPlayerStr = br.readLine();
+        String outPlayerStr = br.readLine();
+        String boardStr = br.readLine();
+        String tileStr = br.readLine();
 
-        System.out.println("Input deck = " + deckStr);
-        System.out.println("Input in splayer = " + inPlayerStr);
-        System.out.println("Input out splayer = " + outPlayerStr);
-        System.out.println("Input board = " + boardStr);
-        System.out.println("Input tile to place = " + tileStr);
+//        System.out.println("Input deck = " + deckStr);
+//        System.out.println("Input in splayer = " + inPlayerStr);
+//        System.out.println("Input out splayer = " + outPlayerStr);
+//        System.out.println("Input board = " + boardStr);
+//        System.out.println("Input tile to place = " + tileStr);
 
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -124,12 +128,18 @@ public class PlayATurn {
             winnersRes.appendChild(l);
         }
 
-        System.out.println("**** RESULT ****");
-        System.out.println("Output deck = " + Parser.documentToString(tileRes));
-        System.out.println("Output in splayer = " + Parser.documentToString(inPlayerRes));
-        System.out.println("Output out splayer = " + Parser.documentToString(outPlayerRes));
-        System.out.println("Output board = " + Parser.documentToString(boardRes));
-        System.out.println("Output winners = " + Parser.documentToString(winnersRes));
+//        System.out.println("**** RESULT ****");
+//        System.out.println("Output deck = " + Parser.documentToString(tileRes));
+//        System.out.println("Output in splayer = " + Parser.documentToString(inPlayerRes));
+//        System.out.println("Output out splayer = " + Parser.documentToString(outPlayerRes));
+//        System.out.println("Output board = " + Parser.documentToString(boardRes));
+//        System.out.println("Output winners = " + Parser.documentToString(winnersRes));
+
+        System.out.println(Parser.documentToString(tileRes));
+        System.out.println(Parser.documentToString(inPlayerRes));
+        System.out.println(Parser.documentToString(outPlayerRes));
+        System.out.println(Parser.documentToString(boardRes));
+        System.out.println(Parser.documentToString(winnersRes));
     }
 
     public static Token findToken(Board board, int color) {
