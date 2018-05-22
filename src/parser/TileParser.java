@@ -6,6 +6,8 @@ import org.w3c.dom.NodeList;
 import tsuro.*;
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class TileParser implements IParser<Tile> {
     private DocumentBuilder db;
@@ -53,5 +55,21 @@ public class TileParser implements IParser<Tile> {
             paths[i][1] = Integer.parseInt(n2.getTextContent());
         }
         return new Tile(paths);
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        int[] p1= new int[]{0,7};
+        int[] p2= new int[]{1,2};
+        int[] p3= new int[]{3,4};
+        int[] p4= new int[]{5,6};
+        int[][] paths = new int[][]{p1,p2,p3,p4};
+        Tile t1 = new Tile(paths);
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        TileParser tileParser = new TileParser(db);
+        Document doc = tileParser.buildXML(t1);
+        System.out.println(Parser.documentToString(doc));
     }
 }

@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 import tsuro.*;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class BoardParser {
     public DocumentBuilder db;
@@ -95,5 +96,38 @@ public class BoardParser {
         }
 
         return board;
+    }
+
+    public static void main(String[] args) throws Exception {
+        Board board = new Board();
+        Tile t1 = new Tile(new int[][] {{0,5},{1,2},{3,4},{6,7}});
+        Tile t2 = new Tile(new int[][] {{0,3},{1,4},{2,7},{5,6}});
+        Tile t3 = new Tile(new int[][] {{0,5},{1,4},{2,7},{3,6}});
+
+        board.placeTile(t1, 1, 0);
+        board.placeTile(t2, 1, 5);
+        board.placeTile(t3, 5, 2);
+
+        int[] pos1 = new int[]{1, 0};
+        Token token1 = new Token(1,2,pos1);
+        int[] pos2 = new int[]{1, 5};
+        Token token2 = new Token(2,0,pos2);
+        int[] pos3 = new int[]{5, 2};
+        Token token3 = new Token(3,6,pos3);
+
+        board.addToken(token1);
+        board.addToken(token2);
+        board.addToken(token3);
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        BoardParser boardParser = new BoardParser(db);
+        Document doc = boardParser.buildXML(board);
+        System.out.println(Parser.documentToString(doc));
+
+
+
+
+
     }
 }

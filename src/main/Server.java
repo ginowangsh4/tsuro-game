@@ -356,18 +356,17 @@ public class Server {
     }
 
     public void playerCheatIllegalPawn(SPlayer p) throws Exception {
-        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
+        System.out.println("Player " + p.getName() + " cheated and is replaced by a random machine player");
         MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R);
-        System.out.println(Token.getColorInt(p.getPlayer().getName()));
-        newPlayer.initialize(Token.getColorInt(p.getPlayer().getName()), colors);
+        newPlayer.initialize(Token.getColorInt(p.getName()), colors);
         p.linkPlayer(newPlayer);
         p.updateToken(p.getPlayer().placePawn(board));
     }
 
     public Tile playerCheatIllegalTile(SPlayer p) throws Exception {
-        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
+        System.out.println("Player " + p.getName() + " cheated and is replaced by a random machine player");
         MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R);
-        newPlayer.initialize(Token.getColorInt(p.getPlayer().getName()), colors);
+        newPlayer.initialize(Token.getColorInt(p.getName()), colors);
         newPlayer.state = MPlayer.State.PLAY;
         p.linkPlayer(newPlayer);
         Tile newTile = p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
