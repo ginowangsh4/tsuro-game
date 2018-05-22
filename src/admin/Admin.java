@@ -21,16 +21,48 @@ public class Admin {
         int port = Integer.parseInt("6666");
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        BoardParser boardParser = new BoardParser(db);
-        TileParser tileParser = new TileParser(db);
-
         AdminSocket socket = new AdminSocket(hostname, port, db);
+        String s = null;
 
         // initialize
+        MPlayer mPlayer = processInitialize(db, socket, s);
+
+        // place-pawn
+        processPlacePawn(db, socket, s, mPlayer);
+
+        while (socket.connectionEstablished()) {
+            String res = socket.readInputFromClient();
+            // server has closed the connection
+            if (res == null) break;
+            Document doc = Parser.stringToDocument(db, res);
+            if (!doc.getFirstChild().getNodeName().equals("play-turn")
+                    && !doc.getFirstChild().getNodeName().equals("end-game")
+                    && !doc.getFirstChild().getNodeName().equals("get-name")) {
+                throw new IllegalArgumentException("Message is not play-turn, end-game or get-name");
+            }
+            Node node = doc.getFirstChild();
+            switch (node.getNodeName()) {
+                case "get-name":
+                    processGetName(db, socket, s, mPlayer);
+                    break;
+                case "play-turn":
+                    processPlayTurn(db, socket, s, mPlayer, node);
+                    break;
+                case "end-game":
+                    processEndGame(db, socket, s, mPlayer, node);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public static MPlayer processInitialize(DocumentBuilder db, AdminSocket socket, String s) throws Exception {
         Document initializeXML = Parser.stringToDocument(db, socket.readInputFromClient());
         if (!initializeXML.getFirstChild().getNodeName().equals("initialize")) {
             throw new IllegalArgumentException("Message is not initialize");
         }
+
         Node initializeNode = initializeXML.getFirstChild();
         Node colorNode = initializeNode.getFirstChild();
         int color = Token.getColorInt(colorNode.getTextContent());
@@ -44,20 +76,24 @@ public class Admin {
         MPlayer mPlayer = new MPlayer(MPlayer.Strategy.R);  // how to assign strategy?
         mPlayer.initialize(color, colors);
         Document voidXML = Parser.buildVoidXML(db);
-        String s = Parser.documentToString(voidXML);
+        s = Parser.documentToString(voidXML);
         System.out.println("Admin: initialize complete " + s);
         socket.writeOutputToClient(s);
 
-        // place-pawn
+        return mPlayer;
+    }
+
+    public static void processPlacePawn(DocumentBuilder db, AdminSocket socket, String s, MPlayer mPlayer) throws Exception {
+        BoardParser boardParser = new BoardParser(db);
         s = socket.readInputFromClient();
-        System.out.println(s);
         Document placePawnXML = Parser.stringToDocument(db, s);
         if (!placePawnXML.getFirstChild().getNodeName().equals("place-pawn")) {
             throw new IllegalArgumentException("Message is not place-pawn");
         }
+
         Node boardNode = placePawnXML.getFirstChild().getFirstChild();
         Document boardDoc = db.newDocument();
-        imported = boardDoc.importNode(boardNode, true);
+        Node imported = boardDoc.importNode(boardNode, true);
         boardDoc.appendChild(imported);
         Board board = boardParser.fromXML(boardDoc);
 
@@ -66,73 +102,61 @@ public class Admin {
         s = Parser.documentToString(pawnLocXML);
         System.out.println("Admin: place-pawn complete " + s);
         socket.writeOutputToClient(s);
+    }
 
-        while (socket.connectionEstablished()) {
-            String res = socket.readInputFromClient();
-            // server has closed the connection
-            if (res == null) break;
-            Document doc = Parser.stringToDocument(db, res);
-            if (!doc.getFirstChild().getNodeName().equals("play-turn") &&
-                    !doc.getFirstChild().getNodeName().equals("end-game") &&
-                    !doc.getFirstChild().getNodeName().equals("get-name")) {
-                throw new IllegalArgumentException("Message is not play-turn, end-game or get-name");
-            }
-            Node node = doc.getFirstChild();
-            switch (node.getNodeName()) {
-                case "get-name":
-                    String playerName = mPlayer.getName();
-                    Document getNameResXML = Parser.buildPlayerNameXML(db, playerName);
-                    s = Parser.documentToString(getNameResXML);
-                    System.out.println("Admin: get-name complete " + s);
-                    socket.writeOutputToClient(s);
-                    break;
+    public static void processGetName(DocumentBuilder db, AdminSocket socket, String s, MPlayer mPlayer) throws Exception {
+        String playerName = mPlayer.getName();
+        Document getNameResXML = Parser.buildPlayerNameXML(db, playerName);
+        s = Parser.documentToString(getNameResXML);
+        System.out.println("Admin: get-name complete " + s);
+        socket.writeOutputToClient(s);
+    }
 
-                case "play-turn":
-                    boardNode = node.getFirstChild();
-                    boardDoc = db.newDocument();
-                    imported = boardDoc.importNode(boardNode, true);
-                    boardDoc.appendChild(imported);
-                    board = boardParser.fromXML(boardDoc);
+    public static void processPlayTurn(DocumentBuilder db, AdminSocket socket, String s, MPlayer mPlayer, Node node) throws Exception {
+        BoardParser boardParser = new BoardParser(db);
+        TileParser tileParser = new TileParser(db);
 
-                    Node setNode = boardNode.getNextSibling();
-                    Document setDoc = db.newDocument();
-                    imported = setDoc.importNode(setNode, true);
-                    setDoc.appendChild(imported);
-                    List<Tile> hand = Parser.fromTileSetXML(db, setDoc);
+        Node boardNode = node.getFirstChild();
+        Document boardDoc = db.newDocument();
+        Node imported = boardDoc.importNode(boardNode, true);
+        boardDoc.appendChild(imported);
+        Board board = boardParser.fromXML(boardDoc);
 
-                    Node nNode = setNode.getNextSibling();
-                    int tilesLeft = Integer.parseInt(nNode.getFirstChild().getTextContent());
+        Node setNode = boardNode.getNextSibling();
+        Document setDoc = db.newDocument();
+        imported = setDoc.importNode(setNode, true);
+        setDoc.appendChild(imported);
+        List<Tile> hand = Parser.fromTileSetXML(db, setDoc);
 
-                    Tile tile = mPlayer.playTurn(board, hand, tilesLeft);
-                    Document tileXML = tileParser.buildXML(tile);
-                    s = Parser.documentToString(tileXML);
-                    System.out.println("Admin: play-turn complete " + s);
-                    socket.writeOutputToClient(s);
-                    break;
+        Node nNode = setNode.getNextSibling();
+        int tilesLeft = Integer.parseInt(nNode.getFirstChild().getTextContent());
 
-                case "end-game":
-                    boardNode = node.getFirstChild();
-                    boardDoc = db.newDocument();
-                    imported = boardDoc.importNode(boardNode, true);
-                    boardDoc.appendChild(imported);
-                    board = boardParser.fromXML(boardDoc);
+        Tile tile = mPlayer.playTurn(board, hand, tilesLeft);
+        Document tileXML = tileParser.buildXML(tile);
+        s = Parser.documentToString(tileXML);
+        System.out.println("Admin: play-turn complete " + s);
+        socket.writeOutputToClient(s);
+    }
 
-                    setNode = boardNode.getNextSibling();
-                    setDoc = db.newDocument();
-                    imported = setDoc.importNode(setNode, true);
-                    setDoc.appendChild(imported);
-                    colors = Parser.fromColorListSetXML(db, setDoc);
+    public static void processEndGame(DocumentBuilder db, AdminSocket socket, String s, MPlayer mPlayer, Node node) throws Exception {
+        BoardParser boardParser = new BoardParser(db);
 
-                    mPlayer.endGame(board, colors);
-                    voidXML = Parser.buildVoidXML(db);
-                    s = Parser.documentToString(voidXML);
-                    System.out.println("Admin: end-game complete " + s);
-                    socket.writeOutputToClient(s);
-                    break;
+        Node boardNode = node.getFirstChild();
+        Document boardDoc = db.newDocument();
+        Node imported = boardDoc.importNode(boardNode, true);
+        boardDoc.appendChild(imported);
+        Board board = boardParser.fromXML(boardDoc);
 
-                default:
-                    break;
-            }
-        }
+        Node setNode = boardNode.getNextSibling();
+        Document setDoc = db.newDocument();
+        imported = setDoc.importNode(setNode, true);
+        setDoc.appendChild(imported);
+        List<Integer> colors = Parser.fromColorListSetXML(db, setDoc);
+
+        mPlayer.endGame(board, colors);
+        Document voidXML = Parser.buildVoidXML(db);
+        s = Parser.documentToString(voidXML);
+        System.out.println("Admin: end-game complete " + s);
+        socket.writeOutputToClient(s);
     }
 }

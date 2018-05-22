@@ -23,6 +23,7 @@ public class Server {
         this.drawPile = new Deck();
         this.inSPlayer = new ArrayList<>();
         this.outSPlayer = new ArrayList<>();
+        this.colors = new ArrayList<>();
     }
 
     public static Server getInstance() {
@@ -58,8 +59,6 @@ public class Server {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
 
-            List<Integer> colors = new ArrayList<>();
-
             RemotePlayer rP = new RemotePlayer(socketListener.accept(), db);
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
@@ -83,7 +82,7 @@ public class Server {
 
             while(!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
-                System.out.println("Current player = " + currentP.getPlayer().getName());
+                System.out.println("Server: current player = " + currentP.getPlayer().getName());
                 Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
                 currentP.deal(tileToPlay);
                 server.playATurn(tileToPlay);
@@ -91,17 +90,17 @@ public class Server {
 
             List<Integer> winners = server.getCurrentColors();
             for (SPlayer sPlayer : inSPlayer) {
-                System.out.println("Ending game for winners = " + sPlayer.getPlayer().getName());
+                System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winners);
             }
             for (SPlayer sPlayer : outSPlayer) {
-                System.out.println("Ending game for losers = " + sPlayer.getPlayer().getName());
+                System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winners);
             }
 
-            System.out.println("Game over = " + server.gameOver);
+            System.out.println("Server: game over? = " + server.gameOver);
             for (SPlayer sPlayer : server.inSPlayer) {
-                System.out.println("Winner = " + sPlayer.getPlayer().getName());
+                System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
             }
 
             socketListener.close();
@@ -124,7 +123,7 @@ public class Server {
             System.err.println("Caught cheating: Player starts the game at an illegal position");
             playerCheatIllegalPawn(sP);
         }
-        colors.add(t.getColor());
+        //colors.add(t.getColor());
         inSPlayer.add(sP);
         board.addToken(sP.getToken());
         for (int i = 0; i < 3; i++){
