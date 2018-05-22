@@ -363,9 +363,4 @@ public class ParserTest {
         assertEquals(new Integer(4), pair.second, "Failed to build indexOnTile from XML");
     }
 
-//    // ... same as TileParser.fromXML()
-//    @Test
-//    public void fromPlayTurnXMLTest() {
-//
-//    }
 }

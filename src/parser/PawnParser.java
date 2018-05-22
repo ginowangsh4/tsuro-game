@@ -249,7 +249,7 @@ public class PawnParser {
         expected.addToken(token1);
         expected.addToken(token2);
         int[] a = getOldPos(2,8,true, expected);
-        System.out.println("hi");
+
     }
 
 

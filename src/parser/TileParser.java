@@ -18,7 +18,6 @@ public class TileParser implements IParser<Tile> {
 
     public Document buildXML(Tile t) {
         Document doc = db.newDocument();
-//        Element ent = doc.createElement("ent");
         Element tile = doc.createElement("tile");
         int[][] paths = t.paths;
         for (int i = 0; i < 4; i++) {
@@ -31,16 +30,11 @@ public class TileParser implements IParser<Tile> {
             connect.appendChild(n2);
             tile.appendChild(connect);
         }
-//        ent.appendChild(tile);
         doc.appendChild(tile);
         return doc;
     }
 
     public Tile fromXML(Document doc) {
-//        Node ent = doc.getFirstChild();
-//        if (!ent.getNodeName().equals("ent")) {
-//            throw new IllegalArgumentException("Parse Error: Cannot find <ent></ent>");
-//        }
         Node tile = doc.getFirstChild();
         if (!tile.getNodeName().equals("tile")) {
             throw new IllegalArgumentException("Parse Error: Cannot find <tile></tile>");
@@ -58,7 +52,7 @@ public class TileParser implements IParser<Tile> {
     }
 
     public static void main(String[] args) throws Exception {
-
+        // generate example tile xml for testing commandline play-a-turn
         int[] p1= new int[]{0,7};
         int[] p2= new int[]{1,2};
         int[] p3= new int[]{3,4};

@@ -31,7 +31,7 @@ public class RemotePlayer implements IPlayer {
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         String name = Parser.fromGetNameXML(db, outDoc);
 
-//        System.out.println("Server: getName complete - player name" + name);
+        System.out.println("Server: getName complete - player name" + name);
         return name;
     }
 
@@ -45,7 +45,7 @@ public class RemotePlayer implements IPlayer {
         if (!outDoc.getFirstChild().getNodeName().equals("void")) {
             throw new IllegalArgumentException("Response is not void!");
         }
-//        System.out.println("Server: initialize complete");
+        System.out.println("Server: initialize complete");
     }
 
     public Token placePawn(Board b) throws Exception {
@@ -59,7 +59,7 @@ public class RemotePlayer implements IPlayer {
         Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, outDoc);
         Token token = new Token(this.color, pair.second, pair.first);
 
-//        System.out.println("Server: placePawn complete player at [" + token.getPosition()[0] + ", " + token.getPosition()[1] + "], " + token.getIndex());
+        System.out.println("Server: placePawn complete player at [" + token.getPosition()[0] + ", " + token.getPosition()[1] + "], " + token.getIndex());
         return token;
     }
 
@@ -73,8 +73,7 @@ public class RemotePlayer implements IPlayer {
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         Tile tile = Parser.fromPlayTurnXML(db, outDoc);
-//        System.out.println("Server: playTurn complete");
-
+        System.out.println("Server: playTurn complete");
         return tile;
     }
 
@@ -90,6 +89,6 @@ public class RemotePlayer implements IPlayer {
         if (!outDoc.getFirstChild().getNodeName().equals("void")) {
             throw new IllegalArgumentException("Response is not void!");
         }
-//        System.out.println("Server: endGame complete");
+        System.out.println("Server: endGame complete");
     }
 }

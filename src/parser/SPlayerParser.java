@@ -77,6 +77,7 @@ public class SPlayerParser {
     }
 
     public static void main(String[] args) throws Exception {
+        // generate example splayer xml for testing commandline play-a-turn
 
         int[] pos1 = new int[]{1, 0};
         Token token1 = new Token(1,2,pos1);

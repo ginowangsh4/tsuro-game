@@ -178,15 +178,6 @@ public class Server {
         return true;
     }
 
-    public boolean legalPlay(MPlayer mp, Board b, Tile t) {
-        for (SPlayer sp : inSPlayer) {
-            if (mp.getColor() == sp.getToken().getColor()) {
-                return legalPlay(sp, b, t);
-            }
-        }
-        throw new IllegalArgumentException("Caught cheating: Dead player tries to play turn");
-    }
-
     /**
      * Computes the state of the game after the completion of a turn given the state of the game before the turn
      * @param t the tile to be placed on that board
@@ -251,11 +242,6 @@ public class Server {
         // ** Step 3: Update Game Over Condition **
         // ****************************************
         // game over if board is full
-
-        System.out.println(deadP.size());
-        System.out.println(inSPlayer.size());
-        System.out.println(outSPlayer.size());
-        System.out.println(board.tokenList.size());
         if (board.isFull()) {
             gameOver = true;
             if (inSPlayer.size() == 0) {
@@ -276,10 +262,6 @@ public class Server {
         else if (inSPlayer.size() == 0) {
             gameOver = true;
             inSPlayer.addAll(deadP);
-            System.out.println(deadP.size());
-            System.out.println(inSPlayer.size());
-            System.out.println(outSPlayer.size());
-            System.out.println(board.tokenList.size());
             return inSPlayer;
         }
         outSPlayer.addAll(deadP);
@@ -356,23 +338,24 @@ public class Server {
     }
 
     public void playerCheatIllegalPawn(SPlayer p) throws Exception {
-        System.out.println("Player " + p.getName() + " cheated and is replaced by a random machine player");
-        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R);
-        newPlayer.initialize(Token.getColorInt(p.getName()), colors);
-        p.linkPlayer(newPlayer);
+        MPlayer newPlayer = replaceWithMPlayer(p);
         p.updateToken(p.getPlayer().placePawn(board));
     }
 
     public Tile playerCheatIllegalTile(SPlayer p) throws Exception {
-        System.out.println("Player " + p.getName() + " cheated and is replaced by a random machine player");
-        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R);
-        newPlayer.initialize(Token.getColorInt(p.getName()), colors);
+        MPlayer newPlayer = replaceWithMPlayer(p);
         newPlayer.state = MPlayer.State.PLAY;
-        p.linkPlayer(newPlayer);
         Tile newTile = p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
         return newTile;
     }
 
+    public MPlayer replaceWithMPlayer(SPlayer p) throws Exception {
+        System.out.println("Player " + p.getName() + " cheated and is replaced by a random machine player");
+        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R);
+        newPlayer.initialize(Token.getColorInt(p.getName()), colors);
+        p.linkPlayer(newPlayer);
+        return newPlayer;
+    }
     /**
      * Check whether player's hand is legal against behavior contracts
      * @param p current player

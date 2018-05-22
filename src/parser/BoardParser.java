@@ -99,6 +99,7 @@ public class BoardParser {
     }
 
     public static void main(String[] args) throws Exception {
+        // generate example board xml for testing commandline play-a-turn
         Board board = new Board();
         Tile t1 = new Tile(new int[][] {{0,5},{1,2},{3,4},{6,7}});
         Tile t2 = new Tile(new int[][] {{0,3},{1,4},{2,7},{5,6}});
@@ -124,9 +125,6 @@ public class BoardParser {
         BoardParser boardParser = new BoardParser(db);
         Document doc = boardParser.buildXML(board);
         System.out.println(Parser.documentToString(doc));
-
-
-
 
 
     }
