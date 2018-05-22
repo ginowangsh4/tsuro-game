@@ -16,6 +16,11 @@ public class TileParser implements IParser<Tile> {
         this.db = db;
     }
 
+    /**
+     * Convert tile game object to XML format
+     * @param t the tile to be converted
+     * @return a document with the XML of the tile in <tile>connect connect connect connect</tile> format as its first child
+     */
     public Document buildXML(Tile t) {
         Document doc = db.newDocument();
         Element tile = doc.createElement("tile");
@@ -34,6 +39,11 @@ public class TileParser implements IParser<Tile> {
         return doc;
     }
 
+    /**
+     * Convert tile XML to tile game object
+     * @param doc a document with the XML of the tile in <tile>connect connect connect connect</tile> format as its first child
+     * @return a tile game object
+     */
     public Tile fromXML(Document doc) {
         Node tile = doc.getFirstChild();
         if (!tile.getNodeName().equals("tile")) {
@@ -51,8 +61,10 @@ public class TileParser implements IParser<Tile> {
         return new Tile(paths);
     }
 
+    /**
+     * Generate example tile XML for testing commandline play-a-turn
+     */
     public static void main(String[] args) throws Exception {
-        // generate example tile xml for testing command line play-a-turn
         int[] p1= new int[]{0,7};
         int[] p2= new int[]{1,2};
         int[] p3= new int[]{3,4};

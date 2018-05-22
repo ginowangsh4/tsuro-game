@@ -19,6 +19,12 @@ public class SPlayerParser {
         tileParser = new TileParser(db);
     }
 
+    /**
+     * Convert splayer game object to XML format
+     * @param sp
+     * @param hasDragon
+     * @return a document with the XML of the splayer in <ent>color pawn-loc</ent> format as its first child
+     */
     public Document buildXML(SPlayer sp, Boolean hasDragon){
         Document doc = db.newDocument();
         Element sPlayer = doc.createElement("splayer-nodragon");
@@ -42,6 +48,13 @@ public class SPlayerParser {
         return doc;
     }
 
+
+    /**
+     * Convert XML format to splayer game object
+     * @param doc with the XML of the splayer in <ent>color pawn-loc</ent> format as its first child
+     * @param token contains location of the splayer
+     * @return
+     */
     public Pair<SPlayer,Boolean> fromXML(Document doc, Token token) throws Exception {
         Node sPlayer = doc.getFirstChild();
         Boolean hasDragon;
@@ -76,8 +89,10 @@ public class SPlayerParser {
         return new Pair<>(sp, hasDragon);
     }
 
+    /**
+     * Generate example splayer XML for testing commandline play-a-turn
+     */
     public static void main(String[] args) throws Exception {
-        // generate example SPlayer xml for testing command line play-a-turn
         int[] pos1 = new int[]{1, 0};
         Token token1 = new Token(1,2,pos1);
         List<Tile> hand1 = new ArrayList<>();

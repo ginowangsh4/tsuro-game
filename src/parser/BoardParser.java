@@ -20,12 +20,18 @@ public class BoardParser implements IParser<Board> {
         pawnParser = new PawnParser(db);
     }
 
+    /**
+     * Convert board game object to XML format
+     * @param b the board to be converted
+     * @return a document with the XML of the board in <board>tiles pawns</board> format as its first child
+     */
     public Document buildXML(Board b){
         Document doc = db.newDocument();
         Element board = doc.createElement("board");
         Element map1 = doc.createElement("map");
         Element map2 = doc.createElement("map");
 
+        // Generate list-of-tile XML
         for (int i = 0; i < b.SIZE; i++) {
             for (int j = 0; j < b.SIZE; j++) {
                 if (b.board[i][j] != null) {
@@ -38,8 +44,8 @@ public class BoardParser implements IParser<Board> {
                     x.appendChild(doc.createTextNode(Integer.toString(i)));
                     y.appendChild(doc.createTextNode(Integer.toString(j)));
                     ent.appendChild(xy);
-                    Node d = tileParser.buildXML(b.board[i][j]).getFirstChild();
 
+                    Node d = tileParser.buildXML(b.board[i][j]).getFirstChild();
                     Node tile = doc.importNode(d, true);
                     ent.appendChild(tile);
 
@@ -48,6 +54,7 @@ public class BoardParser implements IParser<Board> {
             }
         }
 
+        // Generate pawns XML
         for (Token token : b.tokenList) {
             Node t = doc.importNode(pawnParser.buildXML(token).getFirstChild(), true);
             map2.appendChild(t);
@@ -59,13 +66,19 @@ public class BoardParser implements IParser<Board> {
         return doc;
     }
 
+    /**
+     * Convert board XML to board game object
+     * @param doc a document with the XML of the board in <board>tiles pawns</board> format as its first child
+     * @return board game object
+     */
     public Board fromXML(Document doc) throws Exception {
         Board board = new Board();
         Node pawn = doc.getFirstChild();
         if(!pawn.getNodeName().equals("board")){
-            throw new Exception("Trying to parse XML document that is not <ent></ent>");
+            throw new Exception("Trying to parse XML document that is not <board></board>");
         }
 
+        // Parse each tile XML into tile game object and place tile object on board
         Node tiles = pawn.getFirstChild();
         NodeList tileList = tiles.getChildNodes();
         for(int i = 0; i < tileList.getLength(); i++){
@@ -77,20 +90,26 @@ public class BoardParser implements IParser<Board> {
             Node imported = tileDoc.importNode(tile,true);
             tileDoc.appendChild(imported);
             Tile t = tileParser.fromXML(tileDoc);
+
             Node x = xy.getFirstChild();
             Node y = x.getNextSibling();
             int xIndex = Integer.parseInt(x.getTextContent());
             int yIndex = Integer.parseInt(y.getTextContent());
+
             board.placeTile(t, xIndex, yIndex);
         }
 
+        // Parse each pawn XML into token game object given board (with placed tile)
+        // and place token object on board
         Node pawns = tiles.getNextSibling();
         NodeList pawnList = pawns.getChildNodes();
         for(int i = 0; i < pawnList.getLength(); i++) {
             Node pawnEntry = pawnList.item(i);
+
             Document pawnDoc = db.newDocument();
             Node imported = pawnDoc.importNode(pawnEntry,true);
             pawnDoc.appendChild(imported);
+
             Token token = pawnParser.fromXML(pawnDoc, board);
             board.addToken(token);
         }
@@ -98,8 +117,10 @@ public class BoardParser implements IParser<Board> {
         return board;
     }
 
+    /**
+     * Generate example board XML for testing commandline play-a-turn
+     */
     public static void main(String[] args) throws Exception {
-        // generate example board xml for testing commandline play-a-turn
         Board board = new Board();
         Tile t1 = new Tile(new int[][] {{0,5},{1,2},{3,4},{6,7}});
         Tile t2 = new Tile(new int[][] {{0,3},{1,4},{2,7},{5,6}});
