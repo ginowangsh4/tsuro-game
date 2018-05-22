@@ -15,6 +15,11 @@ public class PawnParser {
         this.db = db;
     }
 
+    /**
+     * Convert token/pawn game object to XML format
+     * @param token the token to be converted
+     * @return a document with the XML of the token/pawn in <ent>color pawn-loc</ent> format as its first child
+     */
     public Document buildXML(Token token){
         Document doc = db.newDocument();
         Element pawn = doc.createElement("ent");
@@ -30,6 +35,12 @@ public class PawnParser {
         return doc;
     }
 
+    /**
+     * Convert pawn XML to token game object
+     * @param doc a document with the XML of the token/pawn in <ent>color pawn-loc</ent> format as its first child
+     * @param board a board with tiles placed on it
+     * @return token game object
+     */
     public Token fromXML(Document doc, Board board) throws Exception{
         Node pawn = doc.getFirstChild();
         if(!pawn.getNodeName().equals("ent")){
@@ -38,19 +49,21 @@ public class PawnParser {
 
         Node color = pawn.getFirstChild();
         String colorName = color.getTextContent();
+        int colorIndex = Token.getColorInt(colorName);
 
         Node pawnLoc = color.getNextSibling();
+
         Boolean horizontal = false;
         Node orientation = pawnLoc.getFirstChild();
         if(orientation.getNodeName().equals("h")) {
             horizontal = true;
         }
+
         Node n1 = orientation.getNextSibling();
         Node n2 = n1.getNextSibling();
         int index1 = Integer.parseInt(n1.getTextContent());
         int index2 = Integer.parseInt(n2.getTextContent());
 
-        int colorIndex = Token.getColorInt(colorName);
 
         int[] oldPos = getOldPos(index1, index2, horizontal, board);
         int index = oldPos[2];
@@ -61,6 +74,13 @@ public class PawnParser {
 
     }
 
+    /**
+     * Generate pawn-loc element using doc, pos array and index
+     * @param doc a document
+     * @param pos token's location on board
+     * @param index token's index on tile
+     * @return an Element of pawn-loc in <pawn-loc>color pawn-loc</pawn-loc> format
+     */
     public Element buildPawnElement(Document doc, int[] pos, int index){
         Element pawnLoc = doc.createElement("pawn-loc");
 
@@ -84,6 +104,11 @@ public class PawnParser {
         return pawnLoc;
     }
 
+    /**
+     * Check whether pawn is on horizontal line or vertical line
+     * @param index token's index on tile
+     * @return true if pawn is on horizontal line
+     */
     public Boolean isHorizontal(int index){
         if(index > 7 || index < 0){
             throw new IllegalArgumentException("Index is out of bound");
@@ -95,7 +120,8 @@ public class PawnParser {
         return false;
     }
 
-    /** Mapping for specs' representation
+    /**
+     * Mapping for specs' representation
      * index      n2      h/v      n1
      * -------------------------------
      *  0        0+2x      h        y
@@ -109,6 +135,9 @@ public class PawnParser {
      * -------------------------------
      *  6        1+2y      v        x
      *  7        0+2y      v        x
+     * @param pos token's position on board
+     * @param index token's index on tile
+     * @return int[2] that represents pawn's location on specs' representation of board
      */
     public int[] getNewPos(int[]pos, int index){
         if(index < 0 || index > 7){
@@ -159,7 +188,7 @@ public class PawnParser {
      * @param index2 the index on line
      * @param horizontal whether the pawn is at a horizontal line or vertical line
      * @param b board with tiles placed on it
-     * @return [x, y, indexOnTile] as how tokens are represented in the game
+     * @return {x, y, indexOnTile} as how tokens are represented in the game
      */
     public static int[] getOldPos(int index1, int index2, Boolean horizontal, Board b){
         int[] oldPos = new int[3];
@@ -228,21 +257,5 @@ public class PawnParser {
             oldPos[1] = row;
         }
         return oldPos;
-    }
-
-    public static void main(String[] args) {
-//        // generate example pawn xml for testing command line play-a-turn
-//        Board expected = new Board();
-//        Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
-//        Tile t2 = new Tile(new int[][]{{0, 1}, {2, 4}, {3, 6}, {5, 7}});
-//        Tile t3 = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
-//        expected.placeTile(t1,0,5);
-//        expected.placeTile(t2,3,2);
-//        expected.placeTile(t3,4,1);
-//        Token token1 = new Token(0, 2,new int[] {0,5});
-//        Token token2 = new Token(1, 5,new int[] {4,1});
-//        expected.addToken(token1);
-//        expected.addToken(token2);
-//        int[] a = getOldPos(2,8,true, expected);
     }
 }

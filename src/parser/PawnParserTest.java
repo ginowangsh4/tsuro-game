@@ -32,6 +32,7 @@ class PawnParserTest {
         parser = new PawnParser(db);
     }
 
+    // Test buildXML using a token with color 1 and location 4,5,1
     @Test
     public void buildXMLTest() throws Exception {
         String buffer = "<ent><color>red</color><pawn-loc><h></h><n>5</n><n>9</n></pawn-loc></ent>";
@@ -44,6 +45,7 @@ class PawnParserTest {
         assertTrue(expected.isEqualNode(doc),"Parsing token does not give the expected XML");
     }
 
+    // Test fromXML using a pawn with color red and location v,0,4
     @Test
     public void fromXMLTest() {
         String buffer = "<ent><color>red</color><pawn-loc><v></v><n>0</n><n>4</n></pawn-loc></ent>";
@@ -62,6 +64,7 @@ class PawnParserTest {
         assertTrue(token.equals(expected),"Generated token is different from expected");
     }
 
+    // Test isHorizontal(int index) using 2 horizontal lines and 2 vertical lines
     @Test
     public void isHorizontalTest() {
         assertTrue(parser.isHorizontal(0));
@@ -70,6 +73,7 @@ class PawnParserTest {
         assertFalse(parser.isHorizontal(7));
     }
 
+    // Test getNewPos using 4 board locations in our representation
     @Test
     public void getNewPosTest() {
         int[] pos = new int[]{-1,2};
@@ -93,6 +97,7 @@ class PawnParserTest {
         assertArrayEquals(result,expected);
     }
 
+    // Test getOldPos using 4 locations in specs' representation of board and the board
     @Test
     public void getOldPosTest() {
         Board board =  new Board();
@@ -114,7 +119,6 @@ class PawnParserTest {
 
         Tile tile = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
         board.placeTile(tile, 0, 0);
-
         expected = new int[]{0,0,4};
         actual = parser.getOldPos(1,1,true, board);
         assertArrayEquals(actual,expected,"Computed game position is not correct");

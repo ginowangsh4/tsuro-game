@@ -30,6 +30,8 @@ public class BoardParserTest {
         }
         parser = new BoardParser(db);
     }
+
+    // Test buildXML using a board with no tile or pawn
     @Test
     public void buildXMLTest1() throws Exception {
         String buffer = "<board><map></map><map></map></board>";
@@ -40,6 +42,8 @@ public class BoardParserTest {
         doc = parser.buildXML(board);
         assertTrue(expected.isEqualNode(doc),"Parsing board does not give the expected XML");
     }
+
+    // Test buildXML using a board with 3 tiles and 2 tokens
     @Test
     public void buildXMLTest2() throws Exception {
         String buffer = "<board>"
@@ -101,6 +105,7 @@ public class BoardParserTest {
         assertTrue(expected.isEqualNode(doc),"Parsing board does not give the expected XML");
     }
 
+    // Test fromXML using a board with 3 tiles and 2 tokens
     @Test
     public void fromXMLTest() throws Exception{
         String buffer = "<board>"
@@ -145,9 +150,7 @@ public class BoardParserTest {
                 +"</map>"
                 +"</board>";
         InputStream is = new ByteArrayInputStream(buffer.getBytes());
-        Document doc;
-
-        doc = db.parse(is);
+        Document doc = db.parse(is);
         Board board = parser.fromXML(doc);
 
         Board expected = new Board();
