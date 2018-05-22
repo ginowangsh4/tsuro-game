@@ -269,8 +269,6 @@ public class ParserTest {
         Set<Integer> colorSet = new HashSet<>(Arrays.asList(0,1));
 
         Document actual = Parser.buildEndGameXML(db, board, colorSet);
-//        System.out.println(Parser.documentToString(actual));
-//        System.out.println(Parser.documentToString(expected));
         assertTrue(expected.isEqualNode(actual),"Parsing end-game does not give the expected XML");
     }
     // ****************************************************************************************

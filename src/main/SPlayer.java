@@ -7,7 +7,7 @@ public class SPlayer {
     private String name;
     private IPlayer player;
 
-    SPlayer(Token token, List<Tile> hand, String name) {
+    public SPlayer(Token token, List<Tile> hand, String name) {
         this.token = token;
         this.hand = hand;
         this.name = name;
