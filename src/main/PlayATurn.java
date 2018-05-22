@@ -17,14 +17,18 @@ import java.util.List;
 
 public class PlayATurn {
     public static void main(String[] args) throws Exception {
-        for (String s : args) {
-            System.out.println(s);
-        }
         String deckStr = args[0];
         String inPlayerStr = args[1];
         String outPlayerStr = args[2];
         String boardStr = args[3];
         String tileStr = args[4];
+
+        System.out.println("Input deck = " + deckStr);
+        System.out.println("Input in splayer = " + inPlayerStr);
+        System.out.println("Input out splayer = " + outPlayerStr);
+        System.out.println("Input board = " + boardStr);
+        System.out.println("Input tile to place = " + tileStr);
+
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -121,11 +125,11 @@ public class PlayATurn {
         }
 
         System.out.println("**** RESULT ****");
-        System.out.println(Parser.documentToString(tileRes));
-        System.out.println(Parser.documentToString(inPlayerRes));
-        System.out.println(Parser.documentToString(outPlayerRes));
-        System.out.println(Parser.documentToString(boardRes));
-        System.out.println(Parser.documentToString(winnersRes));
+        System.out.println("Output deck = " + Parser.documentToString(tileRes));
+        System.out.println("Output in splayer = " + Parser.documentToString(inPlayerRes));
+        System.out.println("Output out splayer = " + Parser.documentToString(outPlayerRes));
+        System.out.println("Output board = " + Parser.documentToString(boardRes));
+        System.out.println("Output winners = " + Parser.documentToString(winnersRes));
     }
 
     public static Token findToken(Board board, int color) {

@@ -6,18 +6,18 @@ Implementation of board game Tsuro with Java
 * Gino Wang - ginowang.sh@u.northwestern.edu 
 * Jin Han - jinhan2019@u.northwestern.edu
 
-#### Tests
-Run all tests: Navigate to `./` and run with `make test`
+#### Test
+Run all tests: Navigate to `./` and run with `make`
 
 Run a single test: Compile with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java` -> Run with `java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c TESTNAME` 
 
 Run with IntelliJ IDEA: Open project -> Right click `test/` -> Click "Run All Test"
 
-#### Notes
+#### Run from command line 
 
 Best to compile everything first with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java src/parser/*.java src/admin/*.java`
 
-To run a class from command line, use `java -cp bin/ PACKAGENAME.CLASSNAME arg1 arg2 ...` where `arg` is the input into the main function in the class specified by CLASSNAME
+To run a single class from command line, use `java -cp bin/ PACKAGENAME.CLASSNAME arg1 arg2 ...` where `arg` is the input into the main function in the class specified by CLASSNAME
 
 * Package `tsuro` contains all Tsuro game element definition classes and their test 
 

@@ -28,10 +28,16 @@ public class SPlayer {
         return this.player;
     }
 
+    // only used if certain that associated IPlayer is MPlayer
     public MPlayer getMPlayer() {
         return (MPlayer) this.player;
     }
 
+    /**
+     * Check if two SPlayers have the same color
+     * @param player
+     * @return true if colors are the same
+     */
     public boolean isSamePlayer(SPlayer player) {
         return this.getToken().getColor() == player.getToken().getColor();
     }

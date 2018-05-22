@@ -5,10 +5,10 @@ public interface IParser<T> {
     /**
      * Construct XML document representation of object of type T
      */
-    Document buildXML(T obj);
+    Document buildXML(T obj) throws Exception;
 
     /**
-     * Deconstruct XML document representation of object of type T
+     * Decompose XML document representation of object of type T
      */
-    T fromXML(Document doc);
+    T fromXML(Document doc) throws Exception;
 }

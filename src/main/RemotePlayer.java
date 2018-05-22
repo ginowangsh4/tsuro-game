@@ -45,6 +45,7 @@ public class RemotePlayer implements IPlayer {
         if (!outDoc.getFirstChild().getNodeName().equals("void")) {
             throw new IllegalArgumentException("Response is not void!");
         }
+
         System.out.println("Server: initialize complete");
     }
 
@@ -73,7 +74,9 @@ public class RemotePlayer implements IPlayer {
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         Tile tile = Parser.fromPlayTurnXML(db, outDoc);
-        System.out.println("Server: playTurn complete");
+
+        System.out.print("Server: playTurn complete - chosen tile is ");
+        tile.print();
         return tile;
     }
 
@@ -89,6 +92,7 @@ public class RemotePlayer implements IPlayer {
         if (!outDoc.getFirstChild().getNodeName().equals("void")) {
             throw new IllegalArgumentException("Response is not void!");
         }
+
         System.out.println("Server: endGame complete");
     }
 }

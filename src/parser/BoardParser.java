@@ -9,7 +9,7 @@ import tsuro.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-public class BoardParser {
+public class BoardParser implements IParser<Board> {
     public DocumentBuilder db;
     public TileParser tileParser;
     public PawnParser pawnParser;
@@ -59,11 +59,11 @@ public class BoardParser {
         return doc;
     }
 
-    public Board fromXML(Document doc) throws Exception{
+    public Board fromXML(Document doc) throws Exception {
         Board board = new Board();
         Node pawn = doc.getFirstChild();
         if(!pawn.getNodeName().equals("board")){
-            throw new Exception("trying to parse XML document that is not <ent></ent>");
+            throw new Exception("Trying to parse XML document that is not <ent></ent>");
         }
 
         Node tiles = pawn.getFirstChild();
@@ -125,7 +125,5 @@ public class BoardParser {
         BoardParser boardParser = new BoardParser(db);
         Document doc = boardParser.buildXML(board);
         System.out.println(Parser.documentToString(doc));
-
-
     }
 }

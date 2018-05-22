@@ -52,7 +52,6 @@ public class Token {
         return colorMap.get(color);
     }
 
-
     /**
      * Check whether two tokens are the same based on color
      * @param t a token to be checked against
@@ -155,7 +154,11 @@ public class Token {
         return false;
     }
 
-
+    /**
+     * Get the corresponding color integer given a color name
+     * @param colorName color name string
+     * @return color integer
+     */
     public static int getColorInt(String colorName){
         for(Integer key : colorMap.keySet()){
             if (colorMap.get(key).equals(colorName)){

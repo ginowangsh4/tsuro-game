@@ -10,12 +10,11 @@ public class Pair<T, U> {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof Pair)) {
+    public boolean equals(Object T) {
+        if (!(T instanceof Pair)) {
             return false;
         }
-        Pair p = (Pair) other;
-        return (first.equals(p.first) && second.equals(p.second))
-                || (first.equals(p.second) && second.equals(p.first));
+        Pair p = (Pair) T;
+        return (first.equals(p.first) && second.equals(p.second)) || (first.equals(p.second) && second.equals(p.first));
     }
 }

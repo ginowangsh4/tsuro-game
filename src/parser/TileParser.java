@@ -52,7 +52,7 @@ public class TileParser implements IParser<Tile> {
     }
 
     public static void main(String[] args) throws Exception {
-        // generate example tile xml for testing commandline play-a-turn
+        // generate example tile xml for testing command line play-a-turn
         int[] p1= new int[]{0,7};
         int[] p2= new int[]{1,2};
         int[] p3= new int[]{3,4};

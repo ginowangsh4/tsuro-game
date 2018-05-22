@@ -32,7 +32,7 @@ public class ParserTest {
     }
     // ******************************* Network Architecture ***********************************
     //                   ----->              ---||-->        ----->
-    //              AdminSocket        RemotePlayer   ||     NAdmin        MPlayer
+    //            Server         RemotePlayer   ||     Admin        MPlayer
     //                   <-----              <--||---        <-----
     // ****************************************************************************************
 
@@ -271,6 +271,7 @@ public class ParserTest {
         Document actual = Parser.buildEndGameXML(db, board, colorSet);
         assertTrue(expected.isEqualNode(actual),"Parsing end-game does not give the expected XML");
     }
+
     // ****************************************************************************************
     // ******************** Build XML for Outgoing Outputs to AdminSocket ***************************
     // ****************************************************************************************
@@ -303,6 +304,7 @@ public class ParserTest {
         assertTrue(expected.isEqualNode(actual1),"Parsing pawn-loc does not give the expected XML");
         assertTrue(expected.isEqualNode(actual2),"Parsing pawn-loc does not give the expected XML");
     }
+
     // ****************************************************************************************
     // **************** Decompose XML from Incoming Input from Server *************************
     // ****************************************************************************************
@@ -326,6 +328,7 @@ public class ParserTest {
         List<Integer> expected = new ArrayList<>(Arrays.asList(0,1,2,3,4,5,6,7));
         assertTrue(expected.equals(actual), "Failed to build color list from XML");
     }
+
     // ****************************************************************************************
     // **************** Decompose XML from Incoming Outputs from NAdmin ***********************
     // ****************************************************************************************
@@ -362,5 +365,4 @@ public class ParserTest {
         assertArrayEquals(new int[]{0,0}, pair.first, "Failed to build position from XML");
         assertEquals(new Integer(4), pair.second, "Failed to build indexOnTile from XML");
     }
-
 }

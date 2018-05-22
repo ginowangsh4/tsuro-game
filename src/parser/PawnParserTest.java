@@ -31,12 +31,12 @@ class PawnParserTest {
         }
         parser = new PawnParser(db);
     }
+
     @Test
     public void buildXMLTest() throws Exception {
         String buffer = "<ent><color>red</color><pawn-loc><h></h><n>5</n><n>9</n></pawn-loc></ent>";
         InputStream is = new ByteArrayInputStream(buffer.getBytes());
-        Document expected = null;
-        Document doc = null;
+        Document expected, doc;
         int[] pos= new int[]{4, 5};
         Token token = new Token(1,1,pos);
         expected = db.parse(is);
@@ -59,7 +59,7 @@ class PawnParserTest {
             e.printStackTrace();
         }
         Token expected = new Token(1,2,new int[]{-1,2});
-        assertTrue(token.equals(expected),"generated token is different from expected");
+        assertTrue(token.equals(expected),"Generated token is different from expected");
     }
 
     @Test
@@ -98,27 +98,25 @@ class PawnParserTest {
         Board board =  new Board();
         int[] expected = new int[]{-1,2,2};
         int[] actual = parser.getOldPos(0,4,false, board);
-        assertArrayEquals(actual,expected,"computed game position is not correct");
+        assertArrayEquals(actual,expected,"Computed game position is not correct");
 
         expected = new int[]{6,4,7};
         actual = parser.getOldPos(6,8,false, board);
-        assertArrayEquals(actual,expected,"computed game position is not correct");
+        assertArrayEquals(actual,expected,"Computed game position is not correct");
 
         expected = new int[]{2,-1,4};
         actual = parser.getOldPos(0,5,true, board);
-        assertArrayEquals(actual,expected,"computed game position is not correct");
+        assertArrayEquals(actual,expected,"Computed game position is not correct");
 
         expected = new int[]{2,6,0};
         actual = parser.getOldPos(6,4,true, board);
-        assertArrayEquals(actual,expected,"computed game position is not correct");
+        assertArrayEquals(actual,expected,"Computed game position is not correct");
 
         Tile tile = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
         board.placeTile(tile, 0, 0);
 
         expected = new int[]{0,0,4};
         actual = parser.getOldPos(1,1,true, board);
-        assertArrayEquals(actual,expected,"computed game position is not correct");
-
+        assertArrayEquals(actual,expected,"Computed game position is not correct");
     }
-
 }

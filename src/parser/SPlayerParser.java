@@ -21,8 +21,8 @@ public class SPlayerParser {
 
     public Document buildXML(SPlayer sp, Boolean hasDragon){
         Document doc = db.newDocument();
-        Element splayer = doc.createElement("splayer-nodragon");
-        if(hasDragon) splayer = doc.createElement("splayer-dragon");
+        Element sPlayer = doc.createElement("splayer-nodragon");
+        if(hasDragon) sPlayer = doc.createElement("splayer-dragon");
 
 
         Element color = doc.createElement("color");
@@ -36,24 +36,24 @@ public class SPlayerParser {
             set.appendChild(t);
         }
 
-        splayer.appendChild(color);
-        splayer.appendChild(set);
-        doc.appendChild(splayer);
+        sPlayer.appendChild(color);
+        sPlayer.appendChild(set);
+        doc.appendChild(sPlayer);
         return doc;
     }
 
     public Pair<SPlayer,Boolean> fromXML(Document doc, Token token) throws Exception {
-        Node splayer = doc.getFirstChild();
-        Boolean hasDragon = false;
-        if (splayer.getNodeName().equals("splayer-dragon")) {
+        Node sPlayer = doc.getFirstChild();
+        Boolean hasDragon;
+        if (sPlayer.getNodeName().equals("splayer-dragon")) {
             hasDragon = true;
-        } else if(splayer.getNodeName().equals("splayer-nodragon")){
+        } else if(sPlayer.getNodeName().equals("splayer-nodragon")){
             hasDragon = false;
         } else{
             throw new Exception("Trying to parse XML document that is not <ent></ent>");
         }
 
-        Node color = splayer.getFirstChild();
+        Node color = sPlayer.getFirstChild();
         int colorIndex = Token.getColorInt(color.getTextContent());
         if(colorIndex != token.getColor()){
             throw new Exception("XML color and token color mismatch");
@@ -77,13 +77,11 @@ public class SPlayerParser {
     }
 
     public static void main(String[] args) throws Exception {
-        // generate example splayer xml for testing commandline play-a-turn
-
+        // generate example SPlayer xml for testing command line play-a-turn
         int[] pos1 = new int[]{1, 0};
         Token token1 = new Token(1,2,pos1);
         List<Tile> hand1 = new ArrayList<>();
         SPlayer sp1 = new SPlayer(token1, hand1, "red");
-
 
         int[] pos2 = new int[]{1, 5};
         Token token2 = new Token(2,0,pos2);
@@ -91,10 +89,9 @@ public class SPlayerParser {
         SPlayer sp2 = new SPlayer(token2, hand2, "green");
 
         int[] pos3 = new int[]{1, 0};
-        Token token3 = new Token(3,2,pos2);
+        Token token3 = new Token(3,2,pos3);
         List<Tile> hand3 = new ArrayList<>();
         SPlayer sp3 = new SPlayer(token3, hand3, "orange");
-
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -105,9 +102,5 @@ public class SPlayerParser {
         System.out.println(Parser.documentToString(doc2));
         Document doc3 = splayerParser.buildXML(sp3,false);
         System.out.println(Parser.documentToString(doc3));
-
-
-
-
     }
 }

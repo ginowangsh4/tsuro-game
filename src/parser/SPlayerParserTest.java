@@ -90,9 +90,8 @@ public class SPlayerParserTest {
         SPlayer expected = new SPlayer(token, hand , name);
 
         SPlayer sp = thePair.first;
-        assertTrue(sp.getToken().equals(expected.getToken()),"generated token is different from expected");
-        assertTrue(sp.getHand().get(0).isSameTile(expected.getHand().get(0)),"generated hand is different from expected");
-        assertTrue(thePair.second,"generated hasDragon is different from expected");
+        assertTrue(sp.getToken().equals(expected.getToken()),"Generated token is different from expected");
+        assertTrue(sp.getHand().get(0).isSameTile(expected.getHand().get(0)),"Generated hand is different from expected");
+        assertTrue(thePair.second,"Generated hasDragon is different from expected");
     }
-
 }

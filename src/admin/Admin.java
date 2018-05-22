@@ -16,6 +16,7 @@ import java.util.List;
 
 public class Admin {
     public static void main(String[] args) throws Exception {
+        // set up connection to local host 
         String hostname = "127.0.0.1";
         int port = Integer.parseInt("6666");
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
