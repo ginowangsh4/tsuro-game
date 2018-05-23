@@ -2,25 +2,32 @@
 
 Implementation of board game Tsuro with Java
 
-* Jennifer Liu - jenniferliu2018@u.northwestern.edu 
 * Gino Wang - ginowang.sh@u.northwestern.edu 
+* Jennifer Liu - jenniferliu2018@u.northwestern.edu 
 * Jin Han - jinhan2019@u.northwestern.edu
 
-#### Test
-Run all tests: Navigate to `./` and run with `make`
+### Test
 
-Run a single test: Compile with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java` -> Run with `java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c TESTNAME` 
+Run all tests: Navigate to `./` and run with `make`.
 
-Run with IntelliJ IDEA: Open project -> Right click `test/` -> Click "Run All Test"
+Run a single test: Compile with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java` -> Run with `java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c TESTNAME`. 
 
-#### Run from command line 
+Run with IntelliJ IDEA: Open project -> Right click `test/` -> Click "Run All Test".
 
-Best to compile everything first with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java src/parser/*.java src/admin/*.java`
+### Tournament over network
 
-To run a single class from command line, use `java -cp bin/ PACKAGENAME.CLASSNAME arg1 arg2 ...` where `arg` is the input into the main function in the class specified by CLASSNAME
+Run `src/main/Tsuro` to start a localhost server which starts a tournament with one remote player and three machine player.
 
-* Package `tsuro` contains all Tsuro game element definition classes and their test 
+Then run `src/admin/Admin` to connect with localhost and join the tournament!
 
-* Package `tsuro.parser` contains all parser classes that support network
+### Run from command line 
 
-* Package `tsuro.admin` contains local network server definition classes
+Best to compile everything first with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java src/parser/*.java src/admin/*.java`.
+
+To run a single class from command line, use `java -cp bin/ PACKAGENAME.CLASSNAME arg1 arg2 ...` where `arg` is the input into the main function in the class specified by `CLASSNAME`.
+
+* Package `tsuro` contains all Tsuro game element definition classes and their test.
+
+* Package `tsuro.parser` contains all parser classes that support network.
+
+* Package `tsuro.admin` contains local network server definition classes.

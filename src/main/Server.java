@@ -247,7 +247,8 @@ public class Server {
                 return winners;
             } else {
                 outSPlayer.addAll(deadP);
-                return inSPlayer;
+                winners.addAll(inSPlayer);
+                return winners;
             }
         }
         // game over if only one player remains
@@ -255,7 +256,6 @@ public class Server {
             gameOver = true;
             outSPlayer.addAll(deadP);
             winners.addAll(inSPlayer);
-            inSPlayer.clear();
             return winners;
         }
         // game over if all remaining players are eliminated at this round
