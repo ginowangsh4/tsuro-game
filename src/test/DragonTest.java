@@ -1,6 +1,8 @@
 package tsuro;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +15,7 @@ public class DragonTest {
     static Deck deck;
     static List<SPlayer> inSPlayer;
     static List<SPlayer> outSPlayer;
+    static List<SPlayer> winners;
     static Server server = Server.getInstance();
 
     // Moving where no player has the dragon tile before or after
@@ -40,12 +43,13 @@ public class DragonTest {
         p3.draw(deck.pop());
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
         Tile t = p1.getHand().get(2);
         p1.deal(t);
-        server.setState(b, inSPlayer, outSPlayer, null, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, deck);
         try {
             server.playATurn(t);
         } catch (Exception e) {
@@ -120,10 +124,11 @@ public class DragonTest {
         assertEquals(0, deck.size(),"Error: deck shouldn't be non-empty");
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.setState(b, inSPlayer, outSPlayer, null, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, deck);
         // give player 2 dragon tile
         server.giveDragon(p2);
         Tile t = p1.getHand().get(2);
@@ -172,10 +177,11 @@ public class DragonTest {
         p3.draw(tp3);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.setState(b, inSPlayer, outSPlayer, null, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, deck);
         // give player 1 dragon tile
         server.giveDragon(p1);
         Tile t = p1.getHand().get(0);
@@ -191,7 +197,7 @@ public class DragonTest {
         assertEquals(1, p3.getHand().size(), "Error: player 3 should have 1 tile");
         assertEquals(tp2, p1.getHand().get(0), "Error: player 1 drew the wrong tile");
         assertEquals(0, deck.size(), "Error: deck should be empty");
-        assertEquals(p3, server.getDragonHolder(), "Error: player 3 should have the dragon tile");
+        assertEquals(p1, server.getDragonHolder(), "Error: player 1 should have the dragon tile");
     }
 
     // Moving where a player that does not have the dragon tile makes a move and it causes an elimination of
@@ -229,10 +235,11 @@ public class DragonTest {
         p3.draw(tp3);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.setState(b, inSPlayer, outSPlayer, null, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, deck);
         // give player 2 dragon tile
         server.giveDragon(p2);
         Tile t = p1.getHand().get(0);
@@ -248,11 +255,10 @@ public class DragonTest {
         assertEquals(2, p3.getHand().size(), "Error: player 3 should have 2 tiles");
         assertEquals(tp2, p3.getHand().get(1), "Error: player 3 drew the wrong tile");
         assertEquals(0, deck.size(), "Error: deck should be empty");
-        assertEquals(p1, server.getDragonHolder(), "Error: player 1 should have the dragon tile");
+        assertEquals(p3, server.getDragonHolder(), "Error: player 3 should have the dragon tile");
     }
 
     // Moving where the player that has the dragon tile makes a move that causes themselves to be eliminated
-    @Disabled
     @Test
     public void dragonTest5() {
         b = new Board();
@@ -286,10 +292,11 @@ public class DragonTest {
         p3.draw(tp3);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.setState(b, inSPlayer, outSPlayer, null, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, deck);
         // give player 1 dragon tile
         server.giveDragon(p1);
         Tile t = p1.getHand().get(0);
@@ -306,6 +313,6 @@ public class DragonTest {
         assertEquals(2, p3.getHand().size(), "Error: player 3 should have 2 tiles");
         assertEquals(tp2, p3.getHand().get(1), "Error: player 3 drew the wrong tile");
         assertEquals(0, deck.size(), "Error: deck should be empty");
-        assertEquals(null, server.getDragonHolder(), "Error: no one should have the dragon tile");
+        assertEquals(p3, server.getDragonHolder(), "Error: no one should have the dragon tile");
     }
 }

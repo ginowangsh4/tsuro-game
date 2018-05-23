@@ -212,9 +212,7 @@ public class Server {
             player.updateToken(token);
             board.updateToken(token);
             if (token.isOffBoard()) {
-                eliminatePlayer(player, deadP);
-                i--;
-                playerCount --;
+                deadP.add(player);
             }
             else {
                 // if this player is active player, do something
@@ -238,33 +236,46 @@ public class Server {
         // ****************************************
         // ** Step 3: Update Game Over Condition **
         // ****************************************
+        // TODO: logic
         // game over if board is full
         if (board.isFull()) {
             gameOver = true;
-            if (inSPlayer.size() == 0) {
+            if (inSPlayer.size() == deadP.size()) {
+                inSPlayer.clear();
                 outSPlayer.addAll(deadP);
                 winners.addAll(deadP);
-                return winners;
+                returnHandToDeck(deadP);
             } else {
                 outSPlayer.addAll(deadP);
+                eliminatePlayers(deadP);
                 winners.addAll(inSPlayer);
-                return winners;
+                // players draw and pass dragon
+                drawAndPassDragon();
             }
         }
         // game over if only one player remains
-        else if (inSPlayer.size() == 1) {
+        if ((inSPlayer.size() - deadP.size()) == 1) {
             gameOver = true;
             outSPlayer.addAll(deadP);
+            eliminatePlayers(deadP);
             winners.addAll(inSPlayer);
-            return winners;
+            // players draw and pass dragon
+            drawAndPassDragon();
         }
         // game over if all remaining players are eliminated at this round
-        else if (inSPlayer.size() == 0) {
+        else if (inSPlayer.size() == deadP.size()) {
             gameOver = true;
+            inSPlayer.clear();
             outSPlayer.addAll(deadP);
             winners.addAll(deadP);
+            returnHandToDeck(deadP);
+        }
+        if (gameOver) {
             return winners;
         }
+        // game not over, eliminate players
+        eliminatePlayers(deadP);
+        drawAndPassDragon();
         outSPlayer.addAll(deadP);
         return null;
     }
@@ -319,27 +330,45 @@ public class Server {
 
     /**
      * Handle elimination mechanism of a server player
-     * @param p the player to eliminate from the game
+     * @param deadPlayers the players to eliminate from the game
      */
-    private void eliminatePlayer(SPlayer p, List<SPlayer> dead) throws Exception {
-        int pIndex = inSPlayer.indexOf(p);
-        drawPile.addAndShuffle(p.getHand());
-        p.getHand().clear();
-        //board.removeToken(p.getToken());
-        // assign dragon holder to be the next player
-        if (p.equals(dragonHolder)) {
-            int index = findNextHolder(pIndex);
-            dragonHolder = index == -1 ? null : inSPlayer.get(index);
+    private void eliminatePlayers(List<SPlayer> deadPlayers) throws Exception {
+        for (SPlayer deadP : deadPlayers) {
+            int pIndex = Integer.MAX_VALUE;
+            for (SPlayer inP : inSPlayer) {
+                if (deadP.isSamePlayer(inP)) {
+                    pIndex = inSPlayer.indexOf(inP);
+                }
+            }
+            if (pIndex == Integer.MAX_VALUE) {
+                throw new Exception("Cannot eliminate player");
+            }
+            SPlayer p = inSPlayer.get(pIndex);
+            drawPile.addAndShuffle(p.getHand());
+            p.getHand().clear();
+            // assign dragon holder to be the next player
+            if (p.equals(dragonHolder)) {
+                int index = findNextHolder(pIndex);
+                dragonHolder = index == -1 ? null : inSPlayer.get(index);
+            }
+            inSPlayer.remove(pIndex);
+            // System.out.println("Player " + p.getName() + " eliminated!");
         }
-        inSPlayer.remove(pIndex);
-        dead.add(p);
-        // players draw and pass dragon
-        drawAndPassDragon();
-        // System.out.println("Player " + p.getName() + " eliminated!");
+    }
+
+    /**
+     * Return a list of server player's hand back to deck
+     * @param deadPlayers the players to return their hand
+     */
+    private void returnHandToDeck(List<SPlayer> deadPlayers) {
+        for (SPlayer deadP : deadPlayers) {
+            drawPile.addAndShuffle(deadP.getHand());
+            deadP.getHand().clear();
+        }
     }
 
     public void playerCheatIllegalPawn(SPlayer p) throws Exception {
-        MPlayer newPlayer = replaceWithMPlayer(p);
+        replaceWithMPlayer(p);
         p.updateToken(p.getPlayer().placePawn(board));
     }
 
@@ -434,7 +463,13 @@ public class Server {
         }
         int index = inSPlayer.indexOf(dragonHolder);
         while (!drawPile.isEmpty()) {
-            dragonHolder.getHand().add(drawPile.pop());
+            while (dragonHolder.getHand().size() < 3) {
+                // cannot give dragon holder full-hand so don't pass dragon
+                if (drawPile.isEmpty()) {
+                    return;
+                }
+                dragonHolder.getHand().add(drawPile.pop());
+            }
             index = findNextHolder(index);
             // cannot find next player with < 3 tiles on his/her hand
             if (index == -1) {
