@@ -45,7 +45,7 @@ public class DragonTest {
         inSPlayer.add(p3);
         Tile t = p1.getHand().get(2);
         p1.deal(t);
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
         try {
             server.playATurn(t);
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public class DragonTest {
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
         // give player 2 dragon tile
         server.giveDragon(p2);
         Tile t = p1.getHand().get(2);
@@ -175,7 +175,7 @@ public class DragonTest {
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
         // give player 1 dragon tile
         server.giveDragon(p1);
         Tile t = p1.getHand().get(0);
@@ -232,7 +232,7 @@ public class DragonTest {
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
         // give player 2 dragon tile
         server.giveDragon(p2);
         Tile t = p1.getHand().get(0);
@@ -289,7 +289,7 @@ public class DragonTest {
         inSPlayer.add(p1);
         inSPlayer.add(p2);
         inSPlayer.add(p3);
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
         // give player 1 dragon tile
         server.giveDragon(p1);
         Tile t = p1.getHand().get(0);

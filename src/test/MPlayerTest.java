@@ -10,6 +10,7 @@ public class MPlayerTest {
     static Deck deck;
     static List<SPlayer> inSPlayer;
     static List<SPlayer> outSPlayer;
+    static List<SPlayer> winners;
     static List<Integer> colors = new ArrayList<>();
     static Server server = Server.getInstance();
 
@@ -137,11 +138,12 @@ public class MPlayerTest {
         b.addToken(token);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
         inSPlayer.add(SPlayer);
 
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, deck);
 
         MPlayer mPlayer = new MPlayer(MPlayer.Strategy.LS);
         colors.add(1);
@@ -152,10 +154,10 @@ public class MPlayerTest {
         SPlayer.deal(t);
         server.playATurn(t);
 
-        assertEquals(1, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(1, winners.size(), "check winner list");
         assertEquals(0, outSPlayer.size(), "check outSPlayer list");
-        assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 1}), "check SPlayer 1 token position");
-        assertEquals(4, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
+        assertTrue(Arrays.equals(winners.get(0).getToken().getPosition(), new int[] {0, 1}), "check SPlayer 1 token position");
+        assertEquals(4, winners.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
 
     // Three tiles at hand:
@@ -183,11 +185,12 @@ public class MPlayerTest {
         b.addToken(token);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
         inSPlayer.add(SPlayer);
 
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, deck);
 
         MPlayer mPlayer = new MPlayer(MPlayer.Strategy.LS);
         colors.add(1);
@@ -198,10 +201,10 @@ public class MPlayerTest {
         SPlayer.deal(t);
         server.playATurn(t);
 
-        assertEquals(1, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(1, winners.size(), "check winner list");
         assertEquals(0, outSPlayer.size(), "check outSPlayer list");
-        assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 1}), "check SPlayer 1 token position");
-        assertEquals(3, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
+        assertTrue(Arrays.equals(winners.get(0).getToken().getPosition(), new int[] {0, 1}), "check SPlayer 1 token position");
+        assertEquals(3, winners.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
 
     // Three tiles at hand:
@@ -229,11 +232,12 @@ public class MPlayerTest {
         b.addToken(token);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         pile = new ArrayList<>();
         deck = new Deck(pile);
         inSPlayer.add(SPlayer);
 
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, deck);
 
         MPlayer mPlayer = new MPlayer( MPlayer.Strategy.MS);
         colors.add(1);
@@ -245,10 +249,10 @@ public class MPlayerTest {
 
         server.playATurn(t);
 
-        assertEquals(1, inSPlayer.size(), "check inSPlayer list");
+        assertEquals(1, winners.size(), "check winner list");
         assertEquals(0, outSPlayer.size(), "check outSPlayer list");
-        assertTrue(Arrays.equals(inSPlayer.get(0).getToken().getPosition(), new int[] {0, 0}), "check SPlayer 1 token position");
-        assertEquals(3, inSPlayer.get(0).getToken().getIndex(),"check SPlayer 1 token index");
+        assertTrue(Arrays.equals(winners.get(0).getToken().getPosition(), new int[] {0, 0}), "check SPlayer 1 token position");
+        assertEquals(3, winners.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
 
 

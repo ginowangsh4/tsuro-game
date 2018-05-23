@@ -9,6 +9,7 @@ public class ServerTest {
     static Deck deck;
     static List<SPlayer> inSPlayer;
     static List<SPlayer> outSPlayer;
+    static List<SPlayer> winners;
     static List<Integer> colors = new ArrayList<>();
     static Server server = Server.getInstance();
 
@@ -27,9 +28,10 @@ public class ServerTest {
             b = new Board();
             inSPlayer = new ArrayList<>();
             outSPlayer = new ArrayList<>();
+            winners = new ArrayList<>();
             deck = new Deck();
             colors = new ArrayList<>();
-            server.setState(b, inSPlayer, outSPlayer, deck, colors);
+            server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
 
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
@@ -81,10 +83,11 @@ public class ServerTest {
             b = new Board();
             inSPlayer = new ArrayList<>();
             outSPlayer = new ArrayList<>();
+            winners = new ArrayList<>();
             deck = new Deck();
             colors = new ArrayList<>();
 
-            server.setState(b, inSPlayer, outSPlayer, deck, colors);
+            server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
 
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
@@ -128,12 +131,13 @@ public class ServerTest {
         b = new Board();
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
         List<Tile> pile = new ArrayList<>();
         pile.addAll(Arrays.asList(t1, t2, t3));
         deck = new Deck();
         colors = new ArrayList<>();
 
-        server.setState(b, inSPlayer, outSPlayer, deck, colors);
+        server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
 
         MPlayer mP = new MPlayer(MPlayer.Strategy.LS);
         colors.add(1);

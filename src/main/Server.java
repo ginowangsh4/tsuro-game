@@ -12,6 +12,7 @@ public class Server {
     public Deck drawPile;
     public List<SPlayer> inSPlayer;
     public List<SPlayer> outSPlayer;
+    public List<SPlayer> winners;
     public List<Integer> colors;
     public SPlayer dragonHolder = null;
     public boolean gameOver = false;
@@ -23,6 +24,7 @@ public class Server {
         this.drawPile = new Deck();
         this.inSPlayer = new ArrayList<>();
         this.outSPlayer = new ArrayList<>();
+        this.winners = new ArrayList<>();
         this.colors = new ArrayList<>();
     }
 
@@ -34,23 +36,19 @@ public class Server {
     }
 
     // mainly used by unit tests
-    public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, Deck drawPile) {
+    public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, List<SPlayer> winners, Deck drawPile) {
         this.board = board;
         this.inSPlayer = inSPlayer;
         this.outSPlayer = outSPlayer;
+        this.winners = winners;
         this.drawPile = drawPile;
         this.dragonHolder = null;
         this.gameOver = false;
     }
 
-    public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, Deck drawPile, List<Integer> colors) {
-        this.board = board;
-        this.inSPlayer = inSPlayer;
-        this.outSPlayer = outSPlayer;
+    public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, List<SPlayer> winners, List<Integer> colors, Deck drawPile) {
+        setState(board, inSPlayer, outSPlayer, winners, drawPile);
         this.colors = colors;
-        this.drawPile = drawPile;
-        this.dragonHolder = null;
-        this.gameOver = false;
     }
 
     public void startGame() throws Exception {
@@ -88,18 +86,18 @@ public class Server {
                 server.playATurn(tileToPlay);
             }
 
-            List<Integer> winners = server.getCurrentColors();
-            for (SPlayer sPlayer : inSPlayer) {
+            List<Integer> winnerColors = server.getCurrentColors();
+            for (SPlayer sPlayer : winners) {
                 System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
-                sPlayer.getPlayer().endGame(server.board, winners);
+                sPlayer.getPlayer().endGame(server.board, winnerColors);
             }
             for (SPlayer sPlayer : outSPlayer) {
                 System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
-                sPlayer.getPlayer().endGame(server.board, winners);
+                sPlayer.getPlayer().endGame(server.board, winnerColors);
             }
 
             System.out.println("Server: game over? = " + server.gameOver);
-            for (SPlayer sPlayer : server.inSPlayer) {
+            for (SPlayer sPlayer : server.winners) {
                 System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
             }
 
@@ -244,8 +242,9 @@ public class Server {
         if (board.isFull()) {
             gameOver = true;
             if (inSPlayer.size() == 0) {
-                inSPlayer.addAll(deadP);
-                return inSPlayer;
+                outSPlayer.addAll(deadP);
+                winners.addAll(deadP);
+                return winners;
             } else {
                 outSPlayer.addAll(deadP);
                 return inSPlayer;
@@ -255,13 +254,16 @@ public class Server {
         else if (inSPlayer.size() == 1) {
             gameOver = true;
             outSPlayer.addAll(deadP);
-            return inSPlayer;
+            winners.addAll(inSPlayer);
+            inSPlayer.clear();
+            return winners;
         }
         // game over if all remaining players are eliminated at this round
         else if (inSPlayer.size() == 0) {
             gameOver = true;
-            inSPlayer.addAll(deadP);
-            return inSPlayer;
+            outSPlayer.addAll(deadP);
+            winners.addAll(deadP);
+            return winners;
         }
         outSPlayer.addAll(deadP);
         return null;

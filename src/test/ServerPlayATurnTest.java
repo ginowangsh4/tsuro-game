@@ -1,5 +1,4 @@
 package tsuro;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class ServerPlayATurnTest {
         inSPlayer.add(SPlayer1);
         inSPlayer.add(SPlayer2);
 
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
 
         assertEquals(2, server.playATurn(tile).size(), "PlayATurn - Expect Game Over - Test 1");
         assertEquals(true, server.isGameOver(), "check game status");
@@ -95,7 +94,7 @@ public class ServerPlayATurnTest {
         inSPlayer.add(SPlayer1);
         inSPlayer.add(SPlayer2);
 
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
 
         assertEquals(null, server.playATurn(tile), "PlayATurn - Expect Game Not Over - Test 2");
         assertEquals(false, server.isGameOver(), "check game status");
@@ -139,7 +138,7 @@ public class ServerPlayATurnTest {
         inSPlayer.add(SPlayer1);
         inSPlayer.add(SPlayer2);
 
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
 
         assertEquals(inSPlayer, server.playATurn(tile), "PlayATurn - Expect Game Over - Test 3");
         assertEquals(true, server.isGameOver(), "check game status");
@@ -176,7 +175,7 @@ public class ServerPlayATurnTest {
         inSPlayer.add(SPlayer1);
         inSPlayer.add(SPlayer2);
 
-        server.setState(b, inSPlayer, outSPlayer, deck);
+        server.setState(b, inSPlayer, outSPlayer, null, deck);
 
         assertEquals(null, server.playATurn(tile1), "PlayATurn - Expect Game Not Over - Test 4");
         assertEquals(2, inSPlayer.size(), "check inSPlayer list");

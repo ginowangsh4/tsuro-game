@@ -358,7 +358,7 @@ public class ParserTest {
         board.addToken(token);
 
         Server server = Server.getInstance();
-        server.setState(board, null, null, null);
+        server.setState(board, null, null, null, null);
 
         Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, doc);
 

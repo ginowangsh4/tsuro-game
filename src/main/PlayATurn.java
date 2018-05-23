@@ -88,7 +88,7 @@ public class PlayATurn {
             // Play a turn
             // ***************************************************
             Server server = Server.getInstance();
-            server.setState(board, inSPlayer, outSPlayer, deck);
+            server.setState(board, inSPlayer, outSPlayer, new ArrayList<>(), deck);
             server.giveDragon(dragonOwner);
             List<SPlayer> winners = server.playATurn(tileToPlay);
 
@@ -121,7 +121,7 @@ public class PlayATurn {
                 winnersRes.appendChild(f);
             } else {
                 Element l = winnersRes.createElement("list");
-                for (SPlayer sp : server.inSPlayer) {
+                for (SPlayer sp : server.winners) {
                     Document spElement = sPlayerParser.buildXML(sp, hasDragon(server, sp));
                     l.appendChild(winnersRes.importNode(spElement.getFirstChild(), true));
                 }
