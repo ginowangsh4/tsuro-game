@@ -168,9 +168,9 @@ public class Board {
         int count = 0;
         for (int x = 0; x < 6; x++){
             for (int y = 0; y < 6; y++)
-                if (getTile(x,y) != null) count++;
+                if (getTile(x, y) != null) count++;
         }
-        return count == 35? true:false;
+        return count == 35? true : false;
     }
 
     /**

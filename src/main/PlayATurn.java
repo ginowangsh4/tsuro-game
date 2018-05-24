@@ -20,6 +20,7 @@ public class PlayATurn {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
+            // input from stdin
             String deckStr = br.readLine();
             if (deckStr == null) break;
             String inPlayerStr = br.readLine();
@@ -27,11 +28,8 @@ public class PlayATurn {
             String boardStr = br.readLine();
             String tileStr = br.readLine();
 
-//        System.out.println("Input deck = " + deckStr);
-//        System.out.println("Input in splayer = " + inPlayerStr);
-//        System.out.println("Input out splayer = " + outPlayerStr);
-//        System.out.println("Input board = " + boardStr);
-//        System.out.println("Input tile to place = " + tileStr);
+            State state = new State();
+            state.setPlayATurnState(deckStr, inPlayerStr, outPlayerStr, boardStr, tileStr);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -43,15 +41,12 @@ public class PlayATurn {
             // ***************************************************
             // Parse input XMLs to game objects
             // ***************************************************
-            Board board = boardParser.fromXML(Parser.stringToDocument(db, boardStr));
-
+            // parse board XML
+            Board board = boardParser.fromXML(Parser.stringToDocument(db, state.boardStr));
+            // parse inSPlayer XML
             List<SPlayer> inSPlayer = new ArrayList<>();
-            List<SPlayer> outSPlayer = new ArrayList<>();
-            Document inPlayerDoc = Parser.stringToDocument(db, inPlayerStr);
-            Document outPlayerDoc = Parser.stringToDocument(db, outPlayerStr);
+            Document inPlayerDoc = Parser.stringToDocument(db, state.inSPlayerStr);
             NodeList inPlayerList = inPlayerDoc.getFirstChild().getChildNodes();
-            NodeList outPlayerList = outPlayerDoc.getFirstChild().getChildNodes();
-
             SPlayer dragonOwner = null;
             for (int i = 0; i < inPlayerList.getLength(); i++) {
                 Node inPlayerNode = inPlayerList.item(i);
@@ -60,14 +55,16 @@ public class PlayATurn {
                 doc.appendChild(imported);
 
                 Token token = findToken(board, Token.getColorInt(inPlayerNode.getFirstChild().getTextContent()));
-
                 Pair<SPlayer, Boolean> inPlayer = sPlayerParser.fromXML(doc, token);
                 if (inPlayer.second) {
                     dragonOwner = inPlayer.first;
                 }
                 inSPlayer.add(inPlayer.first);
             }
-
+            // parse outSPlayer XML
+            List<SPlayer> outSPlayer = new ArrayList<>();
+            Document outPlayerDoc = Parser.stringToDocument(db, state.outSPlayerStr);
+            NodeList outPlayerList = outPlayerDoc.getFirstChild().getChildNodes();
             for (int i = 0; i < outPlayerList.getLength(); i++) {
                 Node outPlayerNode = outPlayerList.item(i);
                 Document doc = db.newDocument();
@@ -75,13 +72,13 @@ public class PlayATurn {
                 doc.appendChild(imported);
 
                 Token token = findToken(board, Token.getColorInt(outPlayerNode.getFirstChild().getTextContent()));
-
                 Pair<SPlayer, Boolean> outPlayer = sPlayerParser.fromXML(doc, token);
                 outSPlayer.add(outPlayer.first);
             }
-
-            Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, tileStr));
-            List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, deckStr));
+            // parse tile XML to play this turn
+            Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, state.tileStr));
+            // parse deck/draw pile XML
+            List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, state.drawPileStr));
             Deck deck = new Deck(tileList);
 
             // ***************************************************
@@ -95,8 +92,9 @@ public class PlayATurn {
             // ***************************************************
             // Parse game objects to output XMLs
             // ***************************************************
+            // parse back deck/draw pile
             Document tileRes = Parser.buildTileListXML(db, server.drawPile.getPile());
-
+            // parse back inSPlayer
             Document inPlayerRes = db.newDocument();
             Node inList = inPlayerRes.createElement("list");
             for (SPlayer sp : server.inSPlayer) {
@@ -104,7 +102,7 @@ public class PlayATurn {
                 inList.appendChild(inPlayerRes.importNode(spRes.getFirstChild(), true));
             }
             inPlayerRes.appendChild(inList);
-
+            // parse back outSPlayer
             Document outPlayerRes = db.newDocument();
             Element outList = outPlayerRes.createElement("list");
             for (SPlayer sp : server.outSPlayer) {
@@ -112,9 +110,9 @@ public class PlayATurn {
                 outList.appendChild(outPlayerRes.importNode(spRes.getFirstChild(), true));
             }
             outPlayerRes.appendChild(outList);
-
+            // parse back board
             Document boardRes = boardParser.buildXML(server.board);
-
+            // parse back winners
             Document winnersRes = db.newDocument();
             if (winners == null) {
                 Element f = winnersRes.createElement("false");
@@ -127,14 +125,7 @@ public class PlayATurn {
                 }
                 winnersRes.appendChild(l);
             }
-
-//        System.out.println("**** RESULT ****");
-//        System.out.println("Output deck = " + Parser.documentToString(tileRes));
-//        System.out.println("Output in splayer = " + Parser.documentToString(inPlayerRes));
-//        System.out.println("Output out splayer = " + Parser.documentToString(outPlayerRes));
-//        System.out.println("Output board = " + Parser.documentToString(boardRes));
-//        System.out.println("Output winners = " + Parser.documentToString(winnersRes));
-
+            // output to stdout
             System.out.println(Parser.documentToString(tileRes));
             System.out.println(Parser.documentToString(inPlayerRes));
             System.out.println(Parser.documentToString(outPlayerRes));

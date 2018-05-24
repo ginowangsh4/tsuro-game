@@ -56,7 +56,7 @@ public class Server {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-
+            // create players
             RemotePlayer rP = new RemotePlayer(socketListener.accept(), db);
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
@@ -77,7 +77,7 @@ public class Server {
             server.registerPlayer(mP2, t2);
             Token t3 = mP3.placePawn(board);
             server.registerPlayer(mP3, t3);
-
+            // play game over network
             while(!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
                 System.out.println("Server: current player = " + currentP.getPlayer().getName());
@@ -85,7 +85,7 @@ public class Server {
                 currentP.deal(tileToPlay);
                 server.playATurn(tileToPlay);
             }
-
+            // prints
             List<Integer> winnerColors = server.getCurrentColors();
             for (SPlayer sPlayer : winners) {
                 System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
@@ -95,14 +95,12 @@ public class Server {
                 System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winnerColors);
             }
-
             System.out.println("Server: game over? = " + server.gameOver);
             for (SPlayer sPlayer : server.winners) {
                 System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
             }
-
+            // close connection
             socketListener.close();
-
         } catch (ParserConfigurationException | IOException e) {
             e.printStackTrace();
         }
@@ -214,22 +212,19 @@ public class Server {
             if (token.isOffBoard()) {
                 deadP.add(player);
             }
-            else {
-                // if this player is active player, do something
-                if (i == 0 && player.isSamePlayer(currentP)){
-                    inSPlayer.remove(0);
-                    inSPlayer.add(player);
-                    if (!drawPile.isEmpty()) {
-                        player.draw(drawPile.pop());
-                    }
-                    else {
-                        giveDragon(player);
-                    }
-                    i--;
-                    playerCount--;
+            // current player draw or get dragon
+            if (i == 0 && player.isSamePlayer(currentP)){
+                if (!drawPile.isEmpty()) {
+                    player.draw(drawPile.pop());
+                }
+                else {
+                    giveDragon(player);
                 }
             }
         }
+        // move the current player
+        inSPlayer.remove(0);
+        inSPlayer.add(currentP);
         // check if this player's hand is legal at the end of this turn
         legalHand(currentP);
 
@@ -254,7 +249,7 @@ public class Server {
             }
         }
         // game over if only one player remains
-        if ((inSPlayer.size() - deadP.size()) == 1) {
+        else if ((inSPlayer.size() - deadP.size()) == 1) {
             gameOver = true;
             outSPlayer.addAll(deadP);
             eliminatePlayers(deadP);
