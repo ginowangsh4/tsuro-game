@@ -65,18 +65,20 @@ public class Server {
             colors.add(1);
             colors.add(2);
             colors.add(3);
-            rP.initialize(0, colors);
+
             mP1.initialize(1, colors);
             mP2.initialize(2, colors);
             mP3.initialize(3, colors);
-            Token t0 = rP.placePawn(board);
-            server.registerPlayer(rP, t0);
+            rP.initialize(0, colors);
+
             Token t1 = mP1.placePawn(board);
             server.registerPlayer(mP1, t1);
             Token t2 = mP2.placePawn(board);
             server.registerPlayer(mP2, t2);
             Token t3 = mP3.placePawn(board);
             server.registerPlayer(mP3, t3);
+            Token t0 = rP.placePawn(board);
+            server.registerPlayer(rP, t0);
             // play game over network
             while(!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
