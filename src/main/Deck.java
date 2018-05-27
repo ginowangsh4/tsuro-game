@@ -8,6 +8,7 @@ public class Deck {
     private List<Tile> pile;
 
     Deck() {
+        // initialize by adding all 35 tiles
         pile = new ArrayList<>();
         int[][][] input = new int[][][] {   {{0, 1}, {2, 3}, {4, 5}, {6, 7}},
                                             {{0, 1}, {2, 4}, {3, 6}, {5, 7}},

@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("Duplicates")
 public class PlayATurnAdapter {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -135,7 +136,7 @@ public class PlayATurnAdapter {
 
     }
 
-    public static Token findToken(Board board, int color) {
+    private static Token findToken(Board board, int color) {
         for (Token t : board.tokenList) {
             if (t.getColor() == color) {
                 return t;
@@ -144,7 +145,7 @@ public class PlayATurnAdapter {
         throw new IllegalArgumentException("Cannot find token on board");
     }
 
-    public static boolean hasDragon(Server server, SPlayer sp) {
+    private static boolean hasDragon(Server server, SPlayer sp) {
         return (server.dragonHolder != null && server.dragonHolder.isSamePlayer(sp));
     }
 }

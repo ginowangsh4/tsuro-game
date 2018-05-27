@@ -242,15 +242,22 @@ public class Server {
                 inSPlayer.clear();
                 outSPlayer.addAll(deadP);
                 winners.addAll(deadP);
-                // returnHandToDeck(deadP);
+                returnHandToDeck(deadP);
             } else {
                 outSPlayer.addAll(deadP);
                 returnHandToDeck(deadP);
                 eliminatePlayers(deadP);
                 winners.addAll(inSPlayer);
-                // players draw and pass dragon
                 drawAndPassDragon();
             }
+        }
+        // game over if all remaining players are eliminated at this round
+        else if (inSPlayer.size() == deadP.size()) {
+            gameOver = true;
+            inSPlayer.clear();
+            outSPlayer.addAll(deadP);
+            winners.addAll(deadP);
+            returnHandToDeck(deadP);
         }
         // game over if only one player remains
         else if ((inSPlayer.size() - deadP.size()) == 1) {
@@ -259,16 +266,7 @@ public class Server {
             returnHandToDeck(deadP);
             eliminatePlayers(deadP);
             winners.addAll(inSPlayer);
-            // players draw and pass dragon
             drawAndPassDragon();
-        }
-        // game over if all remaining players are eliminated at this round
-        else if (inSPlayer.size() == deadP.size()) {
-            gameOver = true;
-            inSPlayer.clear();
-            outSPlayer.addAll(deadP);
-            winners.addAll(deadP);
-            // returnHandToDeck(deadP);
         }
         if (gameOver) {
             return winners;
@@ -345,9 +343,6 @@ public class Server {
                 throw new Exception("Cannot eliminate player");
             }
             SPlayer p = inSPlayer.get(pIndex);
-//            drawPile.addAndShuffle(p.getHand());
-//            p.getHand().clear();
-
             // assign dragon holder to be the next player
             if (p.equals(dragonHolder)) {
                 int index = findNextHolder(pIndex);
@@ -466,6 +461,12 @@ public class Server {
         int index = inSPlayer.indexOf(dragonHolder);
         while (!drawPile.isEmpty()) {
             dragonHolder.getHand().add(drawPile.pop());
+            // if game over, dragon holder tries to draw until full hand
+            if (gameOver) {
+                while (drawPile.size() > 0 && dragonHolder.getHand().size() < 3) {
+                    dragonHolder.getHand().add(drawPile.pop());
+                }
+            }
             index = findNextHolder(index);
             // cannot find next player with < 3 tiles on his/her hand
             if (index == -1) {
