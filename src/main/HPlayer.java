@@ -1,5 +1,7 @@
 package tsuro;
 
+import tsuro.admin.UISuite;
+
 import java.util.List;
 
 public class HPlayer implements IPlayer {
@@ -46,6 +48,7 @@ public class HPlayer implements IPlayer {
     }
 
     public Token placePawn(Board b) throws Exception {
+        Token token = generateTokenBySideIndex(color, UISuite.startSide,UISuite.startIndex);
         return null;
     }
 
@@ -55,5 +58,36 @@ public class HPlayer implements IPlayer {
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         return null;
+    }
+
+    public static Token generateTokenBySideIndex(int colorIndex, UISuite.Side side, int index) throws Exception {
+        if (index < 0 || index > 11) {
+            throw new Exception("Index is not valid");
+        }
+        int indexOnTile;
+        int x;
+        int y;
+        if (side == UISuite.Side.TOP) {
+            x = index / 2;
+            y = -1;
+            indexOnTile = Tile.neighborIndex.get(index % 2);
+        }
+        else if (side == UISuite.Side.BOTTOM) {
+            x = index / 2;
+            y = 6;
+            indexOnTile = index % 2;
+        }
+        else if (side == UISuite.Side.LEFT) {
+            x = -1;
+            y = index / 2;
+            indexOnTile = index % 2 + 2;
+        }
+        else {
+            x = 6;
+            y = index / 2;
+            indexOnTile = Tile.neighborIndex.get(index % 2 + 2);
+        }
+        int[] pos = new int[]{x,y};
+        return new Token(colorIndex, indexOnTile, pos);
     }
 }

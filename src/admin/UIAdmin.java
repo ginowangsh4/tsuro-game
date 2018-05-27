@@ -1,24 +1,9 @@
 package tsuro.admin;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.ImageInput;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import tsuro.Board;
 import tsuro.HPlayer;
 import tsuro.Tile;
@@ -29,7 +14,6 @@ import tsuro.parser.TileParser;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 
 import java.io.*;
@@ -139,8 +123,7 @@ public class UIAdmin extends Application {
         uiSuite.generateBoardImage(boardDoc);
         uiSuite.startGame();
 
-        Token token = new Token();
-//        Token token = hPlayer.placePawn(board);
+        Token token = hPlayer.placePawn(board);
         Document pawnLocXML = Parser.buildPawnLocXML(db, token.getPosition(), token.getIndex());
         s = Parser.documentToString(pawnLocXML);
         System.out.println("Admin: place-pawn complete " + s);
@@ -202,4 +185,7 @@ public class UIAdmin extends Application {
         System.out.println("UI Admin: end-game complete " + s);
         socket.writeOutputToClient(s);
     }
+
+
+
 }

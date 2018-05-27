@@ -37,7 +37,7 @@ public class UISuite {
     private static ImageInput pawnImageInput;
 
     private static final int SIZE = 33;
-    private static enum Side { TOP, LEFT, RIGHT, BOTTOM }
+    public static enum Side { TOP, LEFT, RIGHT, BOTTOM }
 
     public static Side startSide;
     public static int startIndex;
