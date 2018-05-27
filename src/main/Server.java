@@ -53,7 +53,7 @@ public class Server {
     }
 
     public void startGame() throws Exception {
-        ServerSocket socketListener = new ServerSocket(6666);
+        ServerSocket socketListener = new ServerSocket(8888);
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -242,9 +242,10 @@ public class Server {
                 inSPlayer.clear();
                 outSPlayer.addAll(deadP);
                 winners.addAll(deadP);
-                returnHandToDeck(deadP);
+                // returnHandToDeck(deadP);
             } else {
                 outSPlayer.addAll(deadP);
+                returnHandToDeck(deadP);
                 eliminatePlayers(deadP);
                 winners.addAll(inSPlayer);
                 // players draw and pass dragon
@@ -255,6 +256,7 @@ public class Server {
         else if ((inSPlayer.size() - deadP.size()) == 1) {
             gameOver = true;
             outSPlayer.addAll(deadP);
+            returnHandToDeck(deadP);
             eliminatePlayers(deadP);
             winners.addAll(inSPlayer);
             // players draw and pass dragon
@@ -266,12 +268,13 @@ public class Server {
             inSPlayer.clear();
             outSPlayer.addAll(deadP);
             winners.addAll(deadP);
-            returnHandToDeck(deadP);
+            // returnHandToDeck(deadP);
         }
         if (gameOver) {
             return winners;
         }
         // game not over, eliminate players
+        returnHandToDeck(deadP);
         eliminatePlayers(deadP);
         drawAndPassDragon();
         outSPlayer.addAll(deadP);
@@ -342,8 +345,9 @@ public class Server {
                 throw new Exception("Cannot eliminate player");
             }
             SPlayer p = inSPlayer.get(pIndex);
-            drawPile.addAndShuffle(p.getHand());
-            p.getHand().clear();
+//            drawPile.addAndShuffle(p.getHand());
+//            p.getHand().clear();
+
             // assign dragon holder to be the next player
             if (p.equals(dragonHolder)) {
                 int index = findNextHolder(pIndex);
@@ -461,13 +465,7 @@ public class Server {
         }
         int index = inSPlayer.indexOf(dragonHolder);
         while (!drawPile.isEmpty()) {
-            while (dragonHolder.getHand().size() < 3) {
-                // cannot give dragon holder full-hand so don't pass dragon
-                if (drawPile.isEmpty()) {
-                    return;
-                }
-                dragonHolder.getHand().add(drawPile.pop());
-            }
+            dragonHolder.getHand().add(drawPile.pop());
             index = findNextHolder(index);
             // cannot find next player with < 3 tiles on his/her hand
             if (index == -1) {

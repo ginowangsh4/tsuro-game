@@ -45,11 +45,12 @@ public class UIAdmin extends Application {
 
     @Override
     public void start(Stage stage) {
-        uiSuite = new UISuite(stage);
         // set up connection to local host
         try {
+            uiSuite = new UISuite(stage);
+
             String hostname = "127.0.0.1";
-            int port = Integer.parseInt("6666");
+            int port = Integer.parseInt("8888");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = null;
 
@@ -137,12 +138,13 @@ public class UIAdmin extends Application {
 
         uiSuite.generateBoardImage(boardDoc);
         uiSuite.startGame();
-//
+
+        Token token = new Token();
 //        Token token = hPlayer.placePawn(board);
-//        Document pawnLocXML = Parser.buildPawnLocXML(db, token.getPosition(), token.getIndex());
-//        s = Parser.documentToString(pawnLocXML);
-//        System.out.println("Admin: place-pawn complete " + s);
-//        socket.writeOutputToClient(s);
+        Document pawnLocXML = Parser.buildPawnLocXML(db, token.getPosition(), token.getIndex());
+        s = Parser.documentToString(pawnLocXML);
+        System.out.println("Admin: place-pawn complete " + s);
+        socket.writeOutputToClient(s);
     }
 
     public static void processGetName(DocumentBuilder db, AdminSocket socket, String s, HPlayer hPlayer) throws Exception {
