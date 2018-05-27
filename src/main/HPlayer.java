@@ -48,8 +48,11 @@ public class HPlayer implements IPlayer {
     }
 
     public Token placePawn(Board b) throws Exception {
-        Token token = generateTokenBySideIndex(color, UISuite.startSide,UISuite.startIndex);
-        return null;
+        if (UISuite.startSide == null) {
+            throw new Exception("UISuite.startSide has not been initialized!");
+        }
+        Token token = generateTokenBySideIndex(color, UISuite.startSide, UISuite.startIndex);
+        return token;
     }
 
     public void endGame(Board b, List<Integer> colors) throws Exception {

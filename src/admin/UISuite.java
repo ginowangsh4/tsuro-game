@@ -1,12 +1,7 @@
 package tsuro.admin;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,27 +11,29 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import tsuro.Token;
 import tsuro.parser.Parser;
 
-import javax.swing.text.Position;
 import javax.xml.parsers.DocumentBuilder;
 import java.io.*;
 
 public class UISuite {
     private static Stage stage;
     private static BorderPane border;
+
     private static HBox topHbox;
     private static VBox leftVbox;
     private static HBox leftHbox;
     private static VBox rightVbox;
+    private static HBox rightHbox;
     private static HBox bottomHbox;
-    private static Image boardImage;
     private static AnchorPane middlePane;
+
+    private static Image boardImage;
     private static Image pawnImage;
     private static ImageInput pawnImageInput;
 
-    private static final int SIZE = 33;
+    private static final int PAWN_SIZE = 33;
+    private static final int NUM_POS = 12;
     public static enum Side { TOP, LEFT, RIGHT, BOTTOM }
 
     public static Side startSide;
@@ -44,28 +41,30 @@ public class UISuite {
 
     public UISuite(Stage s) throws FileNotFoundException {
         stage = s;
+        border = new BorderPane();
+
         topHbox = new HBox();
         bottomHbox = new HBox();
         leftVbox = new VBox();
         leftHbox = new HBox();
         rightVbox = new VBox();
+        rightHbox = new HBox();
         middlePane = new AnchorPane();
-        border = new BorderPane();
-        middlePane.setMinSize(400, 400);
-        middlePane.setMaxSize(400, 400);
 
-        topHbox.setPrefSize(800, 50);
+        setPaneSize(topHbox, 800, 50);
+        setPaneSize(bottomHbox, 800, 50);
+        setPaneSize(rightVbox, 200, 400);
+        setPaneSize(leftVbox, 200, 400);
+        setPaneSize(middlePane, 400, 400);
 
-        bottomHbox.setPrefSize(800, 50);
-
-        rightVbox.setMinSize(200, 400);
-        rightVbox.setMaxSize(200, 400);
-
-        leftVbox.setPrefSize(200, 400);
-
-        pawnImage = new Image(new FileInputStream("image/uipawn.png"), SIZE, SIZE, false, true);
+        pawnImage = new Image(new FileInputStream("image/uipawn.png"), PAWN_SIZE, PAWN_SIZE, false, true);
         pawnImageInput = new ImageInput();
         pawnImageInput.setSource(pawnImage);
+    }
+
+    public static void setPaneSize(Pane p, float width, float height) {
+        p.setMinSize(width, height);
+        p.setMaxSize(width, height);
     }
 
     public static void initializeSideAndIndex(Side s, int index) {
@@ -75,14 +74,15 @@ public class UISuite {
 
     public static AnchorPane createPawnPane(Side s, int index) {
         AnchorPane ap = new AnchorPane();
-        ap.setPrefWidth(SIZE);
-        ap.setPrefHeight(SIZE);
+        setPaneSize(ap, PAWN_SIZE, PAWN_SIZE);
+
         ap.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 event -> ap.setEffect(pawnImageInput));
         ap.addEventHandler(MouseEvent.MOUSE_EXITED,
                 event -> ap.setEffect(null));
         ap.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 event -> initializeSideAndIndex(s, index));
+
         return ap;
     }
 
@@ -91,25 +91,28 @@ public class UISuite {
         GridPane bottomGrid = new GridPane();
         GridPane leftGrid = new GridPane();
         GridPane rightGrid = new GridPane();
-        for (int i = 0; i < 12; i++) {
+
+        for (int i = 0; i < NUM_POS; i++) {
             topGrid.add(createPawnPane(Side.TOP, i), i, 0);
             bottomGrid.add(createPawnPane(Side.BOTTOM, i), i, 0);
             leftGrid.add(createPawnPane(Side.LEFT, i), 0, i);
             rightGrid.add(createPawnPane(Side.RIGHT, i), 0, i);
         }
         topHbox.getChildren().add(topGrid);
-        topHbox.setMaxSize(800, 30);
+        topHbox.setAlignment(Pos.CENTER);
+        setPaneSize(topHbox, 800, PAWN_SIZE);
 
         bottomHbox.getChildren().add(bottomGrid);
-        bottomHbox.setMaxSize(800, 30);
+        bottomHbox.setAlignment(Pos.CENTER);
+        setPaneSize(bottomHbox, 800, PAWN_SIZE);
 
         VBox leftText = new VBox();
         Text text = new Text("it's your turn to place pawn");
-        text.setWrappingWidth(200 - SIZE);
+
+        text.setWrappingWidth(200 - PAWN_SIZE);
         leftText.getChildren().add(text);
-        leftText.setPrefWidth(200 - SIZE);
-        leftText.setPrefHeight(400);
-        leftText.setStyle("-fx-border-color: red;");
+        setPaneSize(leftText, 200 - PAWN_SIZE, 400);
+        leftText.setStyle("-fx-border-color: black;");
         leftHbox = new HBox(leftText, leftGrid);
 
         rightVbox.getChildren().add(rightGrid);
