@@ -3,9 +3,9 @@ test: DNE
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.BoardTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.DeckTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.DragonTest
-	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.LegalPlayTest
+	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.ServerLegalPlayTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.MPlayerTest
-	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.PlayATurnTest
+	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.ServerPlayATurnTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.ServerTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.parser.BoardParserTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.parser.PawnParserTest
