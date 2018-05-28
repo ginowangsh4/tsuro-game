@@ -171,7 +171,4 @@ public class UIAdmin extends Application {
 
         sendXMLToClient(socket, voidXML, "UI Admin: end-game complete ");
     }
-
-
-
 }

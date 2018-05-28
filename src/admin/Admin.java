@@ -149,6 +149,4 @@ public class Admin {
         Document voidXML = Parser.buildVoidXML(db);
         sendXMLToClient(socket,voidXML, "Admin: end-game complete ");
     }
-
-
 }
