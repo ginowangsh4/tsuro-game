@@ -11,16 +11,10 @@ import tsuro.Token;
 import tsuro.parser.BoardParser;
 import tsuro.parser.Parser;
 import tsuro.parser.TileParser;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-
 import java.io.*;
 import java.util.List;
-
-import static tsuro.admin.Admin.sendXMLToClient;
-import static tsuro.parser.Parser.fromNodeToDoc;
 
 public class UIAdmin extends Application {
 
@@ -94,7 +88,7 @@ public class UIAdmin extends Application {
         int color = Token.getColorInt(colorNode.getTextContent());
 
         Node colorsNode = colorNode.getNextSibling();
-        Document colorsDoc = fromNodeToDoc(db, colorsNode);
+        Document colorsDoc = Parser.fromNodeToDoc(db, colorsNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, colorsDoc);
 
         // TODO: human shouldn't have strategy
@@ -102,7 +96,7 @@ public class UIAdmin extends Application {
         hPlayer.initialize(color, colors);
         Document voidXML = Parser.buildVoidXML(db);
 
-        sendXMLToClient(socket, voidXML, "UI Admin: initialize complete ");
+        Admin.sendXMLToClient(socket, voidXML, "UI Admin: initialize complete ");
         return hPlayer;
     }
 
@@ -116,7 +110,7 @@ public class UIAdmin extends Application {
         }
 
         Node boardNode = placePawnXML.getFirstChild().getFirstChild();
-        Document boardDoc = fromNodeToDoc(db, boardNode);
+        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         uiSuite.generateBoardImage(boardDoc);
@@ -125,13 +119,13 @@ public class UIAdmin extends Application {
         Token token = hPlayer.placePawn(board);
         Document pawnLocXML = Parser.buildPawnLocXML(db, token.getPosition(), token.getIndex());
 
-        sendXMLToClient(socket, pawnLocXML, "UI Admin: place-pawn complete ");
+        Admin.sendXMLToClient(socket, pawnLocXML, "UI Admin: place-pawn complete ");
     }
 
     public static void processGetName(DocumentBuilder db, AdminSocket socket, HPlayer hPlayer) throws Exception {
         String playerName = hPlayer.getName();
         Document getNameResXML = Parser.buildPlayerNameXML(db, playerName);
-        sendXMLToClient(socket, getNameResXML, "UI Admin: get-name complete ");
+        Admin.sendXMLToClient(socket, getNameResXML, "UI Admin: get-name complete ");
     }
 
     public static void processPlayTurn(DocumentBuilder db, AdminSocket socket, HPlayer hPlayer, Node node) throws Exception {
@@ -139,11 +133,11 @@ public class UIAdmin extends Application {
         TileParser tileParser = new TileParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = fromNodeToDoc(db, boardNode);
+        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = fromNodeToDoc(db, setNode);
+        Document setDoc = Parser.fromNodeToDoc(db, setNode);
         List<Tile> hand = Parser.fromTileSetXML(db, setDoc);
 
         Node nNode = setNode.getNextSibling();
@@ -152,23 +146,23 @@ public class UIAdmin extends Application {
         Tile tile = hPlayer.playTurn(board, hand, tilesLeft);
         Document tileXML = tileParser.buildXML(tile);
 
-        sendXMLToClient(socket, tileXML, "UI Admin: play-turn complete ");
+        Admin.sendXMLToClient(socket, tileXML, "UI Admin: play-turn complete ");
     }
 
     public static void processEndGame(DocumentBuilder db, AdminSocket socket, HPlayer hPlayer, Node node) throws Exception {
         BoardParser boardParser = new BoardParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = fromNodeToDoc(db, boardNode);
+        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = fromNodeToDoc(db, setNode);
+        Document setDoc = Parser.fromNodeToDoc(db, setNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, setDoc);
 
         hPlayer.endGame(board, colors);
         Document voidXML = Parser.buildVoidXML(db);
 
-        sendXMLToClient(socket, voidXML, "UI Admin: end-game complete ");
+        Admin.sendXMLToClient(socket, voidXML, "UI Admin: end-game complete ");
     }
 }

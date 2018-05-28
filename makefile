@@ -7,6 +7,7 @@ test: DNE
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.MPlayerTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.ServerPlayATurnTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.ServerTest
+	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.HPlayerTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.parser.BoardParserTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.parser.PawnParserTest
 	java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c tsuro.parser.BoardParserTest

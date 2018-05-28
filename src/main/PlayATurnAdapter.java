@@ -16,8 +16,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static tsuro.parser.Parser.fromNodeToDoc;
-
 @SuppressWarnings("Duplicates")
 public class PlayATurnAdapter {
     public static void main(String[] args) throws Exception {
@@ -133,7 +131,7 @@ public class PlayATurnAdapter {
         SPlayer dragonOwner = null;
         for (int i = 0; i < inPlayerList.getLength(); i++) {
             Node inPlayerNode = inPlayerList.item(i);
-            Document doc = fromNodeToDoc(db, inPlayerNode);
+            Document doc = Parser.fromNodeToDoc(db, inPlayerNode);
 
             Token token = findToken(board, Token.getColorInt(inPlayerNode.getFirstChild().getTextContent()));
             Pair<SPlayer, Boolean> inPlayer = sPlayerParser.fromXML(doc, token);
@@ -152,7 +150,7 @@ public class PlayATurnAdapter {
         NodeList outPlayerList = outPlayerDoc.getFirstChild().getChildNodes();
         for (int i = 0; i < outPlayerList.getLength(); i++) {
             Node outPlayerNode = outPlayerList.item(i);
-            Document doc = fromNodeToDoc(db, outPlayerNode);
+            Document doc = Parser.fromNodeToDoc(db, outPlayerNode);
 
             Token token = findToken(board, Token.getColorInt(outPlayerNode.getFirstChild().getTextContent()));
             Pair<SPlayer, Boolean> outPlayer = sPlayerParser.fromXML(doc, token);

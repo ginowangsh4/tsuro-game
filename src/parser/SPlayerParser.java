@@ -11,8 +11,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static tsuro.parser.Parser.fromNodeToDoc;
-
 public class SPlayerParser {
     private DocumentBuilder db;
     public TileParser tileParser;
@@ -79,7 +77,7 @@ public class SPlayerParser {
         List<Tile> hand = new ArrayList<>();
         NodeList tileList = setTiles.getChildNodes();
         for(int i = 0; i < tileList.getLength(); i++){
-            Document tileDoc = fromNodeToDoc(db, tileList.item(i));
+            Document tileDoc = Parser.fromNodeToDoc(db, tileList.item(i));
             Tile tile = tileParser.fromXML(tileDoc);
             hand.add(tile);
         }

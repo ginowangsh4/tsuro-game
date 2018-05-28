@@ -9,12 +9,9 @@ import tsuro.Token;
 import tsuro.parser.BoardParser;
 import tsuro.parser.Parser;
 import tsuro.parser.TileParser;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.List;
-
-import static tsuro.parser.Parser.fromNodeToDoc;
 
 public class Admin {
     public static void main(String[] args) throws Exception {
@@ -61,13 +58,6 @@ public class Admin {
         }
     }
 
-    public static void sendXMLToClient(AdminSocket socket, Document doc, String printMessage)
-            throws Exception {
-        String s = Parser.documentToString(doc);
-        System.out.println(printMessage + s);
-        socket.writeOutputToClient(s);
-    }
-
     public static MPlayer processInitialize(DocumentBuilder db, AdminSocket socket) throws Exception {
         Document initializeXML = Parser.stringToDocument(db, socket.readInputFromClient());
         if (!initializeXML.getFirstChild().getNodeName().equals("initialize")) {
@@ -79,7 +69,7 @@ public class Admin {
         int color = Token.getColorInt(colorNode.getTextContent());
 
         Node colorsNode = colorNode.getNextSibling();
-        Document colorsDoc = fromNodeToDoc(db, colorsNode);
+        Document colorsDoc = Parser.fromNodeToDoc(db, colorsNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, colorsDoc);
 
         // TODO: how to assign strategy?
@@ -100,7 +90,7 @@ public class Admin {
         }
 
         Node boardNode = placePawnXML.getFirstChild().getFirstChild();
-        Document boardDoc = fromNodeToDoc(db, boardNode);
+        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Token token = mPlayer.placePawn(board);
@@ -119,11 +109,11 @@ public class Admin {
         TileParser tileParser = new TileParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = fromNodeToDoc(db, boardNode);
+        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = fromNodeToDoc(db, setNode);
+        Document setDoc = Parser.fromNodeToDoc(db, setNode);
         List<Tile> hand = Parser.fromTileSetXML(db, setDoc);
 
         Node nNode = setNode.getNextSibling();
@@ -138,15 +128,21 @@ public class Admin {
         BoardParser boardParser = new BoardParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = fromNodeToDoc(db, boardNode);
+        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = fromNodeToDoc(db, setNode);
+        Document setDoc = Parser.fromNodeToDoc(db, setNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, setDoc);
 
         mPlayer.endGame(board, colors);
         Document voidXML = Parser.buildVoidXML(db);
         sendXMLToClient(socket,voidXML, "Admin: end-game complete ");
+    }
+
+    public static void sendXMLToClient(AdminSocket socket, Document doc, String printMessage) throws Exception {
+        String s = Parser.documentToString(doc);
+        System.out.println(printMessage + s);
+        socket.writeOutputToClient(s);
     }
 }
