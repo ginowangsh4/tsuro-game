@@ -20,17 +20,17 @@ public class Admin {
     public static void main(String[] args) throws Exception {
         // set up connection to local host 
         String hostname = "127.0.0.1";
-        int port = Integer.parseInt("6666");
+        int port = 6666;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         AdminSocket socket = new AdminSocket(hostname, port, db);
         String s = null;
 
         // initialize
-        MPlayer mPlayer = processInitialize(db, socket, s);
+        MPlayer mPlayer = processInitialize(db, socket);
 
         // place-pawn
-        processPlacePawn(db, socket, s, mPlayer);
+        processPlacePawn(db, socket, mPlayer);
 
         while (socket.connectionEstablished()) {
             String res = socket.readInputFromClient();
@@ -47,13 +47,13 @@ public class Admin {
             Node node = doc.getFirstChild();
             switch (node.getNodeName()) {
                 case "get-name":
-                    processGetName(db, socket, s, mPlayer);
+                    processGetName(db, socket, mPlayer);
                     break;
                 case "play-turn":
-                    processPlayTurn(db, socket, s, mPlayer, node);
+                    processPlayTurn(db, socket, mPlayer, node);
                     break;
                 case "end-game":
-                    processEndGame(db, socket, s, mPlayer, node);
+                    processEndGame(db, socket, mPlayer, node);
                     break;
                 default:
                     break;
@@ -61,7 +61,14 @@ public class Admin {
         }
     }
 
-    public static MPlayer processInitialize(DocumentBuilder db, AdminSocket socket, String s) throws Exception {
+    public static void sendXMLToClient(AdminSocket socket, Document doc, String printMessage)
+            throws Exception {
+        String s = Parser.documentToString(doc);
+        System.out.println(printMessage + s);
+        socket.writeOutputToClient(s);
+    }
+
+    public static MPlayer processInitialize(DocumentBuilder db, AdminSocket socket) throws Exception {
         Document initializeXML = Parser.stringToDocument(db, socket.readInputFromClient());
         if (!initializeXML.getFirstChild().getNodeName().equals("initialize")) {
             throw new IllegalArgumentException("Message is not initialize");
@@ -75,19 +82,18 @@ public class Admin {
         Document colorsDoc = fromNodeToDoc(db, colorsNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, colorsDoc);
 
-        MPlayer mPlayer = new MPlayer(MPlayer.Strategy.R);  // how to assign strategy?
+        // TODO: how to assign strategy?
+        MPlayer mPlayer = new MPlayer(MPlayer.Strategy.R);
         mPlayer.initialize(color, colors);
         Document voidXML = Parser.buildVoidXML(db);
-        s = Parser.documentToString(voidXML);
-        System.out.println("Admin: initialize complete " + s);
-        socket.writeOutputToClient(s);
+        sendXMLToClient(socket,voidXML, "Admin: initialize complete ");
 
         return mPlayer;
     }
 
-    public static void processPlacePawn(DocumentBuilder db, AdminSocket socket, String s, MPlayer mPlayer) throws Exception {
+    public static void processPlacePawn(DocumentBuilder db, AdminSocket socket, MPlayer mPlayer) throws Exception {
         BoardParser boardParser = new BoardParser(db);
-        s = socket.readInputFromClient();
+        String s = socket.readInputFromClient();
         Document placePawnXML = Parser.stringToDocument(db, s);
         if (!placePawnXML.getFirstChild().getNodeName().equals("place-pawn")) {
             throw new IllegalArgumentException("Message is not place-pawn");
@@ -99,20 +105,16 @@ public class Admin {
 
         Token token = mPlayer.placePawn(board);
         Document pawnLocXML = Parser.buildPawnLocXML(db, token.getPosition(), token.getIndex());
-        s = Parser.documentToString(pawnLocXML);
-        System.out.println("Admin: place-pawn complete " + s);
-        socket.writeOutputToClient(s);
+        sendXMLToClient(socket,pawnLocXML, "Admin: place-pawn complete ");
     }
 
-    public static void processGetName(DocumentBuilder db, AdminSocket socket, String s, MPlayer mPlayer) throws Exception {
+    public static void processGetName(DocumentBuilder db, AdminSocket socket, MPlayer mPlayer) throws Exception {
         String playerName = mPlayer.getName();
         Document getNameResXML = Parser.buildPlayerNameXML(db, playerName);
-        s = Parser.documentToString(getNameResXML);
-        System.out.println("Admin: get-name complete " + s);
-        socket.writeOutputToClient(s);
+        sendXMLToClient(socket,getNameResXML, "Admin: get-name complete ");
     }
 
-    public static void processPlayTurn(DocumentBuilder db, AdminSocket socket, String s, MPlayer mPlayer, Node node) throws Exception {
+    public static void processPlayTurn(DocumentBuilder db, AdminSocket socket, MPlayer mPlayer, Node node) throws Exception {
         BoardParser boardParser = new BoardParser(db);
         TileParser tileParser = new TileParser(db);
 
@@ -129,12 +131,10 @@ public class Admin {
 
         Tile tile = mPlayer.playTurn(board, hand, tilesLeft);
         Document tileXML = tileParser.buildXML(tile);
-        s = Parser.documentToString(tileXML);
-        System.out.println("Admin: play-turn complete " + s);
-        socket.writeOutputToClient(s);
+        sendXMLToClient(socket,tileXML, "Admin: play-turn complete ");
     }
 
-    public static void processEndGame(DocumentBuilder db, AdminSocket socket, String s, MPlayer mPlayer, Node node) throws Exception {
+    public static void processEndGame(DocumentBuilder db, AdminSocket socket, MPlayer mPlayer, Node node) throws Exception {
         BoardParser boardParser = new BoardParser(db);
 
         Node boardNode = node.getFirstChild();
@@ -147,9 +147,7 @@ public class Admin {
 
         mPlayer.endGame(board, colors);
         Document voidXML = Parser.buildVoidXML(db);
-        s = Parser.documentToString(voidXML);
-        System.out.println("Admin: end-game complete " + s);
-        socket.writeOutputToClient(s);
+        sendXMLToClient(socket,voidXML, "Admin: end-game complete ");
     }
 
 

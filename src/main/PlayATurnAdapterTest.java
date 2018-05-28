@@ -69,16 +69,5 @@ public class PlayATurnAdapterTest {
         List<SPlayer> winners = server.playATurn(tileToPlay);
     }
 
-    public static Token findToken(Board board, int color) {
-        for (Token t : board.tokenList) {
-            if (t.getColor() == color) {
-                return t;
-            }
-        }
-        throw new IllegalArgumentException("Cannot find token on board");
-    }
 
-    public static boolean hasDragon(Server server, SPlayer sp) {
-        return (server.dragonHolder != null && server.dragonHolder.isSamePlayer(sp));
-    }
 }

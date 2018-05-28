@@ -52,27 +52,27 @@ public class PawnParser {
         int colorIndex = Token.getColorInt(colorName);
 
         Node pawnLoc = color.getNextSibling();
+        int[] oldPos = parsePawnLocXML(board, pawnLoc);
+        Token token = new Token(colorIndex, oldPos[2], new int[]{oldPos[0], oldPos[1]});
 
+        return token;
+
+    }
+
+    public static int[] parsePawnLocXML(Board board, Node pawnLoc) {
         Boolean horizontal = false;
         Node orientation = pawnLoc.getFirstChild();
         if(orientation.getNodeName().equals("h")) {
             horizontal = true;
         }
-
         Node n1 = orientation.getNextSibling();
         Node n2 = n1.getNextSibling();
         int index1 = Integer.parseInt(n1.getTextContent());
         int index2 = Integer.parseInt(n2.getTextContent());
-
-
         int[] oldPos = getOldPos(index1, index2, horizontal, board);
-        int index = oldPos[2];
-        int[] pos= new int[]{oldPos[0], oldPos[1]};
-        Token token = new Token(colorIndex, index, pos);
-
-        return token;
-
+        return oldPos;
     }
+
 
     /**
      * Generate pawn-loc element using doc, pos array and index
@@ -85,23 +85,23 @@ public class PawnParser {
         Element pawnLoc = doc.createElement("pawn-loc");
 
         Boolean horizontal = isHorizontal(index);
+        Element orientation = getOrientationElement(doc, horizontal);
+
         int[] newPos = getNewPos(pos, index);
         Element n1 = doc.createElement("n");
         n1.appendChild(doc.createTextNode(Integer.toString(newPos[0])));
         Element n2 = doc.createElement("n");
         n2.appendChild(doc.createTextNode(Integer.toString(newPos[1])));
 
-        if(horizontal){
-            Element h = doc.createElement("h");
-            pawnLoc.appendChild(h);
-        }
-        else{
-            Element v = doc.createElement("v");
-            pawnLoc.appendChild(v);
-        }
+        pawnLoc.appendChild(orientation);
         pawnLoc.appendChild(n1);
         pawnLoc.appendChild(n2);
         return pawnLoc;
+    }
+
+    public static Element getOrientationElement(Document doc, Boolean horizontal) {
+        if(horizontal) return doc.createElement("h");
+        else return doc.createElement("v");
     }
 
     /**

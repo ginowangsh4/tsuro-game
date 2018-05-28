@@ -17,13 +17,6 @@ public class State {
 
     public State() {}
 
-    public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, List<SPlayer> winners, Deck drawPile) {
-        this.board = board;
-        this.inSPlayer = inSPlayer;
-        this.outSPlayer = outSPlayer;
-        this.winners = winners;
-        this.drawPile = drawPile;
-    }
 
     public void setPlayATurnState(String drawPileStr, String inSPlayerStr, String outSPlayerStr, String boardStr, String tileStr) {
         this.drawPileStr = drawPileStr;

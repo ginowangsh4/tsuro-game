@@ -252,8 +252,7 @@ public class Parser {
         NodeList tileSet = list.getChildNodes();
         List<Tile> result = new ArrayList<>();
         for (int i = 0; i < tileSet.getLength(); i++) {
-            Node tile = tileSet.item(i);
-            Document tileDoc = fromNodeToDoc(db, tile);
+            Document tileDoc = fromNodeToDoc(db, tileSet.item(i));
             result.add(tileParser.fromXML(tileDoc));
         }
         return result;

@@ -27,6 +27,7 @@ public class RemotePlayer implements IPlayer {
         Document inDoc = Parser.buildGetNameXML(db);
         String s = Parser.documentToString(inDoc);
         printWriter.println(s);
+
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
         String name = Parser.fromGetNameXML(db, outDoc);

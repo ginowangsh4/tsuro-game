@@ -17,6 +17,7 @@ public class Server {
     public List<Integer> colors;
     public SPlayer dragonHolder = null;
     public boolean gameOver = false;
+    public final int PORT = 6666;
 
     // singleton pattern
     private static Server server = null;
@@ -53,7 +54,7 @@ public class Server {
     }
 
     public void startGame() throws Exception {
-        ServerSocket socketListener = new ServerSocket(6666);
+        ServerSocket socketListener = new ServerSocket(PORT);
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -62,10 +63,10 @@ public class Server {
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
             MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS);
-            colors.add(0);
-            colors.add(1);
-            colors.add(2);
-            colors.add(3);
+
+            for (int i = 0; i < 4; i++) {
+                colors.add(i);
+            }
 
             mP1.initialize(1, colors);
             mP2.initialize(2, colors);

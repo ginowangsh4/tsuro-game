@@ -59,45 +59,15 @@ public class MPlayer implements IPlayer {
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
 
-        Random rand = new Random();
         int x = Integer.MAX_VALUE;
         int y = Integer.MAX_VALUE;
         int indexOnTile = Integer.MAX_VALUE;
         boolean found = false;
         while (!found) {
-            // choose random number in {0,1,2,3}
-            int side = rand.nextInt(4);
-            // choose random number in {0,1,2,...,11}
-            int sideIndex = rand.nextInt(12);
-            switch (side) {
-                case 0: {
-                    x = sideIndex / 2; //from 0 to 5
-                    y = -1;
-                    indexOnTile = sideIndex % 2 + 4;
-                    break;
-                }
-                case 1: {
-                    x = 6;
-                    y = sideIndex / 2;
-                    indexOnTile = sideIndex % 2 + 6;
-                    break;
-                }
-                case 2: {
-                    x = sideIndex / 2;
-                    y = 6;
-                    indexOnTile = sideIndex % 2;
-                    break;
-                }
-                case 3: {
-                    x = -1;
-                    y = sideIndex / 2;
-                    indexOnTile = sideIndex % 2 + 2;
-                    break;
-                }
-                default: {
-                    throw new IllegalArgumentException("Error: Unable to pick starting position on board");
-                }
-            }
+            int[] res = findAnotherStartPos();
+            x = res[0];
+            y = res[1];
+            indexOnTile = res[2];
             found = true;
             for (Token t : b.getTokenList()) {
                 if (x == t.getPosition()[0] && y == t.getPosition()[1] && indexOnTile == t.getIndex()) {
@@ -106,13 +76,47 @@ public class MPlayer implements IPlayer {
                 }
             }
         }
-        if (x == Integer.MAX_VALUE || y == Integer.MAX_VALUE || indexOnTile == Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("Error: Unable to pick starting position on board");
-        }
         Token newToken = new Token(this.color, indexOnTile, new int[]{x, y});
         return newToken;
     }
-
+    public int[] findAnotherStartPos() {
+        Random rand = new Random();
+        int x, y, indexOnTile;
+        // choose random number in {0,1,2,3}
+        int side = rand.nextInt(4);
+        // choose random number in {0,1,2,...,11}
+        int sideIndex = rand.nextInt(12);
+        switch (side) {
+            case 0: {
+                x = sideIndex / 2; //from 0 to 5
+                y = -1;
+                indexOnTile = sideIndex % 2 + 4;
+                break;
+            }
+            case 1: {
+                x = 6;
+                y = sideIndex / 2;
+                indexOnTile = sideIndex % 2 + 6;
+                break;
+            }
+            case 2: {
+                x = sideIndex / 2;
+                y = 6;
+                indexOnTile = sideIndex % 2;
+                break;
+            }
+            case 3: {
+                x = -1;
+                y = sideIndex / 2;
+                indexOnTile = sideIndex % 2 + 2;
+                break;
+            }
+            default: {
+                throw new IllegalArgumentException("Error: Unable to pick starting position on board");
+            }
+        }
+        return new int[]{x, y, indexOnTile};
+    }
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         if (state != State.PLACE && state != State.PLAY) {
             throw new IllegalArgumentException("Sequence Contracts: Cannot play turn at this time");

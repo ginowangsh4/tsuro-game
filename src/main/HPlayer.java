@@ -30,7 +30,6 @@ public class HPlayer implements IPlayer {
     }
 
 
-
     public void initialize (int color, List<Integer> colors) {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid player's color");

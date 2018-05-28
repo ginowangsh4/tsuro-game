@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import tsuro.*;
 
+import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
@@ -39,20 +40,10 @@ public class BoardParser implements IParser<Board> {
         for (int i = 0; i < b.SIZE; i++) {
             for (int j = 0; j < b.SIZE; j++) {
                 if (b.board[i][j] != null) {
-                    Element ent = doc.createElement("ent");
-                    Element xy = doc.createElement("xy");
-                    Element x = doc.createElement("x");
-                    Element y = doc.createElement("y");
-                    xy.appendChild(x);
-                    xy.appendChild(y);
-                    x.appendChild(doc.createTextNode(Integer.toString(i)));
-                    y.appendChild(doc.createTextNode(Integer.toString(j)));
-                    ent.appendChild(xy);
-
                     Node d = tileParser.buildXML(b.board[i][j]).getFirstChild();
                     Node tile = doc.importNode(d, true);
-                    ent.appendChild(tile);
 
+                    Element ent = generateTileEntry(doc,i,j,tile);
                     map1.appendChild(ent);
                 }
             }
@@ -70,6 +61,36 @@ public class BoardParser implements IParser<Board> {
         return doc;
     }
 
+    public Element generateTileEntry(Document doc, int i, int j, Node tile){
+        Element ent = doc.createElement("ent");
+        Element xy = doc.createElement("xy");
+        Element x = doc.createElement("x");
+        Element y = doc.createElement("y");
+        xy.appendChild(x);
+        xy.appendChild(y);
+        x.appendChild(doc.createTextNode(Integer.toString(i)));
+        y.appendChild(doc.createTextNode(Integer.toString(j)));
+        ent.appendChild(xy);
+
+        ent.appendChild(tile);
+
+        return ent;
+    }
+
+    public Pair<Tile, int[]> parseTileEntryXML(Document doc, Node tileEntry) {
+        Node xy = tileEntry.getFirstChild();
+        Node tile = xy.getNextSibling();
+        Document tileDoc = fromNodeToDoc(db, tile);
+        Tile t = tileParser.fromXML(tileDoc);
+
+        Node x = xy.getFirstChild();
+        Node y = x.getNextSibling();
+        int xIndex = Integer.parseInt(x.getTextContent());
+        int yIndex = Integer.parseInt(y.getTextContent());
+        int[] pos = new int[]{xIndex, yIndex};
+
+        return new Pair(t,pos);
+    }
     /**
      * Convert board XML to board game object
      * @param doc a document with the XML of the board in <board>tiles pawns</board> format as its first child
@@ -86,19 +107,8 @@ public class BoardParser implements IParser<Board> {
         Node tiles = pawn.getFirstChild();
         NodeList tileList = tiles.getChildNodes();
         for(int i = 0; i < tileList.getLength(); i++){
-            Node tileEntry = tileList.item(i);
-            Node xy = tileEntry.getFirstChild();
-            Node tile = xy.getNextSibling();
-
-            Document tileDoc = fromNodeToDoc(db, tile);
-            Tile t = tileParser.fromXML(tileDoc);
-
-            Node x = xy.getFirstChild();
-            Node y = x.getNextSibling();
-            int xIndex = Integer.parseInt(x.getTextContent());
-            int yIndex = Integer.parseInt(y.getTextContent());
-
-            board.placeTile(t, xIndex, yIndex);
+            Pair<Tile, int[]> res = parseTileEntryXML(doc, tileList.item(i));
+            board.placeTile(res.first, res.second[0], res.second[1]);
         }
 
         // Parse each pawn XML into token game object given board (with placed tile)
@@ -106,9 +116,7 @@ public class BoardParser implements IParser<Board> {
         Node pawns = tiles.getNextSibling();
         NodeList pawnList = pawns.getChildNodes();
         for(int i = 0; i < pawnList.getLength(); i++) {
-            Node pawnEntry = pawnList.item(i);
-            Document pawnDoc = fromNodeToDoc(db, pawnEntry);
-
+            Document pawnDoc = fromNodeToDoc(db, pawnList.item(i));
             Token token = pawnParser.fromXML(pawnDoc, board);
             board.addToken(token);
         }
@@ -150,6 +158,5 @@ public class BoardParser implements IParser<Board> {
         InputStream is = new ByteArrayInputStream(s.getBytes());
         doc = db.parse(is);
         board = boardParser.fromXML(doc);
-        System.out.println("hi");
     }
 }

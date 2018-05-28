@@ -70,6 +70,7 @@ public class UISuite {
     public static void initializeSideAndIndex(Side s, int index) {
         startSide = s;
         startIndex = index;
+        System.out.println("A pawn location is clicked!");
     }
 
     public static AnchorPane createPawnPane(Side s, int index) {

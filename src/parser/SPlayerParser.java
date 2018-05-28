@@ -79,8 +79,7 @@ public class SPlayerParser {
         List<Tile> hand = new ArrayList<>();
         NodeList tileList = setTiles.getChildNodes();
         for(int i = 0; i < tileList.getLength(); i++){
-            Node tileEntry = tileList.item(i);
-            Document tileDoc = fromNodeToDoc(db, tileEntry);
+            Document tileDoc = fromNodeToDoc(db, tileList.item(i));
             Tile tile = tileParser.fromXML(tileDoc);
             hand.add(tile);
         }

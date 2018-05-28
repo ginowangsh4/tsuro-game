@@ -26,19 +26,32 @@ public class TileParser implements IParser<Tile> {
         Element tile = doc.createElement("tile");
         int[][] paths = t.paths;
         for (int i = 0; i < 4; i++) {
-            Element connect = doc.createElement("connect");
-            Element n1 = doc.createElement("n");
-            Element n2 = doc.createElement("n");
-            n1.appendChild(doc.createTextNode(Integer.toString(paths[i][0])));
-            n2.appendChild(doc.createTextNode(Integer.toString(paths[i][1])));
-            connect.appendChild(n1);
-            connect.appendChild(n2);
+            Element connect = generateConnectElement(doc, paths[i][0], paths[i][1]);
             tile.appendChild(connect);
         }
         doc.appendChild(tile);
         return doc;
     }
 
+    public Element generateConnectElement(Document doc, int start, int end) {
+        Element connect = doc.createElement("connect");
+        Element n1 = doc.createElement("n");
+        Element n2 = doc.createElement("n");
+        n1.appendChild(doc.createTextNode(Integer.toString(start)));
+        n2.appendChild(doc.createTextNode(Integer.toString(end)));
+        connect.appendChild(n1);
+        connect.appendChild(n2);
+        return connect;
+    }
+
+    public int[] parseConnectNode(Document doc, Node connect) {
+        Node n1 = connect.getFirstChild();
+        Node n2 = connect.getLastChild();
+        int[] path = new int[2];
+        path[0] = Integer.parseInt(n1.getTextContent());
+        path[1] = Integer.parseInt(n2.getTextContent());
+        return path;
+    }
     /**
      * Convert tile XML to tile game object
      * @param doc a document with the XML of the tile in <tile>connect connect connect connect</tile> format as its first child
@@ -52,11 +65,7 @@ public class TileParser implements IParser<Tile> {
         int[][] paths = new int[4][2];
         NodeList connects = doc.getElementsByTagName("connect");
         for (int i = 0; i < connects.getLength(); i++) {
-            Node connect = connects.item(i);
-            Node n1 = connect.getFirstChild();
-            Node n2 = connect.getLastChild();
-            paths[i][0] = Integer.parseInt(n1.getTextContent());
-            paths[i][1] = Integer.parseInt(n2.getTextContent());
+            paths[i] = parseConnectNode(doc, connects.item(i));
         }
         return new Tile(paths);
     }

@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.util.List;
 
+import static tsuro.admin.Admin.sendXMLToClient;
 import static tsuro.parser.Parser.fromNodeToDoc;
 
 public class UIAdmin extends Application {
@@ -36,7 +37,7 @@ public class UIAdmin extends Application {
             uiSuite = new UISuite(stage);
 
             String hostname = "127.0.0.1";
-            int port = Integer.parseInt("8888");
+            int port = 6666;
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = null;
 
@@ -46,10 +47,10 @@ public class UIAdmin extends Application {
             String s = null;
 
             // initialize
-            HPlayer hPlayer = processInitialize(db, socket, s);
+            HPlayer hPlayer = processInitialize(db, socket);
 
             // place-pawn
-            processPlacePawn(db, socket, s, hPlayer, stage);
+            processPlacePawn(db, socket, hPlayer, stage);
 
             //TODO: implement these three
 //            while (socket.connectionEstablished()) {
@@ -82,7 +83,7 @@ public class UIAdmin extends Application {
         }
     }
 
-    public static HPlayer processInitialize(DocumentBuilder db, AdminSocket socket, String s) throws Exception {
+    public static HPlayer processInitialize(DocumentBuilder db, AdminSocket socket) throws Exception {
         Document initializeXML = Parser.stringToDocument(db, socket.readInputFromClient());
         if (!initializeXML.getFirstChild().getNodeName().equals("initialize")) {
             throw new IllegalArgumentException("Message is not initialize");
@@ -96,20 +97,19 @@ public class UIAdmin extends Application {
         Document colorsDoc = fromNodeToDoc(db, colorsNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, colorsDoc);
 
-        HPlayer hPlayer = new HPlayer(HPlayer.Strategy.R);  // how to assign strategy?
+        // TODO: human shouldn't have strategy
+        HPlayer hPlayer = new HPlayer(HPlayer.Strategy.R);
         hPlayer.initialize(color, colors);
         Document voidXML = Parser.buildVoidXML(db);
-        s = Parser.documentToString(voidXML);
-        System.out.println("UI Admin: initialize complete " + s);
-        socket.writeOutputToClient(s);
 
+        sendXMLToClient(socket, voidXML, "UI Admin: initialize complete ");
         return hPlayer;
     }
 
 
-    public static void processPlacePawn(DocumentBuilder db, AdminSocket socket, String s, HPlayer hPlayer, Stage stage) throws Exception {
+    public static void processPlacePawn(DocumentBuilder db, AdminSocket socket, HPlayer hPlayer, Stage stage) throws Exception {
         BoardParser boardParser = new BoardParser(db);
-        s = socket.readInputFromClient();
+        String s = socket.readInputFromClient();
         Document placePawnXML = Parser.stringToDocument(db, s);
         if (!placePawnXML.getFirstChild().getNodeName().equals("place-pawn")) {
             throw new IllegalArgumentException("Message is not place-pawn");
@@ -124,20 +124,17 @@ public class UIAdmin extends Application {
 
         Token token = hPlayer.placePawn(board);
         Document pawnLocXML = Parser.buildPawnLocXML(db, token.getPosition(), token.getIndex());
-        s = Parser.documentToString(pawnLocXML);
-        System.out.println("Admin: place-pawn complete " + s);
-        socket.writeOutputToClient(s);
+
+        sendXMLToClient(socket, pawnLocXML, "UI Admin: place-pawn complete ");
     }
 
-    public static void processGetName(DocumentBuilder db, AdminSocket socket, String s, HPlayer hPlayer) throws Exception {
+    public static void processGetName(DocumentBuilder db, AdminSocket socket, HPlayer hPlayer) throws Exception {
         String playerName = hPlayer.getName();
         Document getNameResXML = Parser.buildPlayerNameXML(db, playerName);
-        s = Parser.documentToString(getNameResXML);
-        System.out.println("UI Admin: get-name complete " + s);
-        socket.writeOutputToClient(s);
+        sendXMLToClient(socket, getNameResXML, "UI Admin: get-name complete ");
     }
 
-    public static void processPlayTurn(DocumentBuilder db, AdminSocket socket, String s, HPlayer hPlayer, Node node) throws Exception {
+    public static void processPlayTurn(DocumentBuilder db, AdminSocket socket, HPlayer hPlayer, Node node) throws Exception {
         BoardParser boardParser = new BoardParser(db);
         TileParser tileParser = new TileParser(db);
 
@@ -154,12 +151,11 @@ public class UIAdmin extends Application {
 
         Tile tile = hPlayer.playTurn(board, hand, tilesLeft);
         Document tileXML = tileParser.buildXML(tile);
-        s = Parser.documentToString(tileXML);
-        System.out.println("UI Admin: play-turn complete " + s);
-        socket.writeOutputToClient(s);
+
+        sendXMLToClient(socket, tileXML, "UI Admin: play-turn complete ");
     }
 
-    public static void processEndGame(DocumentBuilder db, AdminSocket socket, String s, HPlayer hPlayer, Node node) throws Exception {
+    public static void processEndGame(DocumentBuilder db, AdminSocket socket, HPlayer hPlayer, Node node) throws Exception {
         BoardParser boardParser = new BoardParser(db);
 
         Node boardNode = node.getFirstChild();
@@ -172,9 +168,8 @@ public class UIAdmin extends Application {
 
         hPlayer.endGame(board, colors);
         Document voidXML = Parser.buildVoidXML(db);
-        s = Parser.documentToString(voidXML);
-        System.out.println("UI Admin: end-game complete " + s);
-        socket.writeOutputToClient(s);
+
+        sendXMLToClient(socket, voidXML, "UI Admin: end-game complete ");
     }
 
 
