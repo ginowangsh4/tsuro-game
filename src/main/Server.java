@@ -53,7 +53,7 @@ public class Server {
     }
 
     public void startGame() throws Exception {
-        ServerSocket socketListener = new ServerSocket(8888);
+        ServerSocket socketListener = new ServerSocket(6666);
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
