@@ -58,6 +58,7 @@ public class MPlayer implements IPlayer {
         if (!colors.contains(this.color)){
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
+
         Random rand = new Random();
         int x = Integer.MAX_VALUE;
         int y = Integer.MAX_VALUE;

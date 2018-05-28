@@ -19,6 +19,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.util.List;
 
+import static tsuro.parser.Parser.fromNodeToDoc;
+
 public class UIAdmin extends Application {
 
     public static UISuite uiSuite;
@@ -48,7 +50,8 @@ public class UIAdmin extends Application {
 
             // place-pawn
             processPlacePawn(db, socket, s, hPlayer, stage);
-//
+
+            //TODO: implement these three
 //            while (socket.connectionEstablished()) {
 //                String res = socket.readInputFromClient();
 //                // server has closed the connection
@@ -90,9 +93,7 @@ public class UIAdmin extends Application {
         int color = Token.getColorInt(colorNode.getTextContent());
 
         Node colorsNode = colorNode.getNextSibling();
-        Document colorsDoc = db.newDocument();
-        Node imported = colorsDoc.importNode(colorsNode, true);
-        colorsDoc.appendChild(imported);
+        Document colorsDoc = fromNodeToDoc(db, colorsNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, colorsDoc);
 
         HPlayer hPlayer = new HPlayer(HPlayer.Strategy.R);  // how to assign strategy?
@@ -115,9 +116,7 @@ public class UIAdmin extends Application {
         }
 
         Node boardNode = placePawnXML.getFirstChild().getFirstChild();
-        Document boardDoc = db.newDocument();
-        Node imported = boardDoc.importNode(boardNode, true);
-        boardDoc.appendChild(imported);
+        Document boardDoc = fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         uiSuite.generateBoardImage(boardDoc);
@@ -143,15 +142,11 @@ public class UIAdmin extends Application {
         TileParser tileParser = new TileParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = db.newDocument();
-        Node imported = boardDoc.importNode(boardNode, true);
-        boardDoc.appendChild(imported);
+        Document boardDoc = fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = db.newDocument();
-        imported = setDoc.importNode(setNode, true);
-        setDoc.appendChild(imported);
+        Document setDoc = fromNodeToDoc(db, setNode);
         List<Tile> hand = Parser.fromTileSetXML(db, setDoc);
 
         Node nNode = setNode.getNextSibling();
@@ -168,15 +163,11 @@ public class UIAdmin extends Application {
         BoardParser boardParser = new BoardParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = db.newDocument();
-        Node imported = boardDoc.importNode(boardNode, true);
-        boardDoc.appendChild(imported);
+        Document boardDoc = fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = db.newDocument();
-        imported = setDoc.importNode(setNode, true);
-        setDoc.appendChild(imported);
+        Document setDoc = fromNodeToDoc(db, setNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, setDoc);
 
         hPlayer.endGame(board, colors);

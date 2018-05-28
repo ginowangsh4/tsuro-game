@@ -234,7 +234,6 @@ public class Server {
         // ****************************************
         // ** Step 3: Update Game Over Condition **
         // ****************************************
-        // TODO: logic
         // game over if board is full
         if (board.isFull()) {
             gameOver = true;
@@ -530,22 +529,6 @@ public class Server {
         }
         return colors;
     }
-
-//    /**
-//     * Get the all colors of the game
-//     * @return a list of winner colors
-//     * @throws Exception
-//     */
-//    public List<Integer> getAllColors() throws Exception {
-//        List<Integer> colors = new ArrayList<>();
-//        for (SPlayer sPlayer : inSPlayer) {
-//            if (sPlayer.getPlayer() instanceof MPlayer) {
-//                return ((MPlayer) sPlayer.getPlayer()).getColors();
-//            }
-//            colors.add(Token.getColorInt(sPlayer.getPlayer().getName()));
-//        }
-//        throw new IllegalArgumentException("Cannot get all colors");
-//    }
 }
 
 

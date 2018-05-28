@@ -13,6 +13,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static tsuro.PlayATurnAdapter.parseInSPlayers;
+import static tsuro.PlayATurnAdapter.parseOutSPlayers;
+
+
 // Please ignore - this class was used to debug test-play-a-turn
 public class PlayATurnAdapterTest {
     public static void main(String[] args) throws Exception {
@@ -37,40 +41,20 @@ public class PlayATurnAdapterTest {
         // ***************************************************
         Board board = boardParser.fromXML(Parser.stringToDocument(db, state.boardStr));
 
-        List<SPlayer> inSPlayer = new ArrayList<>();
-        List<SPlayer> outSPlayer = new ArrayList<>();
+
         Document inPlayerDoc = Parser.stringToDocument(db, state.inSPlayerStr);
         Document outPlayerDoc = Parser.stringToDocument(db, state.outSPlayerStr);
-        NodeList inPlayerList = inPlayerDoc.getFirstChild().getChildNodes();
-        NodeList outPlayerList = outPlayerDoc.getFirstChild().getChildNodes();
 
+        // parse inSPlayer XML
         SPlayer dragonOwner = null;
-        for (int i = 0; i < inPlayerList.getLength(); i++) {
-            Node inPlayerNode = inPlayerList.item(i);
-            Document doc = db.newDocument();
-            Node imported = doc.importNode(inPlayerNode, true);
-            doc.appendChild(imported);
+        Pair<List<SPlayer>, SPlayer> inRes = parseInSPlayers(db, state.inSPlayerStr,
+                sPlayerParser, board);
+        List<SPlayer> inSPlayer = inRes.first;
+        dragonOwner = inRes.second;
 
-            Token token = findToken(board, Token.getColorInt(inPlayerNode.getFirstChild().getTextContent()));
-
-            Pair<SPlayer, Boolean> inPlayer = sPlayerParser.fromXML(doc, token);
-            if (inPlayer.second) {
-                dragonOwner = inPlayer.first;
-            }
-            inSPlayer.add(inPlayer.first);
-        }
-
-        for (int i = 0; i < outPlayerList.getLength(); i++) {
-            Node outPlayerNode = outPlayerList.item(i);
-            Document doc = db.newDocument();
-            Node imported = doc.importNode(outPlayerNode, true);
-            doc.appendChild(imported);
-
-            Token token = findToken(board, Token.getColorInt(outPlayerNode.getFirstChild().getTextContent()));
-
-            Pair<SPlayer, Boolean> outPlayer = sPlayerParser.fromXML(doc, token);
-            outSPlayer.add(outPlayer.first);
-        }
+        // parse outSPlayer XML
+        List<SPlayer> outSPlayer = parseOutSPlayers(db, state.outSPlayerStr,
+                sPlayerParser, board);
 
         Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, state.tileStr));
         List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, state.drawPileStr));

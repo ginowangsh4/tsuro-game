@@ -253,9 +253,7 @@ public class Parser {
         List<Tile> result = new ArrayList<>();
         for (int i = 0; i < tileSet.getLength(); i++) {
             Node tile = tileSet.item(i);
-            Document tileDoc = db.newDocument();
-            Node imported = tileDoc.importNode(tile, true);
-            tileDoc.appendChild(imported);
+            Document tileDoc = fromNodeToDoc(db, tile);
             result.add(tileParser.fromXML(tileDoc));
         }
         return result;
@@ -328,5 +326,12 @@ public class Parser {
     public static Document stringToDocument(DocumentBuilder db, String string) throws Exception {
         InputStream is = new ByteArrayInputStream(string.getBytes());
         return db.parse(is);
+    }
+
+    public static Document fromNodeToDoc(DocumentBuilder db, Node n) {
+        Document doc = db.newDocument();
+        Node imported = doc.importNode(n, true);
+        doc.appendChild(imported);
+        return doc;
     }
 }

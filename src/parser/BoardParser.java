@@ -11,6 +11,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import static tsuro.parser.Parser.fromNodeToDoc;
+
 public class BoardParser implements IParser<Board> {
     public DocumentBuilder db;
     public TileParser tileParser;
@@ -88,9 +90,7 @@ public class BoardParser implements IParser<Board> {
             Node xy = tileEntry.getFirstChild();
             Node tile = xy.getNextSibling();
 
-            Document tileDoc = db.newDocument();
-            Node imported = tileDoc.importNode(tile,true);
-            tileDoc.appendChild(imported);
+            Document tileDoc = fromNodeToDoc(db, tile);
             Tile t = tileParser.fromXML(tileDoc);
 
             Node x = xy.getFirstChild();
@@ -107,10 +107,7 @@ public class BoardParser implements IParser<Board> {
         NodeList pawnList = pawns.getChildNodes();
         for(int i = 0; i < pawnList.getLength(); i++) {
             Node pawnEntry = pawnList.item(i);
-
-            Document pawnDoc = db.newDocument();
-            Node imported = pawnDoc.importNode(pawnEntry,true);
-            pawnDoc.appendChild(imported);
+            Document pawnDoc = fromNodeToDoc(db, pawnEntry);
 
             Token token = pawnParser.fromXML(pawnDoc, board);
             board.addToken(token);

@@ -14,6 +14,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.List;
 
+import static tsuro.parser.Parser.fromNodeToDoc;
+
 public class Admin {
     public static void main(String[] args) throws Exception {
         // set up connection to local host 
@@ -35,11 +37,13 @@ public class Admin {
             // server has closed the connection
             if (res == null) break;
             Document doc = Parser.stringToDocument(db, res);
+
             if (!doc.getFirstChild().getNodeName().equals("play-turn")
                     && !doc.getFirstChild().getNodeName().equals("end-game")
                     && !doc.getFirstChild().getNodeName().equals("get-name")) {
                 throw new IllegalArgumentException("Message is not play-turn, end-game or get-name");
             }
+
             Node node = doc.getFirstChild();
             switch (node.getNodeName()) {
                 case "get-name":
@@ -68,9 +72,7 @@ public class Admin {
         int color = Token.getColorInt(colorNode.getTextContent());
 
         Node colorsNode = colorNode.getNextSibling();
-        Document colorsDoc = db.newDocument();
-        Node imported = colorsDoc.importNode(colorsNode, true);
-        colorsDoc.appendChild(imported);
+        Document colorsDoc = fromNodeToDoc(db, colorsNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, colorsDoc);
 
         MPlayer mPlayer = new MPlayer(MPlayer.Strategy.R);  // how to assign strategy?
@@ -92,9 +94,7 @@ public class Admin {
         }
 
         Node boardNode = placePawnXML.getFirstChild().getFirstChild();
-        Document boardDoc = db.newDocument();
-        Node imported = boardDoc.importNode(boardNode, true);
-        boardDoc.appendChild(imported);
+        Document boardDoc = fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Token token = mPlayer.placePawn(board);
@@ -117,15 +117,11 @@ public class Admin {
         TileParser tileParser = new TileParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = db.newDocument();
-        Node imported = boardDoc.importNode(boardNode, true);
-        boardDoc.appendChild(imported);
+        Document boardDoc = fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = db.newDocument();
-        imported = setDoc.importNode(setNode, true);
-        setDoc.appendChild(imported);
+        Document setDoc = fromNodeToDoc(db, setNode);
         List<Tile> hand = Parser.fromTileSetXML(db, setDoc);
 
         Node nNode = setNode.getNextSibling();
@@ -142,15 +138,11 @@ public class Admin {
         BoardParser boardParser = new BoardParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = db.newDocument();
-        Node imported = boardDoc.importNode(boardNode, true);
-        boardDoc.appendChild(imported);
+        Document boardDoc = fromNodeToDoc(db, boardNode);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = db.newDocument();
-        imported = setDoc.importNode(setNode, true);
-        setDoc.appendChild(imported);
+        Document setDoc = fromNodeToDoc(db, setNode);
         List<Integer> colors = Parser.fromColorListSetXML(db, setDoc);
 
         mPlayer.endGame(board, colors);
@@ -159,4 +151,6 @@ public class Admin {
         System.out.println("Admin: end-game complete " + s);
         socket.writeOutputToClient(s);
     }
+
+
 }

@@ -17,13 +17,6 @@ public class SPlayer {
         return this.name;
     }
 
-    public void linkPlayer(IPlayer player) throws Exception {
-        if (!player.getName().equals(name)) {
-            throw new IllegalArgumentException("SPlayer and Player mismatch");
-        }
-        this.player = player;
-    }
-
     public IPlayer getPlayer() {
         return this.player;
     }
@@ -31,6 +24,17 @@ public class SPlayer {
     // only used if certain that associated IPlayer is MPlayer
     public MPlayer getMPlayer() {
         return (MPlayer) this.player;
+    }
+
+    /**
+     * Link IPlayer with current splayer
+     * @param player IPlayer to be linked
+     */
+    public void linkPlayer(IPlayer player) throws Exception {
+        if (!player.getName().equals(name)) {
+            throw new IllegalArgumentException("SPlayer and Player mismatch");
+        }
+        this.player = player;
     }
 
     /**

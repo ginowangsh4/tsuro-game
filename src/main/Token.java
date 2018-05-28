@@ -45,6 +45,10 @@ public class Token {
 
     public void setPosition(int[] position) { this.position = position; }
 
+    /**
+     * find color string associated with color index
+     * @return color in string format
+     */
     public String getColorString(){
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid token color index");

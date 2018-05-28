@@ -29,6 +29,8 @@ public class HPlayer implements IPlayer {
         return this.colors;
     }
 
+
+
     public void initialize (int color, List<Integer> colors) {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid player's color");
@@ -47,6 +49,7 @@ public class HPlayer implements IPlayer {
         this.colors = colors;
     }
 
+    // TODO: need to check of startIndex as well
     public Token placePawn(Board b) throws Exception {
         if (UISuite.startSide == null) {
             throw new Exception("UISuite.startSide has not been initialized!");
@@ -55,21 +58,29 @@ public class HPlayer implements IPlayer {
         return token;
     }
 
+    // TODO: need to implement this
     public void endGame(Board b, List<Integer> colors) throws Exception {
 
     }
 
+    // TODO: need to implement this
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         return null;
     }
 
+
+    /**
+     * Generate token game object based on pawn location clicked from UI
+     * @param colorIndex hplayer's color index
+     * @param side side of location clicked
+     * @param index index of location clicked
+     * @return token game object
+     */
     public static Token generateTokenBySideIndex(int colorIndex, UISuite.Side side, int index) throws Exception {
         if (index < 0 || index > 11) {
             throw new Exception("Index is not valid");
         }
-        int indexOnTile;
-        int x;
-        int y;
+        int indexOnTile, x, y;
         if (side == UISuite.Side.TOP) {
             x = index / 2;
             y = -1;

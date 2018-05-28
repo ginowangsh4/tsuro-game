@@ -17,7 +17,6 @@ public class State {
 
     public State() {}
 
-    // TODO: use this in tests
     public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, List<SPlayer> winners, Deck drawPile) {
         this.board = board;
         this.inSPlayer = inSPlayer;
