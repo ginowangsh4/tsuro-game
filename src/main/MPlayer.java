@@ -15,7 +15,8 @@ public class MPlayer implements IPlayer {
     public State state;
     public enum State { INIT, PLACE, PLAY, END }
 
-    public MPlayer(Strategy strategy) {
+    public MPlayer(Strategy strategy, String name) {
+        this.name = name;
         this.strategy = strategy;
     }
 
@@ -45,7 +46,6 @@ public class MPlayer implements IPlayer {
         }
         state = State.INIT;
         this.color = color;
-        this.name = Token.colorMap.get(color);
         this.colors = colors;
     }
 

@@ -18,7 +18,7 @@ public class Server {
     public List<Integer> colors;
     public SPlayer dragonHolder = null;
     public boolean gameOver = false;
-    public final int PORT = 8000;
+    public final int PORT_NUM = 8000;
 
     // singleton pattern
     private static Server server = null;
@@ -59,15 +59,17 @@ public class Server {
      * @throws Exception
      */
     public void startGame() throws Exception {
-        ServerSocket socketListener = new ServerSocket(PORT);
+        ServerSocket socketListener = new ServerSocket(PORT_NUM);
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
+
             // create players
-            RemotePlayer rP = new RemotePlayer(socketListener.accept(), db);
-            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
-            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
-            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS);
+            // for remote players, initialize a new socket
+            IPlayer rP = new RemotePlayer(socketListener.accept(), db);
+            IPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "");
+            IPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "");
+            IPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "");
 
             for (int i = 0; i < 4; i++) {
                 colors.add(i);
@@ -111,10 +113,11 @@ public class Server {
                 System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
             }
 
-            // close connection
-            socketListener.close();
         } catch (ParserConfigurationException | IOException e) {
             e.printStackTrace();
+        } finally {
+            // close connection
+            socketListener.close();
         }
     }
 
@@ -393,18 +396,17 @@ public class Server {
     }
 
     public Tile playerCheatIllegalTile(SPlayer p) throws Exception {
-        MPlayer newPlayer = replaceWithMPlayer(p);
-        newPlayer.state = MPlayer.State.PLAY;
+        replaceWithMPlayer(p);
+        p.getMPlayer().state = MPlayer.State.PLAY;
         Tile newTile = p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
         return newTile;
     }
 
-    public MPlayer replaceWithMPlayer(SPlayer p) throws Exception {
+    public void replaceWithMPlayer(SPlayer p) throws Exception {
         System.out.println("Player " + p.getName() + " cheated and is replaced by a random machine player");
-        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R);
-        newPlayer.initialize(Token.getColorInt(p.getName()), colors);
+        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R, p.getName());
+        newPlayer.initialize(p.getToken().getColor(), colors);
         p.linkPlayer(newPlayer);
-        return newPlayer;
     }
 
     /**

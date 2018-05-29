@@ -33,9 +33,9 @@ public class ServerTest {
             colors = new ArrayList<>();
             server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
 
-            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
-            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
-            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS);
+            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "Player 1");
+            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "Player 2");
+            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "Player 3");
             colors.add(1);
             colors.add(2);
             colors.add(3);
@@ -89,9 +89,9 @@ public class ServerTest {
 
             server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
 
-            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R);
-            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS);
-            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS);
+            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "Player 1");
+            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "Player 2");
+            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "Player 3");
             colors.add(1);
             colors.add(2);
             colors.add(3);
@@ -139,7 +139,7 @@ public class ServerTest {
 
         server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
 
-        MPlayer mP = new MPlayer(MPlayer.Strategy.LS);
+        MPlayer mP = new MPlayer(MPlayer.Strategy.LS, "Player 1");
         colors.add(1);
         mP.initialize(1, colors);
         Token token = mP.placePawn(b);
@@ -153,4 +153,80 @@ public class ServerTest {
         assertEquals(MPlayer.Strategy.R, currentP.getMPlayer().strategy, "Error: Player's cheating is not caught");
         assertEquals(true, server.isGameOver());
     }
+
+
+    @Test
+    public void cheatingIllegalPawnTest2() throws Exception {
+        Server server = Server.getInstance();
+        IPlayer playerOne = new IPlayer() {
+            int color;
+            //            List<Integer> colors;
+            @Override
+            public String getName() throws Exception {
+                return "cheatingIllegalPawnTest2Player1";
+            }
+
+            @Override
+            public void initialize(int color, List<Integer> colors) throws Exception {
+                this.color = color;
+            }
+
+            @Override
+            public Token placePawn(Board b) throws Exception {
+                return new Token(this.color, 2, new int[] {-1, 0});
+            }
+
+            @Override
+            public void endGame(Board b, List<Integer> colors) throws Exception {
+                throw new IllegalArgumentException("endGame shouldn't be called");
+            }
+
+            @Override
+            public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
+                throw new IllegalArgumentException("playTurn shouldn't be called");
+            }
+        };
+        IPlayer playerTwo = new IPlayer() {
+            int color;
+            //            List<Integer> colors;
+            @Override
+            public String getName() throws Exception {
+                return "cheatingIllegalPawnTest2Player1";
+            }
+
+            @Override
+            public void initialize(int color, List<Integer> colors) throws Exception {
+                this.color = color;
+            }
+
+            @Override
+            public Token placePawn(Board b) throws Exception {
+                return new Token(this.color, 2, new int[] {-1, 0});
+            }
+
+            @Override
+            public void endGame(Board b, List<Integer> colors) throws Exception {
+                throw new IllegalArgumentException("endGame shouldn't be called");
+            }
+
+            @Override
+            public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
+                throw new IllegalArgumentException("playTurn shouldn't be called");
+            }
+        };
+        Board board = new Board();
+        playerOne.initialize(0, null);
+        Token tokenOne = playerOne.placePawn(board);
+        server.registerPlayer(playerOne, tokenOne);
+
+        playerTwo.initialize(1, null);
+        Token tokenTwo = playerTwo.placePawn(board);
+        server.registerPlayer(playerTwo, tokenTwo);
+
+    }
+
+
+
+
+
 }

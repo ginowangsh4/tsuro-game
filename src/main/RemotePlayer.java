@@ -47,6 +47,7 @@ public class RemotePlayer implements IPlayer {
             throw new IllegalArgumentException("Response is not void!");
         }
 
+        this.color = color;
         System.out.println("Remote: initialize complete");
     }
 
