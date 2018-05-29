@@ -14,17 +14,20 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.List;
 
 public class Admin {
+
+    public static MPlayer mPlayer;
+
     public static void main(String[] args) throws Exception {
         // set up connection to local host 
         String hostname = "127.0.0.1";
-        int port = 6666;
+        int port = 8888;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         AdminSocket socket = new AdminSocket(hostname, port, db);
         String s = null;
 
         // initialize
-        MPlayer mPlayer = processInitialize(db, socket);
+        mPlayer = processInitialize(db, socket);
 
         // place-pawn
         processPlacePawn(db, socket, mPlayer);
@@ -34,13 +37,11 @@ public class Admin {
             // server has closed the connection
             if (res == null) break;
             Document doc = Parser.stringToDocument(db, res);
-
             if (!doc.getFirstChild().getNodeName().equals("play-turn")
                     && !doc.getFirstChild().getNodeName().equals("end-game")
                     && !doc.getFirstChild().getNodeName().equals("get-name")) {
                 throw new IllegalArgumentException("Message is not play-turn, end-game or get-name");
             }
-
             Node node = doc.getFirstChild();
             switch (node.getNodeName()) {
                 case "get-name":

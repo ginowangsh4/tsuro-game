@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
 
+@SuppressWarnings("Duplicates")
 public class Server {
 
     public Board board;
@@ -53,6 +54,10 @@ public class Server {
         this.colors = colors;
     }
 
+    /**
+     * Start a tournament over the network with a remote player
+     * @throws Exception
+     */
     public void startGame() throws Exception {
         ServerSocket socketListener = new ServerSocket(PORT);
         try {
@@ -81,6 +86,7 @@ public class Server {
             server.registerPlayer(mP3, t3);
             Token t0 = rP.placePawn(board);
             server.registerPlayer(rP, t0);
+
             // play game over network
             while(!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
@@ -89,6 +95,7 @@ public class Server {
                 currentP.deal(tileToPlay);
                 server.playATurn(tileToPlay);
             }
+
             // prints
             List<Integer> winnerColors = server.getCurrentColors();
             for (SPlayer sPlayer : winners) {
@@ -103,6 +110,7 @@ public class Server {
             for (SPlayer sPlayer : server.winners) {
                 System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
             }
+
             // close connection
             socketListener.close();
         } catch (ParserConfigurationException | IOException e) {
@@ -248,6 +256,11 @@ public class Server {
         return null;
     }
 
+    /**
+     * Handle server player lists at the end of a turn
+     * @param deadP players that are out of board after this turn
+     * @throws Exception
+     */
     public void findWinners(List<SPlayer> deadP) throws Exception {
         // game over if board is full
         if (board.isFull()) {
@@ -366,6 +379,12 @@ public class Server {
         }
     }
 
+    /**
+     * Handle cases when player cheats and server blames player
+     * 1) Player chooses an illegal starting position to place pawn
+     * 2) Player chooses an illegal tile to play a turn
+     * Cheating player is replaced with a MPlayer with Random strategy
+     */
     public void playerCheatIllegalPawn(SPlayer p) throws Exception {
         replaceWithMPlayer(p);
         p.updateToken(p.getPlayer().placePawn(board));
@@ -385,6 +404,7 @@ public class Server {
         p.linkPlayer(newPlayer);
         return newPlayer;
     }
+
     /**
      * Check whether player's hand is legal against behavior contracts
      * @param p current player

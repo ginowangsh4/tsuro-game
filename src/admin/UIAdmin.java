@@ -31,7 +31,7 @@ public class UIAdmin extends Application {
             uiSuite = new UISuite(stage);
 
             String hostname = "127.0.0.1";
-            int port = 6666;
+            int port = 8888;
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = null;
 
