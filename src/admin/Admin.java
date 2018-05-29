@@ -20,7 +20,7 @@ public class Admin {
     public static void main(String[] args) throws Exception {
         // set up connection to local host 
         String hostname = "127.0.0.1";
-        int port = 8888;
+        int port = 8000;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         AdminSocket socket = new AdminSocket(hostname, port, db);

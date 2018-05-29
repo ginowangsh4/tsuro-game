@@ -18,7 +18,7 @@ public class Server {
     public List<Integer> colors;
     public SPlayer dragonHolder = null;
     public boolean gameOver = false;
-    public final int PORT = 6666;
+    public final int PORT = 8000;
 
     // singleton pattern
     private static Server server = null;
@@ -243,8 +243,7 @@ public class Server {
         // ** Step 3: Update Game Over Condition **
         // ****************************************
         findWinners(deadP);
-        if (winners.size() != 0) {
-            gameOver = true;
+        if (gameOver) {
             return winners;
         }
 
@@ -264,6 +263,7 @@ public class Server {
     public void findWinners(List<SPlayer> deadP) throws Exception {
         // game over if board is full
         if (board.isFull()) {
+            gameOver = true;
             if (inSPlayer.size() == deadP.size()) {
                 inSPlayer.clear();
                 outSPlayer.addAll(deadP);
@@ -279,6 +279,7 @@ public class Server {
         }
         // game over if all remaining players are eliminated at this round
         else if (inSPlayer.size() == deadP.size()) {
+            gameOver = true;
             inSPlayer.clear();
             outSPlayer.addAll(deadP);
             winners.addAll(deadP);
@@ -286,6 +287,7 @@ public class Server {
         }
         // game over if only one player remains
         else if ((inSPlayer.size() - deadP.size()) == 1) {
+            gameOver = true;
             outSPlayer.addAll(deadP);
             returnHandToDeck(deadP);
             eliminatePlayers(deadP);
