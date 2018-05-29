@@ -206,8 +206,7 @@ public class Server {
         board.placeTile(t, location[0], location[1]);
         // move all remaining players
         List<SPlayer> deadP = new ArrayList<>();
-        int playerCount = inSPlayer.size();
-        for (int i = 0; i < playerCount; i++)
+        for (int i = 0; i < inSPlayer.size(); i++)
         {
             SPlayer player = inSPlayer.get(i);
             Token token = simulateMove(player.getToken(), board);
@@ -235,9 +234,23 @@ public class Server {
         // ****************************************
         // ** Step 3: Update Game Over Condition **
         // ****************************************
+        findWinners(deadP);
+        if (winners.size() != 0) {
+            gameOver = true;
+            return winners;
+        }
+
+        // game not over, eliminate players
+        returnHandToDeck(deadP);
+        eliminatePlayers(deadP);
+        drawAndPassDragon();
+        outSPlayer.addAll(deadP);
+        return null;
+    }
+
+    public void findWinners(List<SPlayer> deadP) throws Exception {
         // game over if board is full
         if (board.isFull()) {
-            gameOver = true;
             if (inSPlayer.size() == deadP.size()) {
                 inSPlayer.clear();
                 outSPlayer.addAll(deadP);
@@ -253,7 +266,6 @@ public class Server {
         }
         // game over if all remaining players are eliminated at this round
         else if (inSPlayer.size() == deadP.size()) {
-            gameOver = true;
             inSPlayer.clear();
             outSPlayer.addAll(deadP);
             winners.addAll(deadP);
@@ -261,22 +273,12 @@ public class Server {
         }
         // game over if only one player remains
         else if ((inSPlayer.size() - deadP.size()) == 1) {
-            gameOver = true;
             outSPlayer.addAll(deadP);
             returnHandToDeck(deadP);
             eliminatePlayers(deadP);
             winners.addAll(inSPlayer);
             drawAndPassDragon();
         }
-        if (gameOver) {
-            return winners;
-        }
-        // game not over, eliminate players
-        returnHandToDeck(deadP);
-        eliminatePlayers(deadP);
-        drawAndPassDragon();
-        outSPlayer.addAll(deadP);
-        return null;
     }
 
     /**

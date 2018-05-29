@@ -57,7 +57,6 @@ public class RemotePlayer implements IPlayer {
 
         // from socket
         Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
-        //System.out.println(Parser.documentToString(outDoc));
         Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, outDoc);
         Token token = new Token(this.color, pair.second, pair.first);
 
