@@ -1,6 +1,5 @@
 package tsuro;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -93,7 +92,7 @@ public class MPlayer implements IPlayer {
         for (Tile t : hand) {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
-                SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand, getName());
+                SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand);
                 tempPlayer.linkPlayer(this);
                 if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());
@@ -110,18 +109,16 @@ public class MPlayer implements IPlayer {
                 break;
             }
             case MS: {
-                Collections.sort(legalMoves, new Tile.SymmetricComparator());
+                legalMoves.sort(new Tile.SymmetricComparator());
                 tileToPlay = legalMoves.get(0);
                 break;
             }
             case LS: {
-                Collections.sort(legalMoves, new Tile.SymmetricComparator());
+                legalMoves.sort(new Tile.SymmetricComparator());
                 tileToPlay = legalMoves.get(legalMoves.size() - 1);
                 break;
             }
         }
-        // make sure every tile has correct path order before be placed on board
-        tileToPlay.reorderPath();
         return tileToPlay;
     }
 
@@ -141,9 +138,9 @@ public class MPlayer implements IPlayer {
     public int[] findAnotherStartPos() {
         Random rand = new Random();
         int x, y, indexOnTile;
-        // choose random number in {0,1,2,3}
+        // choose a random number in {0, 1, 2, 3}
         int side = rand.nextInt(4);
-        // choose random number in {0,1,2,...,11}
+        // choose a random number in {0, 1, 2,..., 11}
         int sideIndex = rand.nextInt(12);
         switch (side) {
             case 0: {

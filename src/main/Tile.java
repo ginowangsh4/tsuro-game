@@ -47,6 +47,17 @@ public class Tile {
     }
 
     /**
+     * Reorder the path arrays of a given tile; path indices ordered from smallest to largest
+     * e.g. {{2, 6}, {3, 7}, {4, 1}, {5, 0}} becomes {{0, 5}, {1, 4}, {2, 6}, {3, 7}}
+     */
+    private void reorderPath() {
+        for (int[] path : this.paths) {
+            Arrays.sort(path);
+        }
+        Arrays.sort(this.paths, new ListFirstElementComparator());
+    }
+
+    /**
      * Rotate a given tile clockwise by 90 degrees
      * Mutate the path of this tile
      */
@@ -55,6 +66,7 @@ public class Tile {
             paths[i][0] = (paths[i][0] + 2) % 8;
             paths[i][1] = (paths[i][1] + 2) % 8;
         }
+        reorderPath();
     }
 
     /**
@@ -133,17 +145,6 @@ public class Tile {
         // so we need to subtract count by 1 to get the number of ways it can be placed.
         // count can only be 1, 2, or 4
         return count == 3 ? count - 1 : count;
-    }
-
-    /**
-     * Reorder the path arrays of a given tile; path indices ordered from smallest to largest
-     * e.g. {{2, 6}, {3, 7}, {4, 1}, {5, 0}} becomes {{0, 5}, {1, 4}, {2, 6}, {3, 7}}
-     */
-    public void reorderPath() {
-        for (int[] array : this.paths) {
-            Arrays.sort(array);
-        }
-        Arrays.sort(this.paths, new ListFirstElementComparator());
     }
 
     /**

@@ -56,6 +56,20 @@ public class Deck {
         this.pile = pile;
     }
 
+    public int size() {
+        return pile == null ? 0 : pile.size();
+    }
+
+    public List<Tile> getPile() {return pile;}
+
+    public Tile get(int index) {
+        return pile.get(index);
+    }
+
+    public boolean isEmpty() {
+        return pile.isEmpty();
+    }
+
     public Tile pop() {
         if (isEmpty()) {
             throw new NoSuchElementException("Error: Can't draw tile from an empty deck");
@@ -86,19 +100,5 @@ public class Deck {
     public void addAndShuffle(List<Tile> l) {
         pile.addAll(l);
         shuffle();
-    }
-
-    public int size() {
-        return pile == null ? 0 : pile.size();
-    }
-
-    public List<Tile> getPile() {return pile;}
-
-    public Tile get(int index) {
-        return pile.get(index);
-    }
-
-    public boolean isEmpty() {
-        return pile.isEmpty();
     }
 }

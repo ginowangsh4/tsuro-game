@@ -82,7 +82,7 @@ public class SPlayerParser {
             hand.add(tile);
         }
 
-        SPlayer sp = new SPlayer(token, hand, Token.colorMap.get(colorIndex));
+        SPlayer sp = new SPlayer(token, hand);
         return new Pair<>(sp, hasDragon);
     }
 
@@ -93,17 +93,17 @@ public class SPlayerParser {
         int[] pos1 = new int[]{1, 0};
         Token token1 = new Token(1,2,pos1);
         List<Tile> hand1 = new ArrayList<>();
-        SPlayer sp1 = new SPlayer(token1, hand1, "red");
+        SPlayer sp1 = new SPlayer(token1, hand1);
 
         int[] pos2 = new int[]{1, 5};
         Token token2 = new Token(2,0,pos2);
         List<Tile> hand2 = new ArrayList<>();
-        SPlayer sp2 = new SPlayer(token2, hand2, "green");
+        SPlayer sp2 = new SPlayer(token2, hand2);
 
         int[] pos3 = new int[]{1, 0};
         Token token3 = new Token(3,2,pos3);
         List<Tile> hand3 = new ArrayList<>();
-        SPlayer sp3 = new SPlayer(token3, hand3, "orange");
+        SPlayer sp3 = new SPlayer(token3, hand3);
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();

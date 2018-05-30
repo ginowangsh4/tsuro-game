@@ -35,15 +35,12 @@ public class MPlayerTest {
         Tile t = new Tile(path1);
         Tile copy = t.copyTile();
         copy.rotateTile(); // Second Way
-        copy.reorderPath();
         assertTrue(Arrays.deepEquals(copy.paths, path2), "Error: paths are not in order");
 
         copy.rotateTile();//has the same pathways as the first way
-        copy.reorderPath();
         assertTrue(Arrays.deepEquals(copy.paths, path1), "Error: paths are not in order");
 
         copy.rotateTile();//has the same pathways as the second way
-        copy.reorderPath();
         assertTrue(Arrays.deepEquals(copy.paths, path2), "Error: paths are not in order");
 
         //This tile is symmetric and only has one way to be placed
@@ -51,17 +48,14 @@ public class MPlayerTest {
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile symmetricCopy = symmetricTile.copyTile();
         symmetricCopy.rotateTile();
-        symmetricCopy.reorderPath();
         assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
 
         symmetricCopy.rotateTile();
         symmetricCopy.rotateTile();
-        symmetricCopy.reorderPath();
         assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
 
         symmetricCopy.rotateTile();
         symmetricCopy.rotateTile();
-        symmetricCopy.reorderPath();
         assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
     }
 
@@ -134,7 +128,7 @@ public class MPlayerTest {
         hand.add(tile1);
         hand.add(tile2);
         hand.add(tile3);
-        SPlayer SPlayer = new SPlayer(token, hand, "");
+        SPlayer SPlayer = new SPlayer(token, hand);
         b.addToken(token);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
@@ -181,7 +175,7 @@ public class MPlayerTest {
         hand.add(tile1);
         hand.add(tile2);
         hand.add(tile3);
-        SPlayer SPlayer = new SPlayer(token, hand, "");
+        SPlayer SPlayer = new SPlayer(token, hand);
         b.addToken(token);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
@@ -228,7 +222,7 @@ public class MPlayerTest {
         hand.add(tile1);
         hand.add(tile2);
         hand.add(tile3);
-        SPlayer SPlayer = new SPlayer(token, hand, "");
+        SPlayer SPlayer = new SPlayer(token, hand);
         b.addToken(token);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();

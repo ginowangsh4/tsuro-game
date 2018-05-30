@@ -26,9 +26,6 @@ public class PlayATurnAdapterTest {
         String boardStr = "";
         String tileStr = "";
 
-        State state = new State();
-        state.setPlayATurnState(deckStr, inPlayerStr, outPlayerStr, boardStr, tileStr);
-
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
 
@@ -39,25 +36,23 @@ public class PlayATurnAdapterTest {
         // ***************************************************
         // Parse input XMLs to game objects
         // ***************************************************
-        Board board = boardParser.fromXML(Parser.stringToDocument(db, state.boardStr));
-
-
-        Document inPlayerDoc = Parser.stringToDocument(db, state.inSPlayerStr);
-        Document outPlayerDoc = Parser.stringToDocument(db, state.outSPlayerStr);
+        // parse board XML
+        Board board = boardParser.fromXML(Parser.stringToDocument(db, boardStr));
 
         // parse inSPlayer XML
         SPlayer dragonOwner = null;
-        Pair<List<SPlayer>, SPlayer> inRes = parseInSPlayers(db, state.inSPlayerStr,
-                sPlayerParser, board);
+        Pair<List<SPlayer>, SPlayer> inRes = parseInSPlayers(db, inPlayerStr, sPlayerParser, board);
         List<SPlayer> inSPlayer = inRes.first;
         dragonOwner = inRes.second;
 
         // parse outSPlayer XML
-        List<SPlayer> outSPlayer = parseOutSPlayers(db, state.outSPlayerStr,
-                sPlayerParser, board);
+        List<SPlayer> outSPlayer = parseOutSPlayers(db, outPlayerStr, sPlayerParser, board);
 
-        Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, state.tileStr));
-        List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, state.drawPileStr));
+        // parse tile XML to play this turn
+        Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, tileStr));
+
+        // parse deck/draw pile XML
+        List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, deckStr));
         Deck deck = new Deck(tileList);
 
         // ***************************************************

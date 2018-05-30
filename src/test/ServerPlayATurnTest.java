@@ -1,5 +1,4 @@
 package tsuro;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,8 +36,8 @@ public class ServerPlayATurnTest {
         Token token2 = new Token(1, 5,new int[] {2,1});
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
-        SPlayer SPlayer1 = new SPlayer(token1, hand1, "blue");
-        SPlayer SPlayer2 = new SPlayer(token2, hand2, "red");
+        SPlayer SPlayer1 = new SPlayer(token1, hand1);
+        SPlayer SPlayer2 = new SPlayer(token2, hand2);
         b.addToken(token1);
         b.addToken(token2);
 
@@ -84,8 +83,8 @@ public class ServerPlayATurnTest {
         Token token2 = new Token(1, 5,new int[] {2,0});
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
-        SPlayer SPlayer1 = new SPlayer(token1, hand1, "blue");
-        SPlayer SPlayer2 = new SPlayer(token2, hand2, "red");
+        SPlayer SPlayer1 = new SPlayer(token1, hand1);
+        SPlayer SPlayer2 = new SPlayer(token2, hand2);
         b.addToken(token1);
         b.addToken(token2);
 
@@ -130,8 +129,8 @@ public class ServerPlayATurnTest {
         Token token2 = new Token(1, 5, new int[] {2,1});
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
-        SPlayer SPlayer1 = new SPlayer(token1, hand1, "blue");
-        SPlayer SPlayer2 = new SPlayer(token2, hand2, "red");
+        SPlayer SPlayer1 = new SPlayer(token1, hand1);
+        SPlayer SPlayer2 = new SPlayer(token2, hand2);
         b.addToken(token1);
         b.addToken(token2);
 
@@ -169,8 +168,8 @@ public class ServerPlayATurnTest {
         Token token2 = new Token(1, 4, new int[] {3,-1});
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
-        SPlayer SPlayer1 = new SPlayer(token1, hand1, "blue");
-        SPlayer SPlayer2 = new SPlayer(token2, hand2, "red");
+        SPlayer SPlayer1 = new SPlayer(token1, hand1);
+        SPlayer SPlayer2 = new SPlayer(token2, hand2);
         b.addToken(token1);
         b.addToken(token2);
 

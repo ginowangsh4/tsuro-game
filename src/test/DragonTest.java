@@ -1,8 +1,6 @@
 package tsuro;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,9 +27,9 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new SPlayer(t1, new ArrayList<>(), "red");
-        p2 = new SPlayer(t2, new ArrayList<>(), "green");
-        p3 = new SPlayer(t3, new ArrayList<>(), "orange");
+        p1 = new SPlayer(t1, new ArrayList<>());
+        p2 = new SPlayer(t2, new ArrayList<>());
+        p3 = new SPlayer(t3, new ArrayList<>());
         p1.draw(deck.pop());
         p1.draw(deck.pop());
         p1.draw(deck.pop());
@@ -109,9 +107,9 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new SPlayer(t1, new ArrayList<>(), "red");
-        p2 = new SPlayer(t2, new ArrayList<>(), "green");
-        p3 = new SPlayer(t3, new ArrayList<>(), "orange");
+        p1 = new SPlayer(t1, new ArrayList<>());
+        p2 = new SPlayer(t2, new ArrayList<>());
+        p3 = new SPlayer(t3, new ArrayList<>());
         p1.draw(deck.pop());
         p1.draw(deck.pop());
         p1.draw(deck.pop());
@@ -169,9 +167,9 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new SPlayer(t1, new ArrayList<>(), "red");
-        p2 = new SPlayer(t2, new ArrayList<>(), "green");
-        p3 = new SPlayer(t3, new ArrayList<>(), "orange");
+        p1 = new SPlayer(t1, new ArrayList<>());
+        p2 = new SPlayer(t2, new ArrayList<>());
+        p3 = new SPlayer(t3, new ArrayList<>());
         p1.draw(tp1);
         p2.draw(tp2);
         p3.draw(tp3);
@@ -227,9 +225,9 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new SPlayer(t1, new ArrayList<>(), "red");
-        p2 = new SPlayer(t2, new ArrayList<>(), "green");
-        p3 = new SPlayer(t3, new ArrayList<>(), "orange");
+        p1 = new SPlayer(t1, new ArrayList<>());
+        p2 = new SPlayer(t2, new ArrayList<>());
+        p3 = new SPlayer(t3, new ArrayList<>());
         p1.draw(tp1);
         p2.draw(tp2);
         p3.draw(tp3);
@@ -284,9 +282,9 @@ public class DragonTest {
         b.addToken(t1);
         b.addToken(t2);
         b.addToken(t3);
-        p1 = new SPlayer(t1, new ArrayList<>(), "red");
-        p2 = new SPlayer(t2, new ArrayList<>(), "green");
-        p3 = new SPlayer(t3, new ArrayList<>(), "orange");
+        p1 = new SPlayer(t1, new ArrayList<>());
+        p2 = new SPlayer(t2, new ArrayList<>());
+        p3 = new SPlayer(t3, new ArrayList<>());
         p1.draw(tp1);
         p2.draw(tp2);
         p3.draw(tp3);

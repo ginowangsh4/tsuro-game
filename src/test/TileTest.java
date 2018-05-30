@@ -23,18 +23,18 @@ public class TileTest {
     public void rotateTileTest() {
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         t1.rotateTile();
-        assertTrue(Arrays.deepEquals(new int[][]{{2, 3}, {4, 5}, {6, 7}, {0, 1}}, t1.paths), "Error: Rotate tile once failed");
+        assertTrue(Arrays.deepEquals(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t1.paths), "Error: Rotate tile once failed");
 
         Tile t2 = new Tile(new int[][]{{0, 1}, {2, 4}, {3, 6}, {5, 7}});
         t2.rotateTile();
         t2.rotateTile();
-        assertTrue(Arrays.deepEquals(new int[][]{{4, 5}, {6, 0}, {7, 2}, {1, 3}}, t2.paths), "Error: Rotate tile twice failed");
+        assertTrue(Arrays.deepEquals(new int[][]{{0, 6}, {1, 3}, {2, 7}, {4, 5}}, t2.paths), "Error: Rotate tile twice failed");
 
         Tile t3 = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
         t3.rotateTile();
         t3.rotateTile();
         t3.rotateTile();
-        assertTrue(Arrays.deepEquals(new int[][]{{6, 4}, {7, 3}, {0, 2}, {1, 5}}, t3.paths), "Error: Rotate tile three times failed");
+        assertTrue(Arrays.deepEquals(new int[][]{{0, 2}, {1, 5}, {3, 7}, {4, 6}}, t3.paths), "Error: Rotate tile three times failed");
         t3.rotateTile();
         assertTrue(Arrays.deepEquals(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}}, t3.paths), "Error: Rotate tile four times failed");
     }

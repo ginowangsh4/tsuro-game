@@ -4,19 +4,17 @@ import java.util.*;
 public class SPlayer {
     private Token token;
     private List<Tile> hand;
-    private String name;
     private IPlayer player;
 
-    public SPlayer(Token token, List<Tile> hand, String name) {
+    public SPlayer(Token token, List<Tile> hand) {
         this.token = token;
         this.hand = hand;
-        this.name = name;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
+    /**
+     * Get the IPlayer linked with this SPlayer
+     * @return an IPlayer
+     */
     public IPlayer getPlayer() {
         return this.player;
     }
@@ -27,11 +25,11 @@ public class SPlayer {
     }
 
     /**
-     * Link IPlayer with current splayer
+     * Link IPlayer with current SPlayer
      * @param player IPlayer to be linked
      */
     public void linkPlayer(IPlayer player) throws Exception {
-        if (!player.getName().equals(name)) {
+        if (getPlayer() != null && !player.getName().equals(this.getPlayer().getName())) {
             throw new IllegalArgumentException("SPlayer and Player mismatch");
         }
         this.player = player;
@@ -39,25 +37,11 @@ public class SPlayer {
 
     /**
      * Check if two SPlayers have the same color
-     * @param player
+     * @param player SPlayer to be checked against this SPlayer
      * @return true if colors are the same
      */
     public boolean isSamePlayer(SPlayer player) {
-        return this.getName().equals(player.getName());
-    }
-
-    /**
-     * Check if a player has this input tile on hand
-     * @param tile to be checked
-     * @return true if play has this tile
-     */
-    public boolean hasTile(Tile tile) {
-        for (Tile t : getHand()) {
-            if (t.isSameTile(tile)) {
-                return true;
-            }
-        }
-        return false;
+        return this.getToken().getColor() == player.getToken().getColor();
     }
 
     /**
@@ -77,6 +61,28 @@ public class SPlayer {
             throw new IllegalArgumentException("The given token doesn't belong to this player");
         this.token = token;
 ;    }
+
+    /**
+     * Check if a player has this input tile on hand
+     * @param tile to be checked
+     * @return true if play has this tile
+     */
+    public boolean hasTile(Tile tile) {
+        for (Tile t : getHand()) {
+            if (t.isSameTile(tile)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get a player's hand
+     * @return a list of tiles on player's hand
+     */
+    public List<Tile> getHand() {
+        return this.hand;
+    }
 
     /**
      * SPlayer draws a tile
@@ -103,14 +109,6 @@ public class SPlayer {
             }
         }
         throw new IllegalArgumentException("The tile to be dealt is not in player's hand");
-    }
-
-    /**
-     * Get a player's hand
-     * @return a list of tiles on player's hand
-     */
-    public List<Tile> getHand() {
-        return this.hand;
     }
 }
 

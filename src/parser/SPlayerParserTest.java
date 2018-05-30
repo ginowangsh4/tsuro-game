@@ -38,7 +38,7 @@ public class SPlayerParserTest {
         Tile tile = new Tile(new int[][] {{0,4},{1,7},{2,3},{5,6}});
         hand.add(tile);
         String name = "blue";
-        SPlayer sp = new SPlayer(token, hand , name);
+        SPlayer sp = new SPlayer(token, hand);
 
         String buffer = "<splayer-dragon>"
                         +"<color>blue</color>"
@@ -84,7 +84,7 @@ public class SPlayerParserTest {
         Tile tile = new Tile(new int[][] {{0,4},{1,7},{2,3},{5,6}});
         hand.add(tile);
         String name = "blue";
-        SPlayer expected = new SPlayer(token, hand , name);
+        SPlayer expected = new SPlayer(token, hand);
 
         SPlayer sp = thePair.first;
         assertTrue(sp.getToken().isSameToken(expected.getToken()),"Generated token is different from expected");

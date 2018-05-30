@@ -18,6 +18,7 @@ public class Server {
     public List<Integer> colors;
     public SPlayer dragonHolder = null;
     public boolean gameOver = false;
+
     public final int PORT_NUM = 8000;
 
     // singleton pattern
@@ -127,7 +128,7 @@ public class Server {
      */
     public void registerPlayer(IPlayer player, Token t) throws Exception {
         List<Tile> hand = new ArrayList<>();
-        SPlayer sP = new SPlayer(t, hand, player.getName());
+        SPlayer sP = new SPlayer(t, hand);
         sP.linkPlayer(player);
         // check if starting position is legal
         if (!t.isStartingPosition()) {
@@ -314,7 +315,7 @@ public class Server {
             return token;
         }
         // simulate moving token & get new token index
-        int pathStart = nextTile.neighborIndex.get(token.getIndex());
+        int pathStart = Tile.neighborIndex.get(token.getIndex());
         int pathEnd = nextTile.getPathEnd(pathStart);
         // recursion step
         Token nt = new Token(token.getColor(), pathEnd, newPosition);
@@ -398,13 +399,12 @@ public class Server {
     public Tile playerCheatIllegalTile(SPlayer p) throws Exception {
         replaceWithMPlayer(p);
         p.getMPlayer().state = MPlayer.State.PLAY;
-        Tile newTile = p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
-        return newTile;
+        return p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
     }
 
     public void replaceWithMPlayer(SPlayer p) throws Exception {
-        System.out.println("Player " + p.getName() + " cheated and is replaced by a random machine player");
-        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R, p.getName());
+        System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
+        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R, p.getPlayer().getName());
         newPlayer.initialize(p.getToken().getColor(), colors);
         p.linkPlayer(newPlayer);
     }
@@ -415,7 +415,7 @@ public class Server {
      */
     private void legalHand(SPlayer p) {
         List<Tile> hand = p.getHand();
-        if (hand.size() == 0 || hand == null) {
+        if (hand == null ||hand.size() == 0) {
             return;
         }
         // no more than three tiles

@@ -29,9 +29,6 @@ public class PlayATurnAdapter {
             String boardStr = br.readLine();
             String tileStr = br.readLine();
 
-            State state = new State();
-            state.setPlayATurnState(deckStr, inPlayerStr, outPlayerStr, boardStr, tileStr);
-
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
 
@@ -43,24 +40,22 @@ public class PlayATurnAdapter {
             // Parse input XMLs to game objects
             // ***************************************************
             // parse board XML
-            Board board = boardParser.fromXML(Parser.stringToDocument(db, state.boardStr));
+            Board board = boardParser.fromXML(Parser.stringToDocument(db, boardStr));
 
             // parse inSPlayer XML
             SPlayer dragonOwner = null;
-            Pair<List<SPlayer>, SPlayer> inRes = parseInSPlayers(db, state.inSPlayerStr,
-                    sPlayerParser, board);
+            Pair<List<SPlayer>, SPlayer> inRes = parseInSPlayers(db, inPlayerStr, sPlayerParser, board);
             List<SPlayer> inSPlayer = inRes.first;
             dragonOwner = inRes.second;
 
             // parse outSPlayer XML
-            List<SPlayer> outSPlayer = parseOutSPlayers(db, state.outSPlayerStr,
-                    sPlayerParser, board);
+            List<SPlayer> outSPlayer = parseOutSPlayers(db, outPlayerStr, sPlayerParser, board);
 
             // parse tile XML to play this turn
-            Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, state.tileStr));
+            Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, tileStr));
 
             // parse deck/draw pile XML
-            List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, state.drawPileStr));
+            List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, deckStr));
             Deck deck = new Deck(tileList);
 
             // ***************************************************

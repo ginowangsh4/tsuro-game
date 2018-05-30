@@ -62,7 +62,7 @@ public class Board {
     public boolean containsTile(Tile tile) {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (getTile(i, j) != null && getTile(i, j ).isSameTile(tile)) {
+                if (getTile(i, j) != null && getTile(i, j).isSameTile(tile)) {
                     return true;
                 }
             }

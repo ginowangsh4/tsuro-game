@@ -17,7 +17,6 @@ public class State {
 
     public State() {}
 
-
     public void setPlayATurnState(String drawPileStr, String inSPlayerStr, String outSPlayerStr, String boardStr, String tileStr) {
         this.drawPileStr = drawPileStr;
         this.inSPlayerStr = inSPlayerStr;

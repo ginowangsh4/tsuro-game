@@ -56,6 +56,7 @@ public class ServerTest {
                 SPlayer currentP = inSPlayer.get(0);
                 Tile tileToPlay = currentP.getPlayer().playTurn(b, currentP.getHand(), deck.size());
                 currentP.deal(tileToPlay);
+
                 winners = server.playATurn(tileToPlay);
             }
 
