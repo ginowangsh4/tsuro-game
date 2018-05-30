@@ -44,12 +44,13 @@ public class PlayATurnAdapter {
 
             // parse inSPlayer XML
             SPlayer dragonOwner = null;
-            Pair<List<SPlayer>, SPlayer> inRes = parseInSPlayers(db, inPlayerStr, sPlayerParser, board);
+            Pair<List<SPlayer>, SPlayer> inRes = parseSPlayersXML(db, inPlayerStr, sPlayerParser, board);
             List<SPlayer> inSPlayer = inRes.first;
             dragonOwner = inRes.second;
 
             // parse outSPlayer XML
-            List<SPlayer> outSPlayer = parseOutSPlayers(db, outPlayerStr, sPlayerParser, board);
+            Pair<List<SPlayer>, SPlayer> outRes = parseSPlayersXML(db, outPlayerStr, sPlayerParser, board);
+            List<SPlayer> outSPlayer = outRes.first;
 
             // parse tile XML to play this turn
             Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, tileStr));
@@ -117,8 +118,8 @@ public class PlayATurnAdapter {
         return playerRes;
     }
 
-    public static Pair<List<SPlayer>, SPlayer> parseInSPlayers(DocumentBuilder db, String inSPlayerStr,
-                                                 SPlayerParser sPlayerParser, Board board) throws Exception {
+    public static Pair<List<SPlayer>, SPlayer> parseSPlayersXML(DocumentBuilder db, String inSPlayerStr,
+                                                                SPlayerParser sPlayerParser, Board board) throws Exception {
         // parse inSPlayer XML
         List<SPlayer> inSPlayer = new ArrayList<>();
         Document inPlayerDoc = Parser.stringToDocument(db, inSPlayerStr);
@@ -128,32 +129,17 @@ public class PlayATurnAdapter {
             Node inPlayerNode = inPlayerList.item(i);
             Document doc = Parser.fromNodeToDoc(db, inPlayerNode);
 
-            Token token = findToken(board, Token.getColorInt(inPlayerNode.getFirstChild().getTextContent()));
-            Pair<SPlayer, Boolean> inPlayer = sPlayerParser.fromXML(doc, token);
-            if (inPlayer.second) {
-                dragonOwner = inPlayer.first;
+            SPlayer sp = findSPlayer(board, Token.getColorInt(inPlayerNode.getFirstChild().getTextContent()));
+
+            Boolean hasDragon = sPlayerParser.fromXML(doc, sp);
+            if (hasDragon) {
+                dragonOwner = sp;
             }
-            inSPlayer.add(inPlayer.first);
+            inSPlayer.add(sp);
         }
         return new Pair(inSPlayer, dragonOwner);
     }
-
-    public static List<SPlayer> parseOutSPlayers(DocumentBuilder db, String outSPlayerStr,
-                                                 SPlayerParser sPlayerParser, Board board) throws Exception {
-        List<SPlayer> outSPlayer = new ArrayList<>();
-        Document outPlayerDoc = Parser.stringToDocument(db, outSPlayerStr);
-        NodeList outPlayerList = outPlayerDoc.getFirstChild().getChildNodes();
-        for (int i = 0; i < outPlayerList.getLength(); i++) {
-            Node outPlayerNode = outPlayerList.item(i);
-            Document doc = Parser.fromNodeToDoc(db, outPlayerNode);
-
-            Token token = findToken(board, Token.getColorInt(outPlayerNode.getFirstChild().getTextContent()));
-            Pair<SPlayer, Boolean> outPlayer = sPlayerParser.fromXML(doc, token);
-            outSPlayer.add(outPlayer.first);
-        }
-        return outSPlayer;
-    }
-
+    
 
     private static void printResult(Document tileRes, Document inPlayerRes,Document outPlayerRes,
                                     Document boardRes,Document winnersRes) throws Exception {
@@ -164,10 +150,10 @@ public class PlayATurnAdapter {
         System.out.println(Parser.documentToString(winnersRes));
     }
 
-    private static Token findToken(Board board, int color) {
-        for (Token t : board.tokenList) {
-            if (t.getColor() == color) {
-                return t;
+    private static SPlayer findSPlayer(Board board, int color) {
+        for (SPlayer sp : board.getSPlayerList()) {
+            if (sp.getToken().getColor() == color) {
+                return sp;
             }
         }
         throw new IllegalArgumentException("Cannot find token on board");

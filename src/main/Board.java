@@ -6,9 +6,7 @@ import java.util.List;
 public class Board {
     public Tile[][] board;
     public final int SIZE = 6;
-    // public List<Token> tokenList;
-
-    public List<SPlayer> sPlayerList;
+    private List<SPlayer> sPlayerList;
 
     public Board() {
         this.board = new Tile[SIZE][SIZE];
@@ -74,20 +72,11 @@ public class Board {
         return sPlayerList;
     }
 
-//    /**
-//     * Return the token with the given color
-//     * @param color color of the token
-//     * @return
-//     */
-//    public Token getToken(int color) {
-//        for (SPlayer sp : sPlayerList) {
-//            if (sp.getToken().getColor() == color) {
-//                return sp.getToken();
-//            }
-//        }
-//        throw new IllegalArgumentException("Token with this color does not exist on board");
-//    }
-
+    /**
+     * Return the splayer with token of the given color
+     * @param color color of the token
+     * @return
+     */
     public SPlayer getSPlayer(int color) {
         for (SPlayer sp : sPlayerList) {
             if (sp.getToken().getColor() == color) {
@@ -119,40 +108,15 @@ public class Board {
     }
 
 
-//    /**
-//     * Remove a token from the board
-//     * @param token a token to be removed
-//     */
-//    public void removeToken(Token token) {
-//        if (!con(token))
-//            throw new IllegalArgumentException("The token given doesn't exist on board");
-//        tokenList.remove(token);
-//    }
-
+    /**
+     * Remove a splayer from the board
+     * @param sPlayer a splayer to be removed
+     */
     public void removeSPlayer(SPlayer sPlayer) {
         if (!containsSPlayer(sPlayer))
             throw new IllegalArgumentException("The token given doesn't exist on board");
         sPlayerList.remove(sPlayer);
     }
-
-//    /**
-//     * Update the token with a new one
-//     * @param newToken the new token
-//     */
-//    public void updateToken(Token newToken) {
-//        if (!containsToken(newToken)) {
-//            throw new IllegalArgumentException("The token given can't be updated since it doesn't exist on board");
-//        }
-//        Token oldToken = null;
-//        for (Token t: tokenList) {
-//            if (t.isSameColor(newToken)) {
-//                oldToken = t;
-//                break;
-//            }
-//        }
-//        tokenList.remove(oldToken);
-//        tokenList.add(newToken);
-//    }
 
     /**
      * Check whether the board is full

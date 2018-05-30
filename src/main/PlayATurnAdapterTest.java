@@ -1,8 +1,5 @@
 package tsuro;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import tsuro.parser.BoardParser;
 import tsuro.parser.Parser;
 import tsuro.parser.SPlayerParser;
@@ -13,8 +10,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static tsuro.PlayATurnAdapter.parseInSPlayers;
-import static tsuro.PlayATurnAdapter.parseOutSPlayers;
+import static tsuro.PlayATurnAdapter.parseSPlayersXML;
+
 
 
 // Please ignore - this class was used to debug test-play-a-turn
@@ -41,12 +38,13 @@ public class PlayATurnAdapterTest {
 
         // parse inSPlayer XML
         SPlayer dragonOwner = null;
-        Pair<List<SPlayer>, SPlayer> inRes = parseInSPlayers(db, inPlayerStr, sPlayerParser, board);
+        Pair<List<SPlayer>, SPlayer> inRes = parseSPlayersXML(db, inPlayerStr, sPlayerParser, board);
         List<SPlayer> inSPlayer = inRes.first;
         dragonOwner = inRes.second;
 
         // parse outSPlayer XML
-        List<SPlayer> outSPlayer = parseOutSPlayers(db, outPlayerStr, sPlayerParser, board);
+        Pair<List<SPlayer>, SPlayer> outRes = parseSPlayersXML(db, outPlayerStr, sPlayerParser, board);
+        List<SPlayer> outSPlayer = outRes.first;
 
         // parse tile XML to play this turn
         Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, tileStr));

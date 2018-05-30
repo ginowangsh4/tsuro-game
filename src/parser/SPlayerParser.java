@@ -52,10 +52,10 @@ public class SPlayerParser {
     /**
      * Convert XML format to splayer game object
      * @param doc with the XML of the splayer in <ent>color pawn-loc</ent> format as its first child
-     * @param token contains location of the splayer
-     * @return
+     * @param sp contains token but with empty hand
+     * @return true if this splayer is a dragon holder
      */
-    public Pair<SPlayer,Boolean> fromXML(Document doc, Token token) throws Exception {
+    public Boolean fromXML(Document doc, SPlayer sp) throws Exception {
         Node sPlayer = doc.getFirstChild();
         Boolean hasDragon;
         if (sPlayer.getNodeName().equals("splayer-dragon")) {
@@ -68,7 +68,7 @@ public class SPlayerParser {
 
         Node color = sPlayer.getFirstChild();
         int colorIndex = Token.getColorInt(color.getTextContent());
-        if(colorIndex != token.getColor()){
+        if(colorIndex != sp.getToken().getColor()){
             throw new Exception("XML color and token color mismatch");
         }
 
@@ -82,37 +82,9 @@ public class SPlayerParser {
             hand.add(tile);
         }
 
-        SPlayer sp = new SPlayer(token, hand);
-        return new Pair<>(sp, hasDragon);
+        sp.setHand(hand);
+        return hasDragon;
     }
 
-    /**
-     * Generate example splayer XML for testing commandline play-a-turn
-     */
-    public static void main(String[] args) throws Exception {
-        int[] pos1 = new int[]{1, 0};
-        Token token1 = new Token(1,2,pos1);
-        List<Tile> hand1 = new ArrayList<>();
-        SPlayer sp1 = new SPlayer(token1, hand1);
 
-        int[] pos2 = new int[]{1, 5};
-        Token token2 = new Token(2,0,pos2);
-        List<Tile> hand2 = new ArrayList<>();
-        SPlayer sp2 = new SPlayer(token2, hand2);
-
-        int[] pos3 = new int[]{1, 0};
-        Token token3 = new Token(3,2,pos3);
-        List<Tile> hand3 = new ArrayList<>();
-        SPlayer sp3 = new SPlayer(token3, hand3);
-
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        SPlayerParser splayerParser = new SPlayerParser(db);
-        Document doc1 = splayerParser.buildXML(sp1,false);
-        System.out.println(Parser.documentToString(doc1));
-        Document doc2 = splayerParser.buildXML(sp2,false);
-        System.out.println(Parser.documentToString(doc2));
-        Document doc3 = splayerParser.buildXML(sp3,false);
-        System.out.println(Parser.documentToString(doc3));
-    }
 }

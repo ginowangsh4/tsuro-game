@@ -122,8 +122,10 @@ public class ParserTest {
         board.placeTile(t3,4,1);
         Token token1 = new Token(0, 2, new int[] {0, 5});
         Token token2 = new Token(1, 5, new int[] {4, 1});
-        board.addToken(token1);
-        board.addToken(token2);
+        SPlayer sp1 = new SPlayer(token1, null);
+        SPlayer sp2 = new SPlayer(token2, null);
+        board.addSPlayer(sp1);
+        board.addSPlayer(sp2);
         Document actual = Parser.buildPlacePawnXML(db, board);
 
         assertTrue(expected.isEqualNode(actual),"Parsing place-pawn does not give the expected XML");
@@ -195,8 +197,10 @@ public class ParserTest {
         board.placeTile(t3,4,1);
         Token token1 = new Token(0, 2,new int[] {0,5});
         Token token2 = new Token(1, 5,new int[] {4,1});
-        board.addToken(token1);
-        board.addToken(token2);
+        SPlayer sp1 = new SPlayer(token1, null);
+        SPlayer sp2 = new SPlayer(token2, null);
+        board.addSPlayer(sp1);
+        board.addSPlayer(sp2);
         Set<Tile> tileSet = new HashSet<>(Collections.singletonList(t3));
 
         Document actual = Parser.buildPlayTurnXML(db, board, tileSet, 20);
@@ -264,8 +268,10 @@ public class ParserTest {
         board.placeTile(t3,4,1);
         Token token1 = new Token(0, 2,new int[] {0,5});
         Token token2 = new Token(1, 5,new int[] {4,1});
-        board.addToken(token1);
-        board.addToken(token2);
+        SPlayer sp1 = new SPlayer(token1, null);
+        SPlayer sp2 = new SPlayer(token2, null);
+        board.addSPlayer(sp1);
+        board.addSPlayer(sp2);
         Set<Integer> colorSet = new HashSet<>(Arrays.asList(0,1));
 
         Document actual = Parser.buildEndGameXML(db, board, colorSet);
@@ -355,7 +361,9 @@ public class ParserTest {
         Tile tile = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
         board.placeTile(tile, 0, 0);
         Token token = new Token(1, 4, new int[] {0, 0});
-        board.addToken(token);
+        SPlayer sp = new SPlayer(token, null);
+        board.addSPlayer(sp);
+
 
         Server server = Server.getInstance();
         server.setState(board, null, null, null, null);

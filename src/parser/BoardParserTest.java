@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import tsuro.Board;
+import tsuro.SPlayer;
 import tsuro.Tile;
 import tsuro.Token;
 
@@ -97,8 +98,10 @@ public class BoardParserTest {
         board.placeTile(t3,4,1);
         Token token1 = new Token(0, 2,new int[] {0,5});
         Token token2 = new Token(1, 5,new int[] {4,1});
-        board.addToken(token1);
-        board.addToken(token2);
+        SPlayer sp1 = new SPlayer(token1, null);
+        SPlayer sp2 = new SPlayer(token2, null);
+        board.addSPlayer(sp1);
+        board.addSPlayer(sp2);
         expected = db.parse(is);
         doc = parser.buildXML(board);
         assertTrue(expected.isEqualNode(doc),"Parsing board does not give the expected XML");
@@ -161,8 +164,10 @@ public class BoardParserTest {
         expected.placeTile(t3,4,1);
         Token token1 = new Token(0, 2,new int[] {0,5});
         Token token2 = new Token(1, 5,new int[] {4,1});
-        expected.addToken(token1);
-        expected.addToken(token2);
+        SPlayer sp1 = new SPlayer(token1, null);
+        SPlayer sp2 = new SPlayer(token2, null);
+        expected.addSPlayer(sp1);
+        expected.addSPlayer(sp2);
 
         for(int i = 0; i < board.SIZE; i++){
             for(int j = 0; j<board.SIZE; j++){
@@ -174,8 +179,8 @@ public class BoardParserTest {
                 }
             }
         }
-        for(int i = 0; i < board.getTokenList().size(); i++) {
-            assertTrue(board.getTokenList().get(i).isSameToken(expected.getTokenList().get(i)),"Generated board is different from expected");
+        for(int i = 0; i < board.getSPlayerList().size(); i++) {
+            assertTrue(board.getSPlayerList().get(i).getToken().isSameToken(expected.getSPlayerList().get(i).getToken()),"Generated board is different from expected");
         }
     }
 }

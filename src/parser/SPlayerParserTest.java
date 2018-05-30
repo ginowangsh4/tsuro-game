@@ -77,8 +77,9 @@ public class SPlayerParserTest {
 
         int[] pos= new int[]{4, 5};
         Token token = new Token(0,1,pos);
+        SPlayer sp = new SPlayer(token, null);
         
-        Pair<SPlayer,Boolean> thePair = parser.fromXML(doc, token);
+        Boolean hasDragon = parser.fromXML(doc, sp);
 
         List<Tile> hand = new ArrayList<>();
         Tile tile = new Tile(new int[][] {{0,4},{1,7},{2,3},{5,6}});
@@ -86,9 +87,8 @@ public class SPlayerParserTest {
         String name = "blue";
         SPlayer expected = new SPlayer(token, hand);
 
-        SPlayer sp = thePair.first;
         assertTrue(sp.getToken().isSameToken(expected.getToken()),"Generated token is different from expected");
         assertTrue(sp.getHand().get(0).isSameTile(expected.getHand().get(0)),"Generated hand is different from expected");
-        assertTrue(thePair.second,"Generated hasDragon is different from expected");
+        assertTrue(hasDragon,"Generated hasDragon is different from expected");
     }
 }

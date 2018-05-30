@@ -85,6 +85,9 @@ public class SPlayer {
         return this.hand;
     }
 
+    public void setHand(List<Tile> hand) {
+        this.hand = hand;
+    }
     /**
      * SPlayer draws a tile
      * @param t tile to be added to the player's hand

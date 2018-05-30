@@ -1,5 +1,6 @@
 package tsuro.parser;
 
+import com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,6 +20,17 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class Parser {
+    private DocumentBuilder db;
+    private BoardParser boardParser;
+    private TileParser tileParser;
+    private PawnParser pawnParser;
+
+    public Parser(DocumentBuilder db) {
+        this.db = db;
+        boardParser = new BoardParser(db);
+        tileParser = new TileParser(db);
+        pawnParser = new PawnParser(db);
+    }
     // ******************************* Network Architecture ***********************************
     //                   ----->              ---||-->        ----->
     //            Server         RemotePlayer   ||     Admin        MPlayer
@@ -31,10 +43,9 @@ public class Parser {
 
     /**
      * Get XML of get-name
-     * @param db
      * @return a document with the XML of the get-name message in <get-name></get-name> format as its first child
      */
-    public static Document buildGetNameXML(DocumentBuilder db) {
+    public Document buildGetNameXML() {
         Document doc = db.newDocument();
         Node getName = doc.createElement("get-name");
         doc.appendChild(getName);
@@ -43,13 +54,12 @@ public class Parser {
 
     /**
      * Get XML of initialize
-     * @param db
      * @param color color assigned to the player on the admin side
      * @param colors colors of all players in the game
      * @return a document with the XML of the initialize message in <initialize>color list-of-color</initialize>
      * format as its first child
      */
-    public static Document buildInitializeXML(DocumentBuilder db, int color, List<Integer> colors) {
+    public Document buildInitializeXML( int color, List<Integer> colors) {
         Document doc = db.newDocument();
         Element initialize = doc.createElement("initialize");
 
@@ -312,6 +322,7 @@ public class Parser {
         return tileParser.fromXML(doc);
     }
 
+    // other helpers
     public static String documentToString(Document doc) throws Exception {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         StreamResult result = new StreamResult(new StringWriter());
