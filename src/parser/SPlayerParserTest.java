@@ -3,15 +3,12 @@ package tsuro.parser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 import tsuro.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +87,7 @@ public class SPlayerParserTest {
         SPlayer expected = new SPlayer(token, hand , name);
 
         SPlayer sp = thePair.first;
-        assertTrue(sp.getToken().equals(expected.getToken()),"Generated token is different from expected");
+        assertTrue(sp.getToken().isSameToken(expected.getToken()),"Generated token is different from expected");
         assertTrue(sp.getHand().get(0).isSameTile(expected.getHand().get(0)),"Generated hand is different from expected");
         assertTrue(thePair.second,"Generated hasDragon is different from expected");
     }

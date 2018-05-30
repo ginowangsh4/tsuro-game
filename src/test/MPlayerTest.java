@@ -95,7 +95,7 @@ public class MPlayerTest {
         tileList.add(halfSymmetricTile);
         tileList.add(symmetricTile);
         tileList.add(asymmetricTile);
-        Collections.sort(tileList, new SymmetricComparator());
+        Collections.sort(tileList, new Tile.SymmetricComparator());
         assertTrue(Arrays.deepEquals(symmetricTile.paths, tileList.get(0).paths), "Error: the symmetric tile is not the first tile in tileList");
         assertTrue(Arrays.deepEquals(halfSymmetricTile.paths, tileList.get(1).paths), "Error: the half symmetric tile is not the second tile in tileList");
         assertTrue(Arrays.deepEquals(asymmetricTile.paths, tileList.get(2).paths), "Error: the asymmetric tile is not the third tile in tileList");
@@ -107,7 +107,7 @@ public class MPlayerTest {
         tileList.add(halfSymmetricTile);
         tileList.add(symmetricTile);
         tileList.add(asymmetricTile);
-        Collections.sort(tileList, new SymmetricComparator());
+        Collections.sort(tileList, new Tile.SymmetricComparator());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, tileList.get(0).paths), "Error: the symmetric tile is not the first tile in tileList");
         assertTrue(Arrays.deepEquals(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}}, tileList.get(1).paths), "Error: the half symmetric tile is not the second tile in tileList");
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, tileList.get(2).paths), "Error: the asymmetric tile is not the third tile in tileList");

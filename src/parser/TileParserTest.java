@@ -83,6 +83,6 @@ public class TileParserTest {
         Tile expected = new Tile(new int[][] {{0,4},{1,7},{2,3},{5,6}});
         Document doc = db.parse(is);
         Tile actual = parser.fromXML(doc);
-        assertTrue(expected.equals(actual), "Failed to build tile from XML");
+        assertTrue(expected.isSamePaths(actual), "Failed to build tile from XML");
     }
 }

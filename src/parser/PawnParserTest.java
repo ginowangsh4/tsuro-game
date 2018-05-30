@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,7 +60,7 @@ class PawnParserTest {
             e.printStackTrace();
         }
         Token expected = new Token(1,2,new int[]{-1,2});
-        assertTrue(token.equals(expected),"Generated token is different from expected");
+        assertTrue(token.isSameToken(expected),"Generated token is different from expected");
     }
 
     // Test isHorizontal(int index) using 2 horizontal lines and 2 vertical lines

@@ -19,7 +19,7 @@ public class Board {
      * Get the tile on a given location on board
      * @param x x-coordinate
      * @param y y-coordinate
-     * @return tile on a given location; null is not on board or indices are invalid
+     * @return tile on a given location; null is not on board
      */
     public Tile getTile(int x, int y) {
         if (x < 0 || y < 0 || x > 5 || y > 5) {
@@ -28,43 +28,17 @@ public class Board {
         return this.board[x][y];
     }
 
-    public List<Token> getTokenList() {
-        return tokenList;
-    }
-
-    public List<Tile> getTileList() {
-        return tileList;
-    }
-
-    /**
-     * Return the token with the given color
-     * @param color color of the token
-     * @return
-     */
-    public Token getToken(int color) {
-        for (Token t : this.tokenList) {
-            if (t.getColor() == color) return t;
-        }
-        throw new IllegalArgumentException("Token with this color does not exist on board");
-    }
-
     /**
      * Place the given tile in the given location
-     * @param t a tile to be placed
+     * @param tile a tile to be placed
      * @param x the x-coordinate of the given location
      * @param y the y-coordinate of the given location
      */
-    public void placeTile(Tile t, int x, int y) {
-        try {
-            if (board[x][y] != null) {
-                throw new IllegalArgumentException("The location given contains another tile");
-            }
-            this.board[x][y] = t;
-            tileList.add(t);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("The location given is outside of board");
-            throw e;
+    public void placeTile(Tile tile, int x, int y) throws ArrayIndexOutOfBoundsException {
+        if (board[x][y] != null) {
+            throw new IllegalArgumentException("This location has another tile");
         }
+        board[x][y] = tile;
     }
 
     /**
@@ -74,44 +48,53 @@ public class Board {
      * @param y the y-coordinate of the given location
      */
     public void deleteTile(int x, int y) {
-        try {
-            if (board[x][y] == null) {
-                throw new IllegalArgumentException("The location given doesn't contain a tile");
-            }
-            for (Tile t: tileList){
-                if (t.isSameTile(board[x][y])){
-                    tileList.remove(t);
-                    break;
-                }
-            }
-            this.board[x][y] = null;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("The location given is outside of board");
-            throw e;
+        if (board[x][y] == null) {
+            throw new IllegalArgumentException("The location given doesn't contain a tile");
         }
+        board[x][y] = null;
     }
 
     /**
      * Return if the board contains the given tile
-     * @param t a tile to be checked
+     * @param tile a tile to be checked
      * @return
      */
-    public boolean containsTile(Tile t) {
-        t.reorderPath();
-        for (Tile tileOnBoard : tileList)
-            if (tileOnBoard.isSameTile(t)) {
-                return true;
+    public boolean containsTile(Tile tile) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (getTile(i, j) != null && getTile(i, j ).isSameTile(tile)) {
+                    return true;
+                }
             }
+        }
         return false;
     }
 
+    public List<Token> getTokenList() {
+        return tokenList;
+    }
+
     /**
-     * Return if a given token exists on board
+     * Return the token with the given color
+     * @param color color of the token
+     * @return
+     */
+    public Token getToken(int color) {
+        for (Token t : tokenList) {
+            if (t.getColor() == color) {
+                return t;
+            }
+        }
+        throw new IllegalArgumentException("Token with this color does not exist on board");
+    }
+
+    /**
+     * Return board contains a token with the given color
      * @param token a token to be checked
      */
     public boolean containsToken(Token token){
-        for (Token t: this.tokenList){
-            if (t.sameColor(token)) return true;
+        for (Token t: tokenList){
+            if (t.isSameColor(token)) return true;
         }
         return false;
     }
@@ -121,13 +104,13 @@ public class Board {
      * @param token a token to be added
      */
     public void addToken(Token token){
-        if (!token.legalTokenPlacement(token.getIndex(), token.getPosition())){
+        if (!token.isLegalPosition()){
             throw new IllegalArgumentException("The token's position and index are not legal");
         }
         if(containsToken(token)){
             throw new IllegalArgumentException("The token given already exists on board");
         }
-        this.tokenList.add(token);
+        tokenList.add(token);
     }
 
     /**
@@ -137,7 +120,7 @@ public class Board {
     public void removeToken(Token token) {
         if (!containsToken(token))
             throw new IllegalArgumentException("The token given doesn't exist on board");
-        this.tokenList.remove(token);
+        tokenList.remove(token);
     }
 
     /**
@@ -145,16 +128,15 @@ public class Board {
      * @param newToken the new token
      */
     public void updateToken(Token newToken) {
+        if (!containsToken(newToken)) {
+            throw new IllegalArgumentException("The token given can't be updated since it doesn't exist on board");
+        }
         Token oldToken = null;
-        for (Token t: tokenList)
-        {
-            if (t.sameColor(newToken)) {
+        for (Token t: tokenList) {
+            if (t.isSameColor(newToken)) {
                 oldToken = t;
                 break;
             }
-        }
-        if (oldToken == null) {
-            throw new IllegalArgumentException("The token given can't be updated since it doesn't exist on board");
         }
         tokenList.remove(oldToken);
         tokenList.add(newToken);
@@ -167,22 +149,25 @@ public class Board {
     public boolean isFull(){
         int count = 0;
         for (int x = 0; x < 6; x++){
-            for (int y = 0; y < 6; y++)
-                if (getTile(x, y) != null) count++;
+            for (int y = 0; y < 6; y++) {
+                if (getTile(x, y) != null) {
+                    count++;
+                }
+            }
         }
-        return count == 35? true : false;
+        return count == 35;
     }
 
     /**
      * check if a position is a valid board position
-     * @param pos a board position
+     * @param position a board position
      * @return true if position is not a valid board position
      */
-    public static boolean isOutOfBoard(int[] pos){
-        if(pos.length != 2){
+    public static boolean isOffBoard(int[] position){
+        if(position.length != 2){
             throw new IllegalArgumentException("Not a valid position length");
         }
-        if(pos[0] < 0 || pos[0] > 5 || pos[1] < 0 || pos[1] > 5){
+        if(position[0] < 0 || position[0] > 5 || position[1] < 0 || position[1] > 5){
             return true;
         }
         return false;

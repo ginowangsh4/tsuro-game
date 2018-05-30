@@ -17,7 +17,7 @@ public class Tile {
 
     public Tile(int[][] paths) {
         if (paths.length != 4 || paths[0].length != 2) {
-            throw new IllegalArgumentException("Path is not a 4 x 2 matrix");
+            throw new IllegalArgumentException("Paths is not a 4 x 2 matrix");
         }
         if (!legalPaths(paths)) {
             throw new IllegalArgumentException("Paths invalid");
@@ -37,12 +37,13 @@ public class Tile {
     private boolean legalPaths(int[][] paths) {
         HashSet<Integer> count = new HashSet<>();
         for (int[] path : paths){
-            if (path[0] < 0 || path[0] > 7 || path[1] < 0 || path[1] > 7) return false;
+            if (path[0] < 0 || path[0] > 7 || path[1] < 0 || path[1] > 7) {
+                return false;
+            }
             count.add(path[0]);
             count.add(path[1]);
         }
-        if (count.size() != 8) return false;
-        return true;
+        return count.size() == 8;
     }
 
     /**
@@ -50,11 +51,10 @@ public class Tile {
      * Mutate the path of this tile
      */
     public void rotateTile() {
-        for (int side = 0; side < paths.length; side++) {
-            paths[side][0] = (paths[side][0] + 2) % 8;
-            paths[side][1] = (paths[side][1] + 2) % 8;
+        for (int i = 0; i < paths.length; i++) {
+            paths[i][0] = (paths[i][0] + 2) % 8;
+            paths[i][1] = (paths[i][1] + 2) % 8;
         }
-        if (!legalPaths(paths)) throw new IllegalArgumentException("Paths invalid");
     }
 
     /**
@@ -63,39 +63,40 @@ public class Tile {
      */
     public Tile copyTile(){
         int[][] paths = this.paths;
-        int[][] temp = new int[4][];
-        for (int i = 0; i < 4; i++) {
-            temp[i] = Arrays.copyOf(paths[i], paths[i].length);
+        int[][] newPaths = new int[paths.length][paths[0].length];
+        for (int i = 0; i < paths.length; i++) {
+            newPaths[i] = Arrays.copyOf(paths[i], paths[i].length);
         }
-        return new Tile(temp);
+        return new Tile(newPaths);
     }
 
     /**
-     * Check whether two tiles are equal; both tiles' path is unchanged
+     * Check whether two paths matrices are equal
+     * @param tile the tile whose path to be check against
+     * @return true if equal; false if not
+     */
+    public boolean isSamePaths(Tile tile){
+        return Arrays.deepEquals(this.paths, tile.paths);
+    }
+
+    /**
+     * Check whether two tiles are equal
+     * Both tiles' paths is unchanged / not reordered
      * @param tile the tile to be checked against
      * @return true if equal; false if not
      */
     public boolean isSameTile(Tile tile) {
-        Tile aTile = copyTile();
-        aTile.reorderPath();
-        Tile tempTile = tile.copyTile();
-        for (int i = 0; i < 4; i++) {
-            tempTile.rotateTile();
-            tempTile.reorderPath();
-            if (Arrays.deepEquals(tempTile.paths, aTile.paths)) {
+        Tile thisCopy = this.copyTile();
+        Tile inputCopy = tile.copyTile();
+        thisCopy.reorderPath();
+        for (int i = 0; i < paths.length; i++) {
+            inputCopy.rotateTile();
+            inputCopy.reorderPath();
+            if (Arrays.deepEquals(inputCopy.paths, thisCopy.paths)) {
                 return true;
             }
         }
         return false;
-    }
-
-    /**
-     * Check whether two path arrays are equal
-     * @param tile the tile whose path to be check against
-     * @return true if equal; false if not
-     */
-    public boolean equals(Tile tile){
-        return Arrays.deepEquals(this.paths, tile.paths);
     }
 
     /**
@@ -119,14 +120,13 @@ public class Tile {
      * @return the number of ways it can be placed
      */
     public int countSymmetricPaths(){
-        // make sure every tile has correct path order before be placed on board
         reorderPath();
         int count = 1;
         Tile copy = this.copyTile();
         for (int i = 0; i < 3; i++ ){
             copy.rotateTile();
             copy.reorderPath();
-            if (!this.equals(copy)) count++;
+            if (!this.isSamePaths(copy)) count++;
         }
         // if we have count = 3, it means we have two pathways that are different from the original
         // but these two pathways must be the same
@@ -137,8 +137,7 @@ public class Tile {
 
     /**
      * Reorder the path arrays of a given tile; path indices ordered from smallest to largest
-     * Doesn't modify the actual path
-     * i.e. {{2,6}, {3, 7}, {4, 1}, {5, 0}} becomes {{0,5}, {1, 4}, {2, 6}, {3, 7}}
+     * e.g. {{2, 6}, {3, 7}, {4, 1}, {5, 0}} becomes {{0, 5}, {1, 4}, {2, 6}, {3, 7}}
      */
     public void reorderPath() {
         for (int[] array : this.paths) {
@@ -152,7 +151,7 @@ public class Tile {
      */
     public void print() {
         System.out.print("{ ");
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < paths.length; i++) {
             System.out.print("{" + paths[i][0] + ", " + paths[i][1] + "}");
             if (i != 3) {
                 System.out.print(" , ");
@@ -161,50 +160,38 @@ public class Tile {
         System.out.println(" }");
     }
 
-//    public static void main(String[] args) {
-//        Tile t;
-//        t = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
-//        //t = new Tile(new int[][] {{0, 1}, {2, 4}, {3, 6}, {5, 7}});
-//        t.print();
-//        t.rotateTile();
-//        t.print();
-//        t.reorderPath();
-//        t.print();
-//        for (String s : args) {
-//            System.out.println(s);
-//        }
-//    }
-}
-
-/**
- * The following comparator classes are used with Array.sort
- * Sort an array of tile from most symmetric to least symmetric
- * Make sure the order of the path of every tile is properly ordered
- */
-class SymmetricComparator implements Comparator<Tile> {
-    @Override
-    // a < b return -1
-    // a > b return 1
-    // else return 0
-    // order is from most symmetric to least symmetric
-    public int compare(Tile a, Tile b){
-        if (a.countSymmetricPaths() == b.countSymmetricPaths()){
-            return 0;
+    /**
+     * The following comparator classes are used with Array.sort
+     * Sort an array of tile from most symmetric to least symmetric
+     * Make sure the order of the path of every tile is properly ordered
+     */
+    static class SymmetricComparator implements Comparator<Tile> {
+        @Override
+        // a < b return -1
+        // a > b return 1
+        // else return 0
+        // order is from most symmetric to least symmetric
+        public int compare(Tile a, Tile b){
+            if (a.countSymmetricPaths() == b.countSymmetricPaths()){
+                return 0;
+            }
+            return a.countSymmetricPaths() < b.countSymmetricPaths() ? -1 : 1;
         }
-        return a.countSymmetricPaths() < b.countSymmetricPaths() ? -1 : 1;
+    }
+
+    /**
+     * The following comparator classes are used with Array.sort
+     * Sort an array of integer according to the first element of the array
+     */
+    static class ListFirstElementComparator implements Comparator<int[]> {
+        @Override
+        public int compare(int[] a, int[] b) {
+            if (a[0] == b[0]) {
+                return 0;
+            }
+            return a[0] < b[0] ? -1 : 1;
+        }
     }
 }
 
-/**
- * The following comparator classes are used with Array.sort
- * Sort an array of integer according to the first element of the array
- */
-class ListFirstElementComparator implements Comparator<int[]> {
-    @Override
-    public int compare(int[] a, int[] b) {
-        if (a[0] == b[0]) {
-            return 0;
-        }
-        return a[0] < b[0] ? -1 : 1;
-    }
-}
+

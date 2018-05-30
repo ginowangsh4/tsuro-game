@@ -52,9 +52,9 @@ public class UIAdmin extends Application {
 //                // server has closed the connection
 //                if (res == null) break;
 //                Document doc = Parser.stringToDocument(db, res);
-//                if (!doc.getFirstChild().getNodeName().equals("play-turn")
-//                        && !doc.getFirstChild().getNodeName().equals("end-game")
-//                        && !doc.getFirstChild().getNodeName().equals("get-name")) {
+//                if (!doc.getFirstChild().getNodeName().isSamePaths("play-turn")
+//                        && !doc.getFirstChild().getNodeName().isSamePaths("end-game")
+//                        && !doc.getFirstChild().getNodeName().isSamePaths("get-name")) {
 //                    throw new IllegalArgumentException("Message is not play-turn, end-game or get-name");
 //                }
 //                Node node = doc.getFirstChild();

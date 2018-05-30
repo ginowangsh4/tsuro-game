@@ -422,17 +422,14 @@ public class Server {
         else if (hand.size() > 3) {
             throw new IllegalArgumentException("Player's hand illegal: more than 3 tiles on hand");
         }
-        List<Tile> onBoard = board.getTileList();
         List<Tile> inHands = new ArrayList<>();
         for (SPlayer player : inSPlayer) {
             inHands.addAll(player.getHand());
         }
         for (Tile playerTile : hand) {
             // not already on board
-            for (Tile t : onBoard) {
-                if (t.isSameTile(playerTile)) {
-                    throw new IllegalArgumentException("Player's hand illegal: tile exists on board");
-                }
+            if (board.containsTile(playerTile)) {
+                throw new IllegalArgumentException("Player's hand illegal: tile exists on board");
             }
             // not in the current draw pile
             if (drawPile.containsTile(playerTile)) {
@@ -442,7 +439,7 @@ public class Server {
             int count = 0;
             for (Tile t : inHands) {
                 if (t.isSameTile(playerTile)) {
-                    count ++;
+                    count++;
                     if (count > 1) {
                         throw new IllegalArgumentException("Player's hand illegal: tile exists in other player's hand");
                     }

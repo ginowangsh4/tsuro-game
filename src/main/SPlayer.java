@@ -73,7 +73,7 @@ public class SPlayer {
      * @param token new token
      */
     public void updateToken(Token token) {
-        if (!token.sameColor(this.token))
+        if (!token.isSameColor(this.token))
             throw new IllegalArgumentException("The given token doesn't belong to this player");
         this.token = token;
 ;    }

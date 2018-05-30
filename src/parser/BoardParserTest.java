@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -176,7 +175,7 @@ public class BoardParserTest {
             }
         }
         for(int i = 0; i < board.getTokenList().size(); i++) {
-            assertTrue(board.getTokenList().get(i).equals(expected.getTokenList().get(i)),"Generated board is different from expected");
+            assertTrue(board.getTokenList().get(i).isSameToken(expected.getTokenList().get(i)),"Generated board is different from expected");
         }
     }
 }

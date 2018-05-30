@@ -102,31 +102,27 @@ public class MPlayer implements IPlayer {
             }
         }
 
-        Tile tileToPlay;
-
+        Tile tileToPlay = null;
         switch (strategy) {
             case R: {
                 Random rand = new Random();
                 tileToPlay = legalMoves.get(rand.nextInt(legalMoves.size()));
-                tileToPlay.reorderPath();
-                return tileToPlay;
+                break;
             }
             case MS: {
-                Collections.sort(legalMoves, new SymmetricComparator());
+                Collections.sort(legalMoves, new Tile.SymmetricComparator());
                 tileToPlay = legalMoves.get(0);
-                tileToPlay.reorderPath();
-                return tileToPlay;
+                break;
             }
             case LS: {
-                Collections.sort(legalMoves, new SymmetricComparator());
+                Collections.sort(legalMoves, new Tile.SymmetricComparator());
                 tileToPlay = legalMoves.get(legalMoves.size() - 1);
-                tileToPlay.reorderPath();
-                return tileToPlay;
-            }
-            default: {
-                throw new IllegalArgumentException("Input strategy cannot be identified");
+                break;
             }
         }
+        // make sure every tile has correct path order before be placed on board
+        tileToPlay.reorderPath();
+        return tileToPlay;
     }
 
     public void endGame(Board b, List<Integer> colors) {
