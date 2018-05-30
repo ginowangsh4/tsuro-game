@@ -460,6 +460,15 @@ public class Server {
     }
 
     /**
+     * Check whether sp has dragon
+     * @param sp the SPlayer to be checked
+     * @return true if this sp has dragon
+     */
+    public boolean hasDragon(SPlayer sp) {
+        return (dragonHolder != null && dragonHolder.isSamePlayer(sp));
+    }
+
+    /**
      * Assign dragon tile to a player
      * @param p the player to assign to
      */

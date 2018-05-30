@@ -7,16 +7,16 @@ import org.w3c.dom.NodeList;
 import tsuro.*;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SPlayerParser {
     private DocumentBuilder db;
-    public TileParser tileParser;
+    private TileParser tileParser;
+
     public SPlayerParser(DocumentBuilder db){
         this.db = db;
-        tileParser = new TileParser(db);
+        this.tileParser = new TileParser(db);
     }
 
     /**
@@ -77,7 +77,7 @@ public class SPlayerParser {
         List<Tile> hand = new ArrayList<>();
         NodeList tileList = setTiles.getChildNodes();
         for(int i = 0; i < tileList.getLength(); i++){
-            Document tileDoc = Parser.fromNodeToDoc(db, tileList.item(i));
+            Document tileDoc = Parser.fromNodeToDoc(tileList.item(i), db);
             Tile tile = tileParser.fromXML(tileDoc);
             hand.add(tile);
         }

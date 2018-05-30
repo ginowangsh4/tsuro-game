@@ -69,22 +69,4 @@ public class TileParser implements IParser<Tile> {
         }
         return new Tile(paths);
     }
-
-    /**
-     * Generate example tile XML for testing commandline play-a-turn
-     */
-    public static void main(String[] args) throws Exception {
-        int[] p1= new int[]{0,7};
-        int[] p2= new int[]{1,2};
-        int[] p3= new int[]{3,4};
-        int[] p4= new int[]{5,6};
-        int[][] paths = new int[][]{p1,p2,p3,p4};
-        Tile t1 = new Tile(paths);
-
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        TileParser tileParser = new TileParser(db);
-        Document doc = tileParser.buildXML(t1);
-        System.out.println(Parser.documentToString(doc));
-    }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 
 public class Admin {
 
+    public static Parser parser;
     public static final int PORT_NUM = 12345;
     public static MPlayer mPlayer;
 
@@ -25,8 +26,9 @@ public class Admin {
         int port = PORT_NUM;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
+        parser = new Parser(db);
+
         AdminSocket socket = new AdminSocket(hostname, port, db);
-        String s = null;
 
         switch (args[1]) {
             case "R":
@@ -46,7 +48,7 @@ public class Admin {
             String res = socket.readInputFromClient();
             // server has closed the connection
             if (res == null) break;
-            Document doc = Parser.stringToDocument(db, res);
+            Document doc = parser.stringToDocument(res);
             Node node = doc.getFirstChild();
             switch (node.getNodeName()) {
                 case "get-name":
@@ -84,11 +86,11 @@ public class Admin {
         int color = Token.getColorInt(colorNode.getTextContent());
 
         Node colorsNode = colorNode.getNextSibling();
-        Document colorsDoc = Parser.fromNodeToDoc(db, colorsNode);
-        List<Integer> colors = Parser.fromColorListSetXML(db, colorsDoc);
+        Document colorsDoc = parser.fromNodeToDoc(colorsNode, db);
+        List<Integer> colors = parser.fromColorListSetXML(colorsDoc);
 
         mPlayer.initialize(color, colors);
-        Document voidXML = Parser.buildVoidXML(db);
+        Document voidXML = parser.buildVoidXML();
         sendXMLToClient(socket, voidXML, "Admin: initialize complete ");
     }
 
@@ -96,17 +98,17 @@ public class Admin {
         BoardParser boardParser = new BoardParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
+        Document boardDoc = parser.fromNodeToDoc(boardNode, db);
         Board board = boardParser.fromXML(boardDoc);
 
         Token token = mPlayer.placePawn(board);
-        Document pawnLocXML = Parser.buildPawnLocXML(db, token.getPosition(), token.getIndex());
+        Document pawnLocXML = parser.buildPawnLocXML(token.getPosition(), token.getIndex());
         sendXMLToClient(socket, pawnLocXML, "Admin: place-pawn complete");
     }
 
     public static void processGetName(DocumentBuilder db, AdminSocket socket) throws Exception {
         String playerName = mPlayer.getName();
-        Document getNameResXML = Parser.buildPlayerNameXML(db, playerName);
+        Document getNameResXML = parser.buildPlayerNameXML(playerName);
         sendXMLToClient(socket, getNameResXML, "Admin: get-name complete");
     }
 
@@ -115,12 +117,12 @@ public class Admin {
         TileParser tileParser = new TileParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
+        Document boardDoc = parser.fromNodeToDoc(boardNode, db);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = Parser.fromNodeToDoc(db, setNode);
-        List<Tile> hand = Parser.fromTileSetXML(db, setDoc);
+        Document setDoc = parser.fromNodeToDoc(setNode, db);
+        List<Tile> hand = parser.fromTileSetXML(setDoc);
 
         Node nNode = setNode.getNextSibling();
         int tilesLeft = Integer.parseInt(nNode.getFirstChild().getTextContent());
@@ -134,20 +136,20 @@ public class Admin {
         BoardParser boardParser = new BoardParser(db);
 
         Node boardNode = node.getFirstChild();
-        Document boardDoc = Parser.fromNodeToDoc(db, boardNode);
+        Document boardDoc = parser.fromNodeToDoc(boardNode, db);
         Board board = boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = Parser.fromNodeToDoc(db, setNode);
-        List<Integer> colors = Parser.fromColorListSetXML(db, setDoc);
+        Document setDoc = parser.fromNodeToDoc(setNode, db);
+        List<Integer> colors = parser.fromColorListSetXML(setDoc);
 
         mPlayer.endGame(board, colors);
-        Document voidXML = Parser.buildVoidXML(db);
+        Document voidXML = parser.buildVoidXML();
         sendXMLToClient(socket, voidXML, "Admin: end-game complete");
     }
 
     public static void sendXMLToClient(AdminSocket socket, Document doc, String printMessage) throws Exception {
-        String s = Parser.documentToString(doc);
+        String s = parser.documentToString(doc);
         System.out.println(printMessage + s);
         socket.writeOutputToClient(s);
     }

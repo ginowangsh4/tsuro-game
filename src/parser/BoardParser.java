@@ -6,21 +6,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import tsuro.*;
 
-import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 public class BoardParser implements IParser<Board> {
-    public DocumentBuilder db;
-    public TileParser tileParser;
-    public PawnParser pawnParser;
+    private DocumentBuilder db;
+    private TileParser tileParser;
+    private PawnParser pawnParser;
 
     public BoardParser(DocumentBuilder db){
         this.db = db;
-        tileParser = new TileParser(db);
-        pawnParser = new PawnParser(db);
+        this.tileParser = new TileParser(db);
+        this.pawnParser = new PawnParser(db);
     }
 
     /**
@@ -79,7 +75,7 @@ public class BoardParser implements IParser<Board> {
     public Pair<Tile, int[]> parseTileEntryXML(Document doc, Node tileEntry) {
         Node xy = tileEntry.getFirstChild();
         Node tile = xy.getNextSibling();
-        Document tileDoc = Parser.fromNodeToDoc(db, tile);
+        Document tileDoc = Parser.fromNodeToDoc(tile, db);
         Tile t = tileParser.fromXML(tileDoc);
 
         Node x = xy.getFirstChild();
@@ -115,7 +111,7 @@ public class BoardParser implements IParser<Board> {
         Node pawns = tiles.getNextSibling();
         NodeList pawnList = pawns.getChildNodes();
         for(int i = 0; i < pawnList.getLength(); i++) {
-            Document pawnDoc = Parser.fromNodeToDoc(db, pawnList.item(i));
+            Document pawnDoc = Parser.fromNodeToDoc(pawnList.item(i), db);
             Token token = pawnParser.fromXML(pawnDoc, board);
             SPlayer sp = new SPlayer(token, null);
             board.addSPlayer(sp);

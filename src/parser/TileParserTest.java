@@ -16,8 +16,8 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TileParserTest {
-    private static TileParser parser;
     private static DocumentBuilder db;
+    private static TileParser parser;
 
     @BeforeAll
     public static void beforeAll() {

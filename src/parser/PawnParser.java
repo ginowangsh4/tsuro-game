@@ -11,6 +11,7 @@ import tsuro.Token;
 
 public class PawnParser {
     private DocumentBuilder db;
+
     public PawnParser(DocumentBuilder db){
         this.db = db;
     }

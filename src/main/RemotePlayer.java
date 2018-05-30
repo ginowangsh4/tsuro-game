@@ -14,23 +14,25 @@ public class RemotePlayer implements IPlayer {
     DocumentBuilder db;
     BufferedReader bufferedReader;
     PrintWriter printWriter;
+    Parser parser;
 
     public RemotePlayer(Socket socket, DocumentBuilder db) throws IOException {
         this.socket = socket;
         this.db = db;
         this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.printWriter = new PrintWriter(socket.getOutputStream(), true);
+        this.parser = new Parser(db);
     }
 
     public String getName() throws Exception {
         // to socket
-        Document inDoc = Parser.buildGetNameXML(db);
-        String s = Parser.documentToString(inDoc);
+        Document inDoc = parser.buildGetNameXML();
+        String s = parser.documentToString(inDoc);
         printWriter.println(s);
 
         // from socket
-        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
-        String name = Parser.fromGetNameXML(db, outDoc);
+        Document outDoc = parser.stringToDocument(bufferedReader.readLine());
+        String name = parser.fromGetNameXML(outDoc);
 
         System.out.println("Remote: getName complete - player name is " + name);
         return name;
@@ -38,11 +40,11 @@ public class RemotePlayer implements IPlayer {
 
     public void initialize(int color, List<Integer> colors) throws Exception {
         // to socket
-        Document inDoc = Parser.buildInitializeXML(db, color, colors);
-        printWriter.println(Parser.documentToString(inDoc));
+        Document inDoc = parser.buildInitializeXML(color, colors);
+        printWriter.println(parser.documentToString(inDoc));
 
         // from socket, must be void
-        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
+        Document outDoc = parser.stringToDocument(bufferedReader.readLine());
         if (!outDoc.getFirstChild().getNodeName().equals("void")) {
             throw new IllegalArgumentException("Response is not void!");
         }
@@ -53,12 +55,12 @@ public class RemotePlayer implements IPlayer {
 
     public Token placePawn(Board b) throws Exception {
         // to socket
-        Document inDoc = Parser.buildPlacePawnXML(db, b);
-        printWriter.println(Parser.documentToString(inDoc));
+        Document inDoc = parser.buildPlacePawnXML(b);
+        printWriter.println(parser.documentToString(inDoc));
 
         // from socket
-        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
-        Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, outDoc);
+        Document outDoc = parser.stringToDocument(bufferedReader.readLine());
+        Pair<int[], Integer> pair = parser.fromPlacePawnXML(outDoc);
         Token token = new Token(this.color, pair.second, pair.first);
 
         System.out.println("Remote: placePawn complete - player starts at [" + token.getPosition()[0] + ", " + token.getPosition()[1] + "], index " + token.getIndex());
@@ -69,12 +71,12 @@ public class RemotePlayer implements IPlayer {
         Set<Tile> handSet = new HashSet<>();
         handSet.addAll(hand);
         // to socket
-        Document inDoc = Parser.buildPlayTurnXML(db, b, handSet, tilesLeft);
-        printWriter.println(Parser.documentToString(inDoc));
+        Document inDoc = parser.buildPlayTurnXML(b, handSet, tilesLeft);
+        printWriter.println(parser.documentToString(inDoc));
 
         // from socket
-        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
-        Tile tile = Parser.fromPlayTurnXML(db, outDoc);
+        Document outDoc = parser.stringToDocument(bufferedReader.readLine());
+        Tile tile = parser.fromPlayTurnXML(outDoc);
 
         System.out.print("Remote: playTurn complete - chosen tile is ");
         tile.print();
@@ -85,11 +87,11 @@ public class RemotePlayer implements IPlayer {
         Set<Integer> colorsSet = new HashSet<>();
         colorsSet.addAll(colors);
         // to socket
-        Document inDoc = Parser.buildEndGameXML(db, b, colorsSet);
-        printWriter.println(Parser.documentToString(inDoc));
+        Document inDoc = parser.buildEndGameXML(b, colorsSet);
+        printWriter.println(parser.documentToString(inDoc));
 
         // from socket, must be void
-        Document outDoc = Parser.stringToDocument(db, bufferedReader.readLine());
+        Document outDoc = parser.stringToDocument(bufferedReader.readLine());
         if (!outDoc.getFirstChild().getNodeName().equals("void")) {
             throw new IllegalArgumentException("Response is not void!");
         }

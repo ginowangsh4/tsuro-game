@@ -20,6 +20,9 @@ import java.util.List;
 public class PlayATurnAdapter {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Parser parser = new Parser(db);
         while (true) {
             // input from stdin
             String deckStr = br.readLine();
@@ -29,34 +32,28 @@ public class PlayATurnAdapter {
             String boardStr = br.readLine();
             String tileStr = br.readLine();
 
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-
-            SPlayerParser sPlayerParser = new SPlayerParser(db);
-            TileParser tileParser = new TileParser(db);
-            BoardParser boardParser = new BoardParser(db);
 
             // ***************************************************
             // Parse input XMLs to game objects
             // ***************************************************
             // parse board XML
-            Board board = boardParser.fromXML(Parser.stringToDocument(db, boardStr));
+            Board board = parser.boardParser.fromXML(parser.stringToDocument(boardStr));
 
             // parse inSPlayer XML
             SPlayer dragonOwner = null;
-            Pair<List<SPlayer>, SPlayer> inRes = parseSPlayersXML(db, inPlayerStr, sPlayerParser, board);
+            Pair<List<SPlayer>, SPlayer> inRes = parser.fromSPlayerListXML(inPlayerStr, board);
             List<SPlayer> inSPlayer = inRes.first;
             dragonOwner = inRes.second;
 
             // parse outSPlayer XML
-            Pair<List<SPlayer>, SPlayer> outRes = parseSPlayersXML(db, outPlayerStr, sPlayerParser, board);
+            Pair<List<SPlayer>, SPlayer> outRes = parser.fromSPlayerListXML(outPlayerStr, board);
             List<SPlayer> outSPlayer = outRes.first;
 
             // parse tile XML to play this turn
-            Tile tileToPlay = tileParser.fromXML(Parser.stringToDocument(db, tileStr));
+            Tile tileToPlay = parser.tileParser.fromXML(parser.stringToDocument(tileStr));
 
             // parse deck/draw pile XML
-            List<Tile> tileList = Parser.fromTileSetXML(db, Parser.stringToDocument(db, deckStr));
+            List<Tile> tileList = parser.fromTileSetXML(parser.stringToDocument(deckStr));
             Deck deck = new Deck(tileList);
 
             // ***************************************************
@@ -71,95 +68,36 @@ public class PlayATurnAdapter {
             // Parse game objects to output XMLs
             // ***************************************************
             // parse back deck/draw pile
-            Document tileRes = Parser.buildTileListXML(db, server.drawPile.getPile());
+            Document tileRes = parser.buildTileListXML(server.drawPile.getPile());
 
             // parse back inSPlayer
-            Document inPlayerRes = parseSPlayersToXML(db, server, sPlayerParser, server.inSPlayer);
+            Document inPlayerRes = parser.buildSPlayerListXML(server, server.inSPlayer);
 
             // parse back outSPlayer
-            Document outPlayerRes = parseSPlayersToXML(db, server, sPlayerParser, server.outSPlayer);
+            Document outPlayerRes = parser.buildSPlayerListXML(server, server.outSPlayer);
 
             // parse back board
-            Document boardRes = boardParser.buildXML(server.board);
+            Document boardRes = parser.boardParser.buildXML(server.board);
 
             // parse back winners
-            Document winnersRes = parseWinnersToXML(db, sPlayerParser, server, winners);
+            Document winnersRes = parser.buildWinnersXML(server, winners);
 
             // output to stdout
-            printResult(tileRes, inPlayerRes, outPlayerRes, boardRes, winnersRes);
+            printResult(parser, tileRes, inPlayerRes, outPlayerRes, boardRes, winnersRes);
         }
 
     }
 
-    private static Document parseWinnersToXML(DocumentBuilder db, SPlayerParser sPlayerParser, Server server, List<SPlayer> winners) {
-        Document winnersRes = db.newDocument();
-        if (winners == null) {
-            Element f = winnersRes.createElement("false");
-            winnersRes.appendChild(f);
-        } else {
-            Element l = winnersRes.createElement("list");
-            for (SPlayer sp : server.winners) {
-                Document spElement = sPlayerParser.buildXML(sp, hasDragon(server, sp));
-                l.appendChild(winnersRes.importNode(spElement.getFirstChild(), true));
-            }
-            winnersRes.appendChild(l);
-        }
-        return winnersRes;
-    }
-
-    public static Document parseSPlayersToXML(DocumentBuilder db, Server server, SPlayerParser sPlayerParser, List<SPlayer> sPlayers) {
-        Document playerRes = db.newDocument();
-        Node inList = playerRes.createElement("list");
-        for (SPlayer sp : sPlayers) {
-            Document spRes = sPlayerParser.buildXML(sp, hasDragon(server, sp));
-            inList.appendChild(playerRes.importNode(spRes.getFirstChild(), true));
-        }
-        playerRes.appendChild(inList);
-        return playerRes;
-    }
-
-    public static Pair<List<SPlayer>, SPlayer> parseSPlayersXML(DocumentBuilder db, String inSPlayerStr,
-                                                                SPlayerParser sPlayerParser, Board board) throws Exception {
-        // parse inSPlayer XML
-        List<SPlayer> inSPlayer = new ArrayList<>();
-        Document inPlayerDoc = Parser.stringToDocument(db, inSPlayerStr);
-        NodeList inPlayerList = inPlayerDoc.getFirstChild().getChildNodes();
-        SPlayer dragonOwner = null;
-        for (int i = 0; i < inPlayerList.getLength(); i++) {
-            Node inPlayerNode = inPlayerList.item(i);
-            Document doc = Parser.fromNodeToDoc(db, inPlayerNode);
-
-            SPlayer sp = findSPlayer(board, Token.getColorInt(inPlayerNode.getFirstChild().getTextContent()));
-
-            Boolean hasDragon = sPlayerParser.fromXML(doc, sp);
-            if (hasDragon) {
-                dragonOwner = sp;
-            }
-            inSPlayer.add(sp);
-        }
-        return new Pair(inSPlayer, dragonOwner);
-    }
-    
-
-    private static void printResult(Document tileRes, Document inPlayerRes,Document outPlayerRes,
+    private static void printResult(Parser parser, Document tileRes, Document inPlayerRes,Document outPlayerRes,
                                     Document boardRes,Document winnersRes) throws Exception {
-        System.out.println(Parser.documentToString(tileRes));
-        System.out.println(Parser.documentToString(inPlayerRes));
-        System.out.println(Parser.documentToString(outPlayerRes));
-        System.out.println(Parser.documentToString(boardRes));
-        System.out.println(Parser.documentToString(winnersRes));
+        System.out.println(parser.documentToString(tileRes));
+        System.out.println(parser.documentToString(inPlayerRes));
+        System.out.println(parser.documentToString(outPlayerRes));
+        System.out.println(parser.documentToString(boardRes));
+        System.out.println(parser.documentToString(winnersRes));
     }
 
-    private static SPlayer findSPlayer(Board board, int color) {
-        for (SPlayer sp : board.getSPlayerList()) {
-            if (sp.getToken().getColor() == color) {
-                return sp;
-            }
-        }
-        throw new IllegalArgumentException("Cannot find token on board");
-    }
 
-    private static boolean hasDragon(Server server, SPlayer sp) {
-        return (server.dragonHolder != null && server.dragonHolder.isSamePlayer(sp));
-    }
+
+
 }

@@ -16,8 +16,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SPlayerParserTest {
-    private static SPlayerParser parser;
     private static DocumentBuilder db;
+    private static SPlayerParser parser;
 
     @BeforeAll
     public static void beforeAll() {

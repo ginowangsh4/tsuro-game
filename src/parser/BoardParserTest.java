@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BoardParserTest {
     private static DocumentBuilder db;
-    private static BoardParser parser;
+    private static BoardParser boardParser;
 
     @BeforeAll
     public static void beforeAll() {
@@ -28,7 +28,7 @@ public class BoardParserTest {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-        parser = new BoardParser(db);
+        boardParser = new BoardParser(db);
     }
 
     // Test buildXML using a board with no tile or pawn
@@ -39,7 +39,7 @@ public class BoardParserTest {
         Document expected, doc;
         Board board = new Board();
         expected = db.parse(is);
-        doc = parser.buildXML(board);
+        doc = boardParser.buildXML(board);
         assertTrue(expected.isEqualNode(doc),"Parsing board does not give the expected XML");
     }
 
@@ -103,7 +103,7 @@ public class BoardParserTest {
         board.addSPlayer(sp1);
         board.addSPlayer(sp2);
         expected = db.parse(is);
-        doc = parser.buildXML(board);
+        doc = boardParser.buildXML(board);
         assertTrue(expected.isEqualNode(doc),"Parsing board does not give the expected XML");
     }
 
@@ -153,7 +153,7 @@ public class BoardParserTest {
                 +"</board>";
         InputStream is = new ByteArrayInputStream(buffer.getBytes());
         Document doc = db.parse(is);
-        Board board = parser.fromXML(doc);
+        Board board = boardParser.fromXML(doc);
 
         Board expected = new Board();
         Tile t1 = new Tile(new int[][]{{0, 1}, {2, 3}, {4, 5}, {6, 7}});

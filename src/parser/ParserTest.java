@@ -20,12 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParserTest {
     private static DocumentBuilder db;
-
+    private static Parser parser;
     @BeforeAll
     public static void beforeAll() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
             db = dbf.newDocumentBuilder();
+            parser = new Parser(db);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
@@ -41,7 +42,7 @@ public class ParserTest {
     // ****************************************************************************************
     @Test
     public void buildGetNameXMLTest() throws IOException, SAXException {
-        Document actual = Parser.buildGetNameXML(db);
+        Document actual = parser.buildGetNameXML();
         String s = "<get-name></get-name>";
         InputStream is = new ByteArrayInputStream(s.getBytes());
         Document expected = db.parse(is);
@@ -50,7 +51,7 @@ public class ParserTest {
 
     @Test
     public void buildInitializeXMLTest() throws Exception {
-        Document actual = Parser.buildInitializeXML(db, 0, Arrays.asList(0,1,2,3));
+        Document actual = parser.buildInitializeXML(0, Arrays.asList(0,1,2,3));
         String s = "<initialize>" +
                         "<color>blue</color>" +
                         "<list>" +
@@ -126,7 +127,7 @@ public class ParserTest {
         SPlayer sp2 = new SPlayer(token2, null);
         board.addSPlayer(sp1);
         board.addSPlayer(sp2);
-        Document actual = Parser.buildPlacePawnXML(db, board);
+        Document actual = parser.buildPlacePawnXML(board);
 
         assertTrue(expected.isEqualNode(actual),"Parsing place-pawn does not give the expected XML");
     }
@@ -203,7 +204,7 @@ public class ParserTest {
         board.addSPlayer(sp2);
         Set<Tile> tileSet = new HashSet<>(Collections.singletonList(t3));
 
-        Document actual = Parser.buildPlayTurnXML(db, board, tileSet, 20);
+        Document actual = parser.buildPlayTurnXML(board, tileSet, 20);
         assertTrue(expected.isEqualNode(actual),"Parsing play-turn does not give the expected XML");
     }
 
@@ -274,7 +275,7 @@ public class ParserTest {
         board.addSPlayer(sp2);
         Set<Integer> colorSet = new HashSet<>(Arrays.asList(0,1));
 
-        Document actual = Parser.buildEndGameXML(db, board, colorSet);
+        Document actual = parser.buildEndGameXML(board, colorSet);
         assertTrue(expected.isEqualNode(actual),"Parsing end-game does not give the expected XML");
     }
 
@@ -286,7 +287,7 @@ public class ParserTest {
         String buffer = "<void></void>";
         InputStream is = new ByteArrayInputStream(buffer.getBytes());
         Document expected = db.parse(is);
-        Document actual = Parser.buildVoidXML(db);
+        Document actual = parser.buildVoidXML();
         assertTrue(expected.isEqualNode(actual),"Parsing void does not give the expected XML");
     }
 
@@ -305,8 +306,8 @@ public class ParserTest {
         int[] pos2 = new int[]{0, 1};
         int index2 = 1;
 
-        Document actual1 = Parser.buildPawnLocXML(db, pos1, index1);
-        Document actual2 = Parser.buildPawnLocXML(db, pos2, index2);
+        Document actual1 = parser.buildPawnLocXML(pos1, index1);
+        Document actual2 = parser.buildPawnLocXML(pos2, index2);
         assertTrue(expected.isEqualNode(actual1),"Parsing pawn-loc does not give the expected XML");
         assertTrue(expected.isEqualNode(actual2),"Parsing pawn-loc does not give the expected XML");
     }
@@ -328,8 +329,8 @@ public class ParserTest {
                 "</list>";
         InputStream is = new ByteArrayInputStream(s.getBytes());
         Document doc = db.parse(is);
-        System.out.println(Parser.documentToString(doc));
-        List<Integer> actual = Parser.fromColorListSetXML(db, doc);
+        System.out.println(parser.documentToString(doc));
+        List<Integer> actual = parser.fromColorListSetXML(doc);
 
         List<Integer> expected = new ArrayList<>(Arrays.asList(0,1,2,3,4,5,6,7));
         assertTrue(expected.equals(actual), "Failed to build color list from XML");
@@ -343,7 +344,7 @@ public class ParserTest {
         String s = "<player-name>blue</player-name>";
         InputStream is = new ByteArrayInputStream(s.getBytes());
         Document doc = db.parse(is);
-        String actual = Parser.fromGetNameXML(db, doc);
+        String actual = parser.fromGetNameXML(doc);
         assertEquals("blue", actual, "Failed to build string from XML");
     }
 
@@ -368,7 +369,7 @@ public class ParserTest {
         Server server = Server.getInstance();
         server.setState(board, null, null, null, null);
 
-        Pair<int[], Integer> pair = Parser.fromPlacePawnXML(db, doc);
+        Pair<int[], Integer> pair = parser.fromPlacePawnXML(doc);
 
         assertArrayEquals(new int[]{0,0}, pair.first, "Failed to build position from XML");
         assertEquals(new Integer(4), pair.second, "Failed to build indexOnTile from XML");

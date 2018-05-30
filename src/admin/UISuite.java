@@ -14,6 +14,8 @@ import org.w3c.dom.NodeList;
 import tsuro.parser.Parser;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 
 public class UISuite {
@@ -39,7 +41,13 @@ public class UISuite {
     public static Side startSide;
     public static int startIndex;
 
-    public UISuite(Stage s) throws FileNotFoundException {
+    public static Parser parser;
+
+    public UISuite(Stage s) throws FileNotFoundException, ParserConfigurationException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        parser = new Parser(db);
+
         stage = s;
         border = new BorderPane();
 
@@ -139,7 +147,7 @@ public class UISuite {
         String line;
         Process p = Runtime.getRuntime().exec(command);
         PrintWriter out = new PrintWriter(p.getOutputStream(), true);
-        out.println(Parser.documentToString(doc));
+        out.println(parser.documentToString(doc));
         BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
         while ((line = in.readLine()) != null) {
             System.out.println(line);
@@ -156,7 +164,7 @@ public class UISuite {
             PrintWriter out = new PrintWriter(p.getOutputStream(), true);
             Document tileDoc = db.newDocument();
             tileDoc.appendChild(doc.importNode(list.item(i), true));
-            out.println(Parser.documentToString(tileDoc));
+            out.println(parser.documentToString(tileDoc));
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((line = in.readLine()) != null) {
                 System.out.println(line);
