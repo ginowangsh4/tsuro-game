@@ -22,7 +22,8 @@ public class MPlayerTest {
             MPlayer p = new MPlayer(MPlayer.Strategy.R, "");
             p.initialize(i, colors);
             Token t = p.placePawn(b);
-            b.addToken(t);
+            SPlayer sp = new SPlayer(t, null);
+            b.addSPlayer(sp);
             assertTrue(t.isStartingPosition(), "Error: illegal token placement");
         }
     }
@@ -117,7 +118,7 @@ public class MPlayerTest {
         hand.add(tile2);
         hand.add(tile3);
         SPlayer SPlayer = new SPlayer(token, hand);
-        b.addToken(token);
+        b.addSPlayer(SPlayer);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
         winners = new ArrayList<>();
@@ -164,7 +165,7 @@ public class MPlayerTest {
         hand.add(tile2);
         hand.add(tile3);
         SPlayer SPlayer = new SPlayer(token, hand);
-        b.addToken(token);
+        b.addSPlayer(SPlayer);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
         winners = new ArrayList<>();
@@ -211,7 +212,7 @@ public class MPlayerTest {
         hand.add(tile2);
         hand.add(tile3);
         SPlayer SPlayer = new SPlayer(token, hand);
-        b.addToken(token);
+        b.addSPlayer(SPlayer);
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
         winners = new ArrayList<>();

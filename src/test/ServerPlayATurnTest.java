@@ -38,8 +38,8 @@ public class ServerPlayATurnTest {
         List<Tile> hand2 = new ArrayList<>();
         SPlayer SPlayer1 = new SPlayer(token1, hand1);
         SPlayer SPlayer2 = new SPlayer(token2, hand2);
-        b.addToken(token1);
-        b.addToken(token2);
+        b.addSPlayer(SPlayer1);
+        b.addSPlayer(SPlayer2);
 
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
@@ -85,8 +85,8 @@ public class ServerPlayATurnTest {
         List<Tile> hand2 = new ArrayList<>();
         SPlayer SPlayer1 = new SPlayer(token1, hand1);
         SPlayer SPlayer2 = new SPlayer(token2, hand2);
-        b.addToken(token1);
-        b.addToken(token2);
+        b.addSPlayer(SPlayer1);
+        b.addSPlayer(SPlayer2);
 
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
@@ -131,8 +131,8 @@ public class ServerPlayATurnTest {
         List<Tile> hand2 = new ArrayList<>();
         SPlayer SPlayer1 = new SPlayer(token1, hand1);
         SPlayer SPlayer2 = new SPlayer(token2, hand2);
-        b.addToken(token1);
-        b.addToken(token2);
+        b.addSPlayer(SPlayer1);
+        b.addSPlayer(SPlayer2);
 
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
@@ -170,8 +170,8 @@ public class ServerPlayATurnTest {
         List<Tile> hand2 = new ArrayList<>();
         SPlayer SPlayer1 = new SPlayer(token1, hand1);
         SPlayer SPlayer2 = new SPlayer(token2, hand2);
-        b.addToken(token1);
-        b.addToken(token2);
+        b.addSPlayer(SPlayer1);
+        b.addSPlayer(SPlayer2);
 
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();

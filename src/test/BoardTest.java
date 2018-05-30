@@ -1,6 +1,8 @@
 package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
+import java.util.Spliterator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardTest {
@@ -47,49 +49,41 @@ public class BoardTest {
     }
 
     @Test
-    public void addRemoveUpdateTokenTest() {
+    public void addRemoveUpdateSPlayerTest() {
         b = new Board();
         Token t1 = new Token(1, 3, new int[]{0, 1});
         Token t2 = new Token(2, 7, new int[]{2, 3});
         Token t3 = new Token(2, 3, new int[]{0, 4});
-        b.addToken(t1);
-        b.addToken(t2);
-        ArrayList<Token> myTokenList = new ArrayList<>();
-        myTokenList.add(t1);
-        myTokenList.add(t2);
-        assertEquals(myTokenList, b.getTokenList(), "Error: t1 and t2 not both on board");
-        b.removeToken(t1);
-        myTokenList.remove(t1);
-        assertEquals(myTokenList, b.getTokenList(), "Error: t2 not the only token on board");
-        b.updateToken(t3);
-        myTokenList.remove(t2);
-        myTokenList.add(t3);
-        assertEquals(myTokenList, b.getTokenList(), "Error: t2 not updated");
+        SPlayer sp1 = new SPlayer(t1, null);
+        SPlayer sp2 = new SPlayer(t2, null);
+        SPlayer sp3 = new SPlayer(t3, null);
+        b.addSPlayer(sp1);
+        b.addSPlayer(sp2);
+        ArrayList<SPlayer> sPlayerList = new ArrayList<>();
+        sPlayerList.add(sp1);
+        sPlayerList.add(sp2);
+        assertEquals(sPlayerList, b.getSPlayerList(), "Error: t1 and t2 not both on board");
+        b.removeSPlayer(sp1);
+        sPlayerList.remove(sp1);
+        assertEquals(sPlayerList, b.getSPlayerList(), "Error: t2 not the only token on board");
     }
 
     @Test
-    public void addTokenThrowExceptionTest() {
+    public void addSPlayerThrowExceptionTest() {
         b = new Board();
         Token t1 = new Token(1, 5, new int[]{3, 5});
         Token t2 = new Token(1, 2, new int[]{0, 4});
-        b.addToken(t1);
-        assertThrows(IllegalArgumentException.class, () -> b.addToken(t2));
+        SPlayer sp1 = new SPlayer(t1, null);
+        b.addSPlayer(sp1);
+        SPlayer sp2 = new SPlayer(t2, null);
+        assertThrows(IllegalArgumentException.class, () -> b.addSPlayer(sp2));
     }
 
     @Test
-    public void removeTokenThrowExceptionTest() {
+    public void removeSPlayerThrowExceptionTest() {
         b = new Board();
         Token t = new Token(1, 3, new int[]{0, 1});
-        assertThrows(IllegalArgumentException.class, () -> b.removeToken(t));
+        SPlayer sp = new SPlayer(t, null);
+        assertThrows(IllegalArgumentException.class, () -> b.removeSPlayer(sp));
     }
-
-    @Test
-    public void updateTokenThrowExceptionTest() {
-        b = new Board();
-        Token t1 = new Token(1, 3, new int[]{0, 1});
-        Token t2 = new Token(2, 7, new int[]{2, 3});
-        b.addToken(t1);
-        assertThrows(IllegalArgumentException.class, () -> b.updateToken(t2));
-    }
-
 }

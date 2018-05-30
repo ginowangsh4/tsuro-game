@@ -69,7 +69,8 @@ public class MPlayer implements IPlayer {
             y = res[1];
             indexOnTile = res[2];
             found = true;
-            for (Token t : b.getTokenList()) {
+            for (SPlayer sp : b.getSPlayerList()) {
+                Token t = sp.getToken();
                 if (x == t.getPosition()[0] && y == t.getPosition()[1] && indexOnTile == t.getIndex()) {
                     found = false;
                     break;
@@ -92,7 +93,7 @@ public class MPlayer implements IPlayer {
         for (Tile t : hand) {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
-                SPlayer tempPlayer = new SPlayer(b.getToken(getColor()), hand);
+                SPlayer tempPlayer = new SPlayer(b.getSPlayer(getColor()).getToken(), hand);
                 tempPlayer.linkPlayer(this);
                 if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());

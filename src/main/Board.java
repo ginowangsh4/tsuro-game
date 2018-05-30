@@ -6,11 +6,13 @@ import java.util.List;
 public class Board {
     public Tile[][] board;
     public final int SIZE = 6;
-    public List<Token> tokenList;
+    // public List<Token> tokenList;
+
+    public List<SPlayer> sPlayerList;
 
     public Board() {
         this.board = new Tile[SIZE][SIZE];
-        this.tokenList = new ArrayList<>();
+        this.sPlayerList = new ArrayList<>();
     }
 
     /**
@@ -68,77 +70,89 @@ public class Board {
         return false;
     }
 
-    public List<Token> getTokenList() {
-        return tokenList;
+    public List<SPlayer> getSPlayerList() {
+        return sPlayerList;
     }
 
-    /**
-     * Return the token with the given color
-     * @param color color of the token
-     * @return
-     */
-    public Token getToken(int color) {
-        for (Token t : tokenList) {
-            if (t.getColor() == color) {
-                return t;
+//    /**
+//     * Return the token with the given color
+//     * @param color color of the token
+//     * @return
+//     */
+//    public Token getToken(int color) {
+//        for (SPlayer sp : sPlayerList) {
+//            if (sp.getToken().getColor() == color) {
+//                return sp.getToken();
+//            }
+//        }
+//        throw new IllegalArgumentException("Token with this color does not exist on board");
+//    }
+
+    public SPlayer getSPlayer(int color) {
+        for (SPlayer sp : sPlayerList) {
+            if (sp.getToken().getColor() == color) {
+                return sp;
             }
         }
         throw new IllegalArgumentException("Token with this color does not exist on board");
     }
 
     /**
-     * Return board contains a token with the given color
-     * @param token a token to be checked
+     * Return board contains a SPlayer with the given color
+     * @param sPlayer a token to be checked
      */
-    public boolean containsToken(Token token){
-        for (Token t: tokenList){
-            if (t.isSameColor(token)) return true;
+    public boolean containsSPlayer(SPlayer sPlayer){
+        for (SPlayer sp : sPlayerList) {
+            if (sp.isSamePlayer(sPlayer)) return true;
         }
         return false;
     }
 
-    /**
-     * Add a token to the board
-     * @param token a token to be added
-     */
-    public void addToken(Token token){
-        if (!token.isLegalPosition()){
-            throw new IllegalArgumentException("The token's position and index are not legal");
+    public void addSPlayer(SPlayer sPlayer){
+        if (!sPlayer.getToken().isLegalPosition()){
+            throw new IllegalArgumentException("SPlayer token's position and index are not legal");
         }
-        if(containsToken(token)){
-            throw new IllegalArgumentException("The token given already exists on board");
+        if(containsSPlayer(sPlayer)){
+            throw new IllegalArgumentException("SPlayer token given already exists on board");
         }
-        tokenList.add(token);
+        sPlayerList.add(sPlayer);
     }
 
-    /**
-     * Remove a token from the board
-     * @param token a token to be removed
-     */
-    public void removeToken(Token token) {
-        if (!containsToken(token))
+
+//    /**
+//     * Remove a token from the board
+//     * @param token a token to be removed
+//     */
+//    public void removeToken(Token token) {
+//        if (!con(token))
+//            throw new IllegalArgumentException("The token given doesn't exist on board");
+//        tokenList.remove(token);
+//    }
+
+    public void removeSPlayer(SPlayer sPlayer) {
+        if (!containsSPlayer(sPlayer))
             throw new IllegalArgumentException("The token given doesn't exist on board");
-        tokenList.remove(token);
+        sPlayerList.remove(sPlayer);
     }
 
-    /**
-     * Update the token with a new one
-     * @param newToken the new token
-     */
-    public void updateToken(Token newToken) {
-        if (!containsToken(newToken)) {
-            throw new IllegalArgumentException("The token given can't be updated since it doesn't exist on board");
-        }
-        Token oldToken = null;
-        for (Token t: tokenList) {
-            if (t.isSameColor(newToken)) {
-                oldToken = t;
-                break;
-            }
-        }
-        tokenList.remove(oldToken);
-        tokenList.add(newToken);
-    }
+//    /**
+//     * Update the token with a new one
+//     * @param newToken the new token
+//     */
+//    public void updateToken(Token newToken) {
+//        if (!containsToken(newToken)) {
+//            throw new IllegalArgumentException("The token given can't be updated since it doesn't exist on board");
+//        }
+//        Token oldToken = null;
+//        for (Token t: tokenList) {
+//            if (t.isSameColor(newToken)) {
+//                oldToken = t;
+//                break;
+//            }
+//        }
+//        tokenList.remove(oldToken);
+//        tokenList.add(newToken);
+//    }
 
     /**
      * Check whether the board is full
