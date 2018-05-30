@@ -107,57 +107,57 @@ public class Board {
 
     /**
      * Return if a given token exists on board
-     * @param inT a token to be checked
+     * @param token a token to be checked
      */
-    public boolean containsToken(Token inT){
-        for (Token token: this.tokenList){
-            if (token.sameColor(inT)) return true;
+    public boolean containsToken(Token token){
+        for (Token t: this.tokenList){
+            if (t.sameColor(token)) return true;
         }
         return false;
     }
 
     /**
      * Add a token to the board
-     * @param inT a token to be added
+     * @param token a token to be added
      */
-    public void addToken(Token inT){
-        if (!inT.legalTokenPlacement(inT.getIndex(), inT.getPosition())){
+    public void addToken(Token token){
+        if (!token.legalTokenPlacement(token.getIndex(), token.getPosition())){
             throw new IllegalArgumentException("The token's position and index are not legal");
         }
-        if(containsToken(inT)){
+        if(containsToken(token)){
             throw new IllegalArgumentException("The token given already exists on board");
         }
-        this.tokenList.add(inT);
+        this.tokenList.add(token);
     }
 
     /**
      * Remove a token from the board
-     * @param inT a token to be removed
+     * @param token a token to be removed
      */
-    public void removeToken(Token inT) {
-        if (!containsToken(inT))
+    public void removeToken(Token token) {
+        if (!containsToken(token))
             throw new IllegalArgumentException("The token given doesn't exist on board");
-        this.tokenList.remove(inT);
+        this.tokenList.remove(token);
     }
 
     /**
      * Update the token with a new one
-     * @param newT the new token
+     * @param newToken the new token
      */
-    public void updateToken(Token newT) {
-        Token oldT = null;
+    public void updateToken(Token newToken) {
+        Token oldToken = null;
         for (Token t: tokenList)
         {
-            if (t.sameColor(newT)) {
-                oldT = t;
+            if (t.sameColor(newToken)) {
+                oldToken = t;
                 break;
             }
         }
-        if (oldT == null) {
+        if (oldToken == null) {
             throw new IllegalArgumentException("The token given can't be updated since it doesn't exist on board");
         }
-        tokenList.remove(oldT);
-        tokenList.add(newT);
+        tokenList.remove(oldToken);
+        tokenList.add(newToken);
     }
 
     /**

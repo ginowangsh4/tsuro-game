@@ -67,9 +67,9 @@ public class Server {
             // create players
             // for remote players, initialize a new socket
             IPlayer rP = new RemotePlayer(socketListener.accept(), db);
-            IPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "");
-            IPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "");
-            IPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "");
+            IPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "MPlayer 1");
+            IPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "MPlayer 2");
+            IPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "MPlayer 3");
 
             for (int i = 0; i < 4; i++) {
                 colors.add(i);
@@ -552,7 +552,7 @@ public class Server {
     public List<Integer> getCurrentColors() throws Exception {
         List<Integer> colors = new ArrayList<>();
         for (SPlayer sPlayer : inSPlayer) {
-            colors.add(Token.getColorInt(sPlayer.getPlayer().getName()));
+            colors.add(sPlayer.getToken().getColor());
         }
         return colors;
     }
