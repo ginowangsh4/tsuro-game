@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 public class MPlayer implements IPlayer {
+
     private String name;
     private int color;
     private List<Integer> colors;

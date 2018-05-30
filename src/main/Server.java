@@ -126,20 +126,19 @@ public class Server {
      * Register a MPlayer with Server: create a SPlayer instance based on the given MPlayer
      * @param player a given player
      */
-    public void registerPlayer(IPlayer player, Token t) throws Exception {
+    public void registerPlayer(IPlayer player, Token token) throws Exception {
         List<Tile> hand = new ArrayList<>();
-        SPlayer sP = new SPlayer(t, hand);
-        sP.linkPlayer(player);
+        SPlayer splayer = new SPlayer(token, hand);
+        splayer.linkPlayer(player);
         // check if starting position is legal
-        if (!t.isStartingPosition()) {
+        if (!token.isStartingPosition()) {
             System.err.println("Caught cheating: Player starts the game at an illegal position");
-            playerCheatIllegalPawn(sP);
+            playerCheatIllegalPawn(splayer);
         }
-        //colors.add(t.getColor());
-        inSPlayer.add(sP);
-        board.addToken(sP.getToken());
+        inSPlayer.add(splayer);
+        board.addToken(splayer.getToken());
         for (int i = 0; i < 3; i++){
-            sP.draw(drawPile.pop());
+            splayer.draw(drawPile.pop());
         }
     }
 
@@ -240,17 +239,15 @@ public class Server {
         // move the current player
         inSPlayer.remove(0);
         inSPlayer.add(currentP);
-        // check if this player's hand is legal at the end of this turn
-        legalHand(currentP);
 
         // ****************************************
         // ** Step 3: Update Game Over Condition **
         // ****************************************
         findWinners(deadP);
+        // game over, return winners
         if (gameOver) {
             return winners;
         }
-
         // game not over, eliminate players
         returnHandToDeck(deadP);
         eliminatePlayers(deadP);

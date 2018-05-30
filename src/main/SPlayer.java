@@ -2,6 +2,7 @@ package tsuro;
 import java.util.*;
 
 public class SPlayer {
+
     private Token token;
     private List<Tile> hand;
     private IPlayer player;

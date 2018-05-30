@@ -2,7 +2,9 @@ package tsuro;
 import java.util.*;
 
 public class Tile {
+
     public int[][] paths;
+
     public static final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
         put(0, 5);
         put(1, 4);

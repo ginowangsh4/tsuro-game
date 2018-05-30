@@ -3,9 +3,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Token {
+
     private final int color;
     private int indexOnTile;
     private int[] position;
+
     public final static Map<Integer, String> colorMap = new HashMap<Integer, String>() {{
             put(0, "blue");
             put(1, "red");
