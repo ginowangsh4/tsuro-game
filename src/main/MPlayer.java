@@ -13,7 +13,7 @@ public class MPlayer implements IPlayer {
     public Strategy strategy;
     public enum Strategy { R, MS, LS }
     public State state;
-    public enum State { INIT, PLACE, PLAY, END }
+    public enum State { BORN, PLAY, DEAD }
 
     public MPlayer(Strategy strategy, String name) {
         this.name = name;
@@ -41,19 +41,19 @@ public class MPlayer implements IPlayer {
                 throw new IllegalArgumentException("Player list contains invalid" + "player color");
             }
         }
-        if (!(state == State.END || state == null)){
+        if (state != State.DEAD && state != null) {
             throw new IllegalArgumentException("Sequence Contracts: Cannot initialize at this time");
         }
-        state = State.INIT;
+        state = State.BORN;
         this.color = color;
         this.colors = colors;
     }
 
     public Token placePawn(Board b) {
-        if (state != State.INIT) {
+        if (state != State.BORN) {
             throw new IllegalArgumentException("Sequence Contracts: Cannot place pawn at this time");
         }
-        this.state = State.PLACE;
+        this.state = State.PLAY;
 
         if (!colors.contains(this.color)){
             throw new IllegalArgumentException("Player is not authorized to place pawn");
@@ -81,14 +81,14 @@ public class MPlayer implements IPlayer {
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
-        if (state != State.PLACE && state != State.PLAY) {
+        if (state != State.PLAY) {
             throw new IllegalArgumentException("Sequence Contracts: Cannot play turn at this time");
         }
-        state = State.PLAY;
 
         if (!colors.contains(this.color)){
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
+
         List<Tile> legalMoves = new ArrayList<>();
         for (Tile t : hand) {
             Tile copy = t.copyTile();
@@ -101,18 +101,27 @@ public class MPlayer implements IPlayer {
                 copy.rotateTile();
             }
         }
+
+        Tile tileToPlay;
+
         switch (strategy) {
             case R: {
                 Random rand = new Random();
-                return legalMoves.get(rand.nextInt(legalMoves.size()));
+                tileToPlay = legalMoves.get(rand.nextInt(legalMoves.size()));
+                tileToPlay.reorderPath();
+                return tileToPlay;
             }
             case MS: {
                 Collections.sort(legalMoves, new SymmetricComparator());
-                return legalMoves.get(0);
+                tileToPlay = legalMoves.get(0);
+                tileToPlay.reorderPath();
+                return tileToPlay;
             }
             case LS: {
                 Collections.sort(legalMoves, new SymmetricComparator());
-                return legalMoves.get(legalMoves.size() - 1);
+                tileToPlay = legalMoves.get(legalMoves.size() - 1);
+                tileToPlay.reorderPath();
+                return tileToPlay;
             }
             default: {
                 throw new IllegalArgumentException("Input strategy cannot be identified");
@@ -124,7 +133,7 @@ public class MPlayer implements IPlayer {
         if (state != State.PLAY) {
             throw new IllegalArgumentException("Sequence Contracts: Cannot end game at this time");
         }
-        state = State.END;
+        state = State.DEAD;
 
         this.colors = colors;
         if (colors.contains(this.color)) {

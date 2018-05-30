@@ -148,7 +148,7 @@ public class MPlayerTest {
         MPlayer mPlayer = new MPlayer(MPlayer.Strategy.LS, "");
         colors.add(1);
         mPlayer.initialize(1, colors);
-        mPlayer.state = MPlayer.State.PLACE;
+        mPlayer.state = MPlayer.State.PLAY;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
         SPlayer.deal(t);
@@ -195,7 +195,7 @@ public class MPlayerTest {
         MPlayer mPlayer = new MPlayer(MPlayer.Strategy.LS, "");
         colors.add(1);
         mPlayer.initialize(1, colors);
-        mPlayer.state = MPlayer.State.PLACE;
+        mPlayer.state = MPlayer.State.PLAY;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
         SPlayer.deal(t);
@@ -242,7 +242,7 @@ public class MPlayerTest {
         MPlayer mPlayer = new MPlayer( MPlayer.Strategy.MS, "");
         colors.add(1);
         mPlayer.initialize(1, colors);
-        mPlayer.state = MPlayer.State.PLACE;
+        mPlayer.state = MPlayer.State.PLAY;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
         assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");
         SPlayer.deal(t);
