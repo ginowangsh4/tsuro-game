@@ -83,7 +83,7 @@ public class MPlayerTest {
     @Test
     public void sortSymmetricTilesTest() {
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
-        Tile halfSymmetricTile = new Tile(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}});
+        Tile halfSymmetricTile = new Tile(new int[][] {{0, 4}, {1, 5}, {2, 7}, {3, 6}});
         Tile asymmetricTile = new Tile(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}});
         List<Tile> tileList = new ArrayList<>();
         tileList.add(halfSymmetricTile);
@@ -93,18 +93,6 @@ public class MPlayerTest {
         assertTrue(Arrays.deepEquals(symmetricTile.paths, tileList.get(0).paths), "Error: the symmetric tile is not the first tile in tileList");
         assertTrue(Arrays.deepEquals(halfSymmetricTile.paths, tileList.get(1).paths), "Error: the half symmetric tile is not the second tile in tileList");
         assertTrue(Arrays.deepEquals(asymmetricTile.paths, tileList.get(2).paths), "Error: the asymmetric tile is not the third tile in tileList");
-
-        symmetricTile = new Tile(new int[][] {{3, 2}, {7, 6}, {4, 5}, {1, 0}});
-        halfSymmetricTile = new Tile(new int[][] {{2, 7}, {4, 0}, {5, 1}, {3, 6}});
-        asymmetricTile = new Tile(new int[][] {{5, 0}, {6, 2}, {1, 3}, {7, 4}});
-        tileList = new ArrayList<>();
-        tileList.add(halfSymmetricTile);
-        tileList.add(symmetricTile);
-        tileList.add(asymmetricTile);
-        Collections.sort(tileList, new Tile.SymmetricComparator());
-        assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, tileList.get(0).paths), "Error: the symmetric tile is not the first tile in tileList");
-        assertTrue(Arrays.deepEquals(new int[][] {{0,4}, {1,5}, {2,7}, {3,6}}, tileList.get(1).paths), "Error: the half symmetric tile is not the second tile in tileList");
-        assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, tileList.get(2).paths), "Error: the asymmetric tile is not the third tile in tileList");
     }
 
     // Three tiles at hand:

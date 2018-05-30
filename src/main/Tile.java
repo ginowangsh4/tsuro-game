@@ -2,7 +2,6 @@ package tsuro;
 import java.util.*;
 
 public class Tile {
-    //protected field for the purpose of testing
     public int[][] paths;
     public static final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
         put(0, 5);
@@ -47,17 +46,6 @@ public class Tile {
     }
 
     /**
-     * Reorder the path arrays of a given tile; path indices ordered from smallest to largest
-     * e.g. {{2, 6}, {3, 7}, {4, 1}, {5, 0}} becomes {{0, 5}, {1, 4}, {2, 6}, {3, 7}}
-     */
-    private void reorderPath() {
-        for (int[] path : this.paths) {
-            Arrays.sort(path);
-        }
-        Arrays.sort(this.paths, new ListFirstElementComparator());
-    }
-
-    /**
      * Rotate a given tile clockwise by 90 degrees
      * Mutate the path of this tile
      */
@@ -67,6 +55,17 @@ public class Tile {
             paths[i][1] = (paths[i][1] + 2) % 8;
         }
         reorderPath();
+    }
+
+    /**
+     * Reorder the path arrays of a given tile; only called once by rotateTile()
+     * e.g. {{2, 6}, {3, 7}, {4, 1}, {5, 0}} -> {{0, 5}, {1, 4}, {2, 6}, {3, 7}}
+     */
+    private void reorderPath() {
+        for (int[] path : this.paths) {
+            Arrays.sort(path);
+        }
+        Arrays.sort(this.paths, new ListFirstElementComparator());
     }
 
     /**
@@ -98,13 +97,10 @@ public class Tile {
      * @return true if equal; false if not
      */
     public boolean isSameTile(Tile tile) {
-        Tile thisCopy = this.copyTile();
         Tile inputCopy = tile.copyTile();
-        thisCopy.reorderPath();
         for (int i = 0; i < paths.length; i++) {
             inputCopy.rotateTile();
-            inputCopy.reorderPath();
-            if (Arrays.deepEquals(inputCopy.paths, thisCopy.paths)) {
+            if (Arrays.deepEquals(inputCopy.paths, this.paths)) {
                 return true;
             }
         }
@@ -116,7 +112,7 @@ public class Tile {
      * @param start starting index of the path
      * @return the end index
      */
-    public int getPathEnd (int start) {
+    public int getPathEnd(int start) {
         for (int[] array : this.paths) {
             if (start == array[0]) {
                 return array[1];
@@ -132,13 +128,13 @@ public class Tile {
      * @return the number of ways it can be placed
      */
     public int countSymmetricPaths(){
-        reorderPath();
         int count = 1;
         Tile copy = this.copyTile();
         for (int i = 0; i < 3; i++ ){
             copy.rotateTile();
-            copy.reorderPath();
-            if (!this.isSamePaths(copy)) count++;
+            if (!isSamePaths(copy)) {
+                count++;
+            }
         }
         // if we have count = 3, it means we have two pathways that are different from the original
         // but these two pathways must be the same

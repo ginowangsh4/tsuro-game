@@ -37,11 +37,11 @@ public class Token {
         return indexOnTile;
     }
 
-    public void setIndex(int indexOnTile) { this.indexOnTile = indexOnTile; }
-
     public int[] getPosition() {
         return position;
     }
+
+    public void setIndex(int indexOnTile) { this.indexOnTile = indexOnTile; }
 
     public void setPosition(int[] position) { this.position = position; }
 
@@ -51,7 +51,7 @@ public class Token {
      * @return true of the two tokens are the same; false if not
      */
     public boolean isSameColor(Token t) {
-        return this.color == t.color;
+        return color == t.color;
     }
 
     /**
@@ -104,19 +104,17 @@ public class Token {
      * @return true if on the edge; false if not
      */
     public boolean isOffBoard() {
-        int ti = getIndex();
-        int[] tp = getPosition();
-        return (ti == 0 || ti == 1) && tp[1] == 0 ||
-                (ti == 2 || ti == 3) && tp[0] == 5 ||
-                (ti == 4 || ti == 5) && tp[1] == 5 ||
-                (ti == 6 || ti == 7) && tp[0] == 0;
+        return (indexOnTile == 0 || indexOnTile == 1) && position[1] == 0 ||
+                (indexOnTile == 2 || indexOnTile == 3) && position[0] == 5 ||
+                (indexOnTile == 4 || indexOnTile == 5) && position[1] == 5 ||
+                (indexOnTile == 6 || indexOnTile == 7) && position[0] == 0;
     }
 
     /**
      * find color string associated with color index
      * @return color in string format
      */
-    public String getColorString(){
+    public String getColorString() {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid token color index");
         }
@@ -128,10 +126,10 @@ public class Token {
      * @param colorName color name string
      * @return color integer
      */
-    public static int getColorInt(String colorName){
-        for(Integer key : colorMap.keySet()){
-            if (colorMap.get(key).equals(colorName)){
-                return key;
+    public static int getColorInt(String colorName) {
+        for(Integer i : colorMap.keySet()){
+            if (colorMap.get(i).equals(colorName)){
+                return i;
             }
         }
         throw new IllegalArgumentException("Invalid color name");

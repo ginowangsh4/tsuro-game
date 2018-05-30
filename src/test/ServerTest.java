@@ -79,49 +79,46 @@ public class ServerTest {
 
     @Test
     public void cheatIllegalStartingPosnTest() throws Exception {
-        int total = 10;
-        for(int count = 0; count < total; count++) {
-            b = new Board();
-            inSPlayer = new ArrayList<>();
-            outSPlayer = new ArrayList<>();
-            winners = new ArrayList<>();
-            deck = new Deck();
-            colors = new ArrayList<>();
+        b = new Board();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
+        deck = new Deck();
+        colors = new ArrayList<>();
 
-            server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
+        server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
 
-            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "Player 1");
-            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "Player 2");
-            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "Player 3");
-            colors.add(1);
-            colors.add(2);
-            colors.add(3);
-            mP1.initialize(1, colors);
-            mP2.initialize(2, colors);
-            mP3.initialize(3, colors);
+        MPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "Player 1");
+        MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "Player 2");
+        MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "Player 3");
+        colors.add(1);
+        colors.add(2);
+        colors.add(3);
+        mP1.initialize(1, colors);
+        mP2.initialize(2, colors);
+        mP3.initialize(3, colors);
 
-            Token t1 = new Token(1, 1, new int[]{1, 1});
-            server.registerPlayer(mP1, t1);
-            Token t2 = new Token(2, 2, new int[]{2, 2});
-            server.registerPlayer(mP2, t2);
-            Token t3 = new Token(3, 3, new int[]{3, 3});
-            server.registerPlayer(mP3, t3);
+        Token t1 = new Token(1, 1, new int[]{1, 1});
+        server.registerPlayer(mP1, t1);
+        Token t2 = new Token(2, 2, new int[]{2, 2});
+        server.registerPlayer(mP2, t2);
+        Token t3 = new Token(3, 3, new int[]{3, 3});
+        server.registerPlayer(mP3, t3);
 
-            while (!server.isGameOver()) {
-                SPlayer currentP = inSPlayer.get(0);
-                Tile tileToPlay = currentP.getPlayer().playTurn(b, currentP.getHand(), deck.size());
-                currentP.deal(tileToPlay);
-                server.playATurn(tileToPlay);
-            }
-
-            for (SPlayer sp : inSPlayer) {
-                assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Error: Player's cheating is not caught");
-            }
-            for (SPlayer sp : outSPlayer) {
-                assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Error: Player's cheating is not caught");
-            }
-            assertEquals(true, server.isGameOver());
+        while (!server.isGameOver()) {
+            SPlayer currentP = inSPlayer.get(0);
+            Tile tileToPlay = currentP.getPlayer().playTurn(b, currentP.getHand(), deck.size());
+            currentP.deal(tileToPlay);
+            server.playATurn(tileToPlay);
         }
+
+        for (SPlayer sp : inSPlayer) {
+            assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Error: Player's cheating is not caught");
+        }
+        for (SPlayer sp : outSPlayer) {
+            assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Error: Player's cheating is not caught");
+        }
+        assertEquals(true, server.isGameOver());
     }
 
     @Test

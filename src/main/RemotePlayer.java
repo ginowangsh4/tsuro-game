@@ -39,7 +39,6 @@ public class RemotePlayer implements IPlayer {
     public void initialize(int color, List<Integer> colors) throws Exception {
         // to socket
         Document inDoc = Parser.buildInitializeXML(db, color, colors);
-        System.out.println(Parser.documentToString(inDoc));
         printWriter.println(Parser.documentToString(inDoc));
 
         // from socket, must be void

@@ -7,12 +7,10 @@ public class Board {
     public Tile[][] board;
     public final int SIZE = 6;
     public List<Token> tokenList;
-    public List<Tile> tileList;
 
     public Board() {
         this.board = new Tile[SIZE][SIZE];
         this.tokenList = new ArrayList<>();
-        this.tileList = new ArrayList<>();
     }
 
     /**

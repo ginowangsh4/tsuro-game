@@ -35,8 +35,8 @@ public class MPlayer implements IPlayer {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid player's color");
         }
-        for (int aColor : colors) {
-            if (aColor < 0 || aColor > 7) {
+        for (int c : colors) {
+            if (c < 0 || c > 7) {
                 throw new IllegalArgumentException("Player list contains invalid" + "player color");
             }
         }
@@ -54,7 +54,7 @@ public class MPlayer implements IPlayer {
         }
         this.state = State.PLAY;
 
-        if (!colors.contains(this.color)){
+        if (!colors.contains(color)){
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
 
@@ -63,7 +63,7 @@ public class MPlayer implements IPlayer {
         int indexOnTile = Integer.MAX_VALUE;
         boolean found = false;
         while (!found) {
-            int[] res = findAnotherStartPos();
+            int[] res = findStartPosition();
             x = res[0];
             y = res[1];
             indexOnTile = res[2];
@@ -75,8 +75,7 @@ public class MPlayer implements IPlayer {
                 }
             }
         }
-        Token newToken = new Token(this.color, indexOnTile, new int[]{x, y});
-        return newToken;
+        return new Token(color, indexOnTile, new int[]{x, y});
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
@@ -135,7 +134,7 @@ public class MPlayer implements IPlayer {
         this.isWinner = false;
     }
 
-    public int[] findAnotherStartPos() {
+    public int[] findStartPosition() {
         Random rand = new Random();
         int x, y, indexOnTile;
         // choose a random number in {0, 1, 2, 3}
@@ -144,7 +143,7 @@ public class MPlayer implements IPlayer {
         int sideIndex = rand.nextInt(12);
         switch (side) {
             case 0: {
-                x = sideIndex / 2; //from 0 to 5
+                x = sideIndex / 2; // from 0 to 5
                 y = -1;
                 indexOnTile = sideIndex % 2 + 4;
                 break;

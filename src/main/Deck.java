@@ -49,7 +49,6 @@ public class Deck {
             Tile t = new Tile(input[i]);
             pile.add(t);
         }
-        //shuffle();
     }
 
     Deck (List<Tile> pile) {
