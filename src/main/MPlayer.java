@@ -25,60 +25,33 @@ public class MPlayer implements IPlayer {
     }
 
     public void initialize (int color, List<Integer> colors) {
-        if (state != State.DEAD && state != null) {
-            throw new IllegalArgumentException("Sequence Contracts: Cannot initialize at this time");
-        }
-        state = State.BORN;
-        if (color < 0 || color > 7) {
-            throw new IllegalArgumentException("Invalid player's color");
-        }
-        for (int c : colors) {
-            if (c < 0 || c > 7) {
-                throw new IllegalArgumentException("Player list contains invalid" + "player color");
-            }
-        }
+        checkState("initialize");
+        validColorAndColors(color, colors);
         this.color = color;
         this.colors = colors;
     }
 
     public Token placePawn(Board b) {
-        if (state != State.BORN) {
-            throw new IllegalArgumentException("Sequence Contracts: Cannot place pawn at this time");
-        }
-        this.state = State.PLAY;
-
-        if (!colors.contains(color)){
-            throw new IllegalArgumentException("Player is not authorized to place pawn");
-        }
-        int x = Integer.MAX_VALUE;
-        int y = Integer.MAX_VALUE;
-        int indexOnTile = Integer.MAX_VALUE;
+        checkState("place-pawn");
+        // initialize new [x-coordinate, y-coordinate, index on tile]
+        int[] pos = new int[] {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};
         boolean found = false;
         while (!found) {
-            int[] res = findStartPosition();
-            x = res[0];
-            y = res[1];
-            indexOnTile = res[2];
+            pos = findStartPosition();
             found = true;
             for (SPlayer sp : b.getSPlayerList()) {
                 Token t = sp.getToken();
-                if (x == t.getPosition()[0] && y == t.getPosition()[1] && indexOnTile == t.getIndex()) {
+                if (pos[0] == t.getPosition()[0] && pos[1] == t.getPosition()[1] && pos[2] == t.getIndex()) {
                     found = false;
                     break;
                 }
             }
         }
-        return new Token(color, indexOnTile, new int[]{x, y});
+        return new Token(color, pos[2], new int[]{pos[0], pos[1]});
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
-        if (state != State.PLAY) {
-            throw new IllegalArgumentException("Sequence Contracts: Cannot play turn at this time");
-        }
-
-        if (!colors.contains(this.color)){
-            throw new IllegalArgumentException("Player is not authorized to place pawn");
-        }
+        checkState("play-turn");
         List<Tile> legalMoves = new ArrayList<>();
         for (Tile t : hand) {
             Tile copy = t.copyTile();
@@ -113,11 +86,7 @@ public class MPlayer implements IPlayer {
     }
 
     public void endGame(Board b, List<Integer> colors) {
-        if (state != State.PLAY) {
-            throw new IllegalArgumentException("Sequence Contracts: Cannot end game at this time");
-        }
-        state = State.DEAD;
-
+        checkState("end-game");
         this.colors = colors;
         if (colors.contains(this.color)) {
             this.isWinner = true;
@@ -125,6 +94,63 @@ public class MPlayer implements IPlayer {
         this.isWinner = false;
     }
 
+    /**
+     * Check IPlayer's state against sequential contract
+     * @param method string name of caller method
+     */
+    private void checkState(String method) {
+        switch (method) {
+            case "initialize":
+                if (state != State.DEAD && state != null) {
+                    throw new IllegalArgumentException("Sequential Contracts: Cannot initialize at this time");
+                }
+                state = State.BORN;
+                break;
+            case "place-pawn":
+                if (state != State.BORN) {
+                    throw new IllegalArgumentException("Sequential Contracts: Cannot place pawn at this time");
+                }
+                this.state = State.PLAY;
+                break;
+            case "play-turn":
+                if (state != State.PLAY) {
+                    throw new IllegalArgumentException("Sequential Contracts: Cannot play turn at this time");
+                }
+                break;
+            case "end-game":
+                if (state != State.PLAY) {
+                    throw new IllegalArgumentException("Sequential Contracts: Cannot end game at this time");
+                }
+                state = State.DEAD;
+                break;
+            default:
+                throw new IllegalArgumentException("Sequential Contract: Invalid caller method");
+        }
+    }
+
+    /**
+     * Check a color and a list of colors against certain constraints
+     * @param color a color
+     * @param colors a list of colors
+     */
+    private void validColorAndColors(int color, List<Integer> colors) {
+        if (!colors.contains(color)){
+            throw new IllegalArgumentException("Player is not authorized to be initialized");
+        }
+        if (color < 0 || color > 7) {
+            throw new IllegalArgumentException("Invalid player's color");
+        }
+        for (int c : colors) {
+            if (c < 0 || c > 7) {
+                throw new IllegalArgumentException("Player list contains invalid" + "player color");
+            }
+        }
+    }
+
+    /**
+     * Choose and return a new starting position
+     * @return a list of new position as [x-coordinate, y-coordinate, index on tile]
+     */
     private int[] findStartPosition() {
         Random rand = new Random();
         int x, y, indexOnTile;
@@ -161,6 +187,6 @@ public class MPlayer implements IPlayer {
                 throw new IllegalArgumentException("Error: Unable to pick starting position on board");
             }
         }
-        return new int[]{x, y, indexOnTile};
+        return new int[] {x, y, indexOnTile};
     }
 }
