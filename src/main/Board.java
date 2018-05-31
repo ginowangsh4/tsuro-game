@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.List;
 
 public class Board {
-    
+
     public final int SIZE = 6;
     private Tile[][] board;
     private List<SPlayer> sPlayerList;
@@ -29,6 +29,22 @@ public class Board {
             return null;
         }
         return this.board[x][y];
+    }
+
+    /**
+     * Return if the board contains the given tile
+     * @param tile a tile to be checked
+     * @return
+     */
+    public boolean containsTile(Tile tile) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (getTile(i, j) != null && getTile(i, j).isSameTile(tile)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -57,22 +73,6 @@ public class Board {
         board[x][y] = null;
     }
 
-    /**
-     * Return if the board contains the given tile
-     * @param tile a tile to be checked
-     * @return
-     */
-    public boolean containsTile(Tile tile) {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (getTile(i, j) != null && getTile(i, j).isSameTile(tile)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public List<SPlayer> getSPlayerList() {
         return sPlayerList;
     }
@@ -95,9 +95,9 @@ public class Board {
      * Return board contains a SPlayer with the given color
      * @param sPlayer a token to be checked
      */
-    public boolean containsSPlayer(SPlayer sPlayer){
+    public boolean containsSPlayer(SPlayer sPlayer) {
         for (SPlayer sp : sPlayerList) {
-            if (sp.isSamePlayer(sPlayer)) return true;
+            if (sp.isSameSPlayer(sPlayer)) return true;
         }
         return false;
     }
@@ -106,7 +106,7 @@ public class Board {
      * Add a SPlayer to the board
      * @param sPlayer SPlayer to be added
      */
-    public void addSPlayer(SPlayer sPlayer){
+    public void addSPlayer(SPlayer sPlayer) {
         if (!sPlayer.getToken().isLegalPosition()){
             throw new IllegalArgumentException("SPlayer's token position and index are not legal");
         }
@@ -115,7 +115,6 @@ public class Board {
         }
         sPlayerList.add(sPlayer);
     }
-
 
     /**
      * Remove a SPlayer from the board
@@ -128,10 +127,26 @@ public class Board {
     }
 
     /**
+     * Check whether another token is already on the same starting position
+     * @param token input token to be checked against
+     * @return true if there is another token on the same starting position
+     */
+    public boolean tokenAtSamePosition(Token token) {
+        for (SPlayer sp : sPlayerList) {
+            Token t = sp.getToken();
+            if (t.getPosition()[0] == token.getPosition()[0] && t.getPosition()[1] == token.getPosition()[1]
+                    && t.getIndex() == token.getIndex()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check whether the board is full
      * @return true if the board is full
      */
-    public boolean isFull(){
+    public boolean isFull() {
         int count = 0;
         for (int x = 0; x < 6; x++){
             for (int y = 0; y < 6; y++) {
@@ -148,13 +163,54 @@ public class Board {
      * @param position a board position
      * @return true if position is not a valid board position
      */
-    public static boolean isOffBoard(int[] position){
-        if(position.length != 2){
-            throw new IllegalArgumentException("Not a valid position length");
+    public static boolean posOffBoard(int[] position) {
+        return position[0] < 0 || position[0] > 5 || position[1] < 0 || position[1] > 5;
+    }
+
+    /**
+     * Simulate the path taken by a token given a board
+     * @param token token that attempts making the move
+     * @return a copy of the original token with new position and index
+     */
+    public Token simulateMove(Token token) {
+        // next location the token can go on
+        int[] newPosition = getAdjacentLocation(token);
+        Tile nextTile = getTile(newPosition[0], newPosition[1]);
+        // base case, return if reached the end of path
+        if (nextTile == null) {
+            return token;
         }
-        if(position[0] < 0 || position[0] > 5 || position[1] < 0 || position[1] > 5){
-            return true;
+        // simulate moving token & get new token index
+        int pathStart = Tile.neighborIndex.get(token.getIndex());
+        int pathEnd = nextTile.getPathEnd(pathStart);
+        // recursion step
+        Token nt = new Token(token.getColor(), pathEnd, newPosition);
+        return simulateMove(nt);
+    }
+
+    /**
+     * Find the adjacent position on board given a token
+     * @param token the token of player currently making the move
+     * @return an array of location [x,y] of the adjacent tile
+     */
+    public static int[] getAdjacentLocation(Token token) {
+        int[] next = new int[2];
+        int x = token.getPosition()[0];
+        int y = token.getPosition()[1];
+        int indexOnTile = token.getIndex();
+        if (indexOnTile == 0 || indexOnTile == 1) {
+            next[0] = x;
+            next[1] = y - 1;
+        } else if (indexOnTile == 2 || indexOnTile == 3) {
+            next[0] = x + 1;
+            next[1] = y;
+        } else if (indexOnTile == 4 || indexOnTile == 5) {
+            next[0] = x;
+            next[1] = y + 1;
+        } else {
+            next[0] = x - 1;
+            next[1] = y;
         }
-        return false;
+        return next;
     }
 }

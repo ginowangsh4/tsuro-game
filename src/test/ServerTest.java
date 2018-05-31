@@ -3,9 +3,8 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("Duplicates")
 public class ServerTest {
-    static Board b;
+    static Board board;
     static Deck deck;
     static List<SPlayer> inSPlayer;
     static List<SPlayer> outSPlayer;
@@ -25,13 +24,13 @@ public class ServerTest {
         int total = 10;
 
         for(int count = 0; count < total; count++){
-            b = new Board();
+            board = new Board();
             inSPlayer = new ArrayList<>();
             outSPlayer = new ArrayList<>();
             winners = new ArrayList<>();
             deck = new Deck();
             colors = new ArrayList<>();
-            server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
+            server.setState(board, inSPlayer, outSPlayer, winners, colors, deck);
 
             MPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "Player 1");
             MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "Player 2");
@@ -43,18 +42,18 @@ public class ServerTest {
             mP2.initialize(2, colors);
             mP3.initialize(3, colors);
 
-            Token t1 = mP1.placePawn(b);
+            Token t1 = mP1.placePawn(board);
             server.registerPlayer(mP1, t1);
-            Token t2 = mP2.placePawn(b);
+            Token t2 = mP2.placePawn(board);
             server.registerPlayer(mP2, t2);
-            Token t3 = mP3.placePawn(b);
+            Token t3 = mP3.placePawn(board);
             server.registerPlayer(mP3, t3);
 
             List<SPlayer> winners = new ArrayList<>();
 
             while(!server.isGameOver()) {
                 SPlayer currentP = inSPlayer.get(0);
-                Tile tileToPlay = currentP.getPlayer().playTurn(b, currentP.getHand(), deck.size());
+                Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), deck.size());
                 currentP.deal(tileToPlay);
 
                 winners = server.playATurn(tileToPlay);
@@ -77,16 +76,16 @@ public class ServerTest {
         System.out.println(" *************************************************** ");
     }
 
-    @Test
+    @Test   // chooses a position to start that is not a valid phantom position
     public void cheatIllegalStartingPosnTest() throws Exception {
-        b = new Board();
+        board = new Board();
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
         winners = new ArrayList<>();
         deck = new Deck();
         colors = new ArrayList<>();
 
-        server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
+        server.setState(board, inSPlayer, outSPlayer, winners, colors, deck);
 
         MPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "Player 1");
         MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "Player 2");
@@ -107,18 +106,46 @@ public class ServerTest {
 
         while (!server.isGameOver()) {
             SPlayer currentP = inSPlayer.get(0);
-            Tile tileToPlay = currentP.getPlayer().playTurn(b, currentP.getHand(), deck.size());
+            Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), deck.size());
             currentP.deal(tileToPlay);
             server.playATurn(tileToPlay);
         }
 
         for (SPlayer sp : inSPlayer) {
-            assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Error: Player's cheating is not caught");
+            assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Player's cheating is not caught");
         }
         for (SPlayer sp : outSPlayer) {
-            assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Error: Player's cheating is not caught");
+            assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Player's cheating is not caught");
         }
         assertEquals(true, server.isGameOver());
+    }
+
+    @Test   // chooses a position which already has a token
+    public void cheatIllegalStartingPosnTest2() throws Exception {
+        MPlayer playerOne = new MPlayer(MPlayer.Strategy.LS, "Player 1");
+        MPlayer playerTwo = new MPlayer(MPlayer.Strategy.LS, "Player 2");
+
+        board = new Board();
+        inSPlayer = new ArrayList<>();
+        outSPlayer = new ArrayList<>();
+        winners = new ArrayList<>();
+        deck = new Deck();
+        colors = new ArrayList<>(Arrays.asList(0, 1));
+        Server server = Server.getInstance();
+        server.setState(board, inSPlayer, outSPlayer, winners, colors, deck);
+
+        playerOne.initialize(0, colors);
+        Token tokenOne = new Token(0, 0, new int[]{0, 6});
+        server.registerPlayer(playerOne, tokenOne);
+
+        playerTwo.initialize(1, colors);
+        Token tokenTwo = new Token(1, 0, new int[]{0, 6});
+        server.registerPlayer(playerTwo, tokenTwo);
+
+        assertEquals(MPlayer.Strategy.LS, server.inSPlayer.get(0).getMPlayer().strategy, "Player 1's strategy changed");
+        assertEquals(MPlayer.Strategy.R, server.inSPlayer.get(1).getMPlayer().strategy, "Player 2's strategy didn't change to R");
+        assertFalse(server.inSPlayer.get(1).getToken().getIndex() == 0 && server.inSPlayer.get(1).getToken().getPosition()[0] == 0
+                        && server.inSPlayer.get(1).getToken().getPosition()[1] == 6, "Player 2's starting position wasn't updated");
     }
 
     @Test
@@ -126,21 +153,21 @@ public class ServerTest {
         Tile t1 = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile t2 = new Tile(new int[][] {{0, 1}, {2, 4}, {3, 6}, {5, 7}});
         Tile t3 = new Tile(new int[][] {{0, 6}, {1, 5}, {2, 4}, {3, 7}});
-        b = new Board();
+        board = new Board();
         inSPlayer = new ArrayList<>();
         outSPlayer = new ArrayList<>();
         winners = new ArrayList<>();
         List<Tile> pile = new ArrayList<>();
         pile.addAll(Arrays.asList(t1, t2, t3));
-        deck = new Deck();
+        deck = new Deck(pile);
         colors = new ArrayList<>();
 
-        server.setState(b, inSPlayer, outSPlayer, winners, colors, deck);
+        server.setState(board, inSPlayer, outSPlayer, winners, colors, deck);
 
         MPlayer mP = new MPlayer(MPlayer.Strategy.LS, "Player 1");
         colors.add(1);
         mP.initialize(1, colors);
-        Token token = mP.placePawn(b);
+        Token token = mP.placePawn(board);
         server.registerPlayer(mP, token);
 
         SPlayer currentP = inSPlayer.get(0);
@@ -148,77 +175,7 @@ public class ServerTest {
         currentP.deal(tileToPlay);
         server.playATurn(tileToPlay);
 
-        assertEquals(MPlayer.Strategy.R, currentP.getMPlayer().strategy, "Error: Player's cheating is not caught");
+        assertEquals(MPlayer.Strategy.R, currentP.getMPlayer().strategy, "Player's cheating is not caught");
         assertEquals(true, server.isGameOver());
-    }
-
-
-    @Test
-    public void cheatingIllegalPawnTest2() throws Exception {
-        Server server = Server.getInstance();
-        IPlayer playerOne = new IPlayer() {
-            int color;
-            //            List<Integer> colors;
-            @Override
-            public String getName() throws Exception {
-                return "cheatingIllegalPawnTest2Player1";
-            }
-
-            @Override
-            public void initialize(int color, List<Integer> colors) throws Exception {
-                this.color = color;
-            }
-
-            @Override
-            public Token placePawn(Board b) throws Exception {
-                return new Token(this.color, 2, new int[] {-1, 0});
-            }
-
-            @Override
-            public void endGame(Board b, List<Integer> colors) throws Exception {
-                throw new IllegalArgumentException("endGame shouldn't be called");
-            }
-
-            @Override
-            public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
-                throw new IllegalArgumentException("playTurn shouldn't be called");
-            }
-        };
-        IPlayer playerTwo = new IPlayer() {
-            int color;
-            //            List<Integer> colors;
-            @Override
-            public String getName() throws Exception {
-                return "cheatingIllegalPawnTest2Player1";
-            }
-
-            @Override
-            public void initialize(int color, List<Integer> colors) throws Exception {
-                this.color = color;
-            }
-
-            @Override
-            public Token placePawn(Board b) throws Exception {
-                return new Token(this.color, 2, new int[] {-1, 0});
-            }
-
-            @Override
-            public void endGame(Board b, List<Integer> colors) throws Exception {
-                throw new IllegalArgumentException("endGame shouldn't be called");
-            }
-
-            @Override
-            public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
-                throw new IllegalArgumentException("playTurn shouldn't be called");
-            }
-        };
-        Board board = new Board();
-        playerOne.initialize(0, null);
-        Token tokenOne = playerOne.placePawn(board);
-        server.registerPlayer(playerOne, tokenOne);
-
-        playerTwo.initialize(1, null);
-        Token tokenTwo = playerTwo.placePawn(board);
-        server.registerPlayer(playerTwo, tokenTwo);
     }
 }

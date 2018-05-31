@@ -15,10 +15,10 @@ import java.util.List;
 
 public class Admin {
     // public static final int PORT_NUM = 12345;
-    public static Parser parser;
-    public static MPlayer mPlayer;
+    private static Parser parser;
+    private static MPlayer mPlayer;
 
-    // Enter from stdin "PORT_NUMBER PLAYER_NAME STRATEGY(R/MS/LS)"
+    // Commend line arguments as "PORT_NUMBER PLAYER_NAME STRATEGY(R/MS/LS)"
     public static void main(String[] args) throws Exception {
         // set up connection to local host 
         String hostname = "127.0.0.1";
@@ -38,7 +38,7 @@ public class Admin {
                 mPlayer = new MPlayer(MPlayer.Strategy.MS, args[1]);
                 break;
             default:
-                throw new IllegalArgumentException("Invalid strategy!");
+                throw new IllegalArgumentException("Admin: Invalid input strategy");
         }
         while (socket.connectionEstablished()) {
             String res = socket.readInputFromClient();
@@ -63,7 +63,7 @@ public class Admin {
                     processEndGame(db, socket, node);
                     break;
                 default:
-                    break;
+                    throw new IllegalArgumentException("Admin: Invalid method call over network");
             }
         }
     }
@@ -74,7 +74,7 @@ public class Admin {
         int color = Token.getColorInt(colorNode.getTextContent());
 
         Node colorsNode = colorNode.getNextSibling();
-        Document colorsDoc = parser.fromNodeToDoc(colorsNode, db);
+        Document colorsDoc = Parser.fromNodeToDoc(colorsNode, db);
         List<Integer> colors = parser.fromColorListSetXML(colorsDoc);
 
         mPlayer.initialize(color, colors);
@@ -83,11 +83,9 @@ public class Admin {
     }
 
     public static void processPlacePawn(DocumentBuilder db, AdminSocket socket, Node node) throws Exception {
-        BoardParser boardParser = new BoardParser(db);
-
         Node boardNode = node.getFirstChild();
-        Document boardDoc = parser.fromNodeToDoc(boardNode, db);
-        Board board = boardParser.fromXML(boardDoc);
+        Document boardDoc = Parser.fromNodeToDoc(boardNode, db);
+        Board board = parser.boardParser.fromXML(boardDoc);
 
         Token token = mPlayer.placePawn(board);
         Document pawnLocXML = parser.buildPawnLocXML(token.getPosition(), token.getIndex());
@@ -101,34 +99,29 @@ public class Admin {
     }
 
     public static void processPlayTurn(DocumentBuilder db, AdminSocket socket, Node node) throws Exception {
-        BoardParser boardParser = new BoardParser(db);
-        TileParser tileParser = new TileParser(db);
-
         Node boardNode = node.getFirstChild();
-        Document boardDoc = parser.fromNodeToDoc(boardNode, db);
-        Board board = boardParser.fromXML(boardDoc);
+        Document boardDoc = Parser.fromNodeToDoc(boardNode, db);
+        Board board = parser.boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = parser.fromNodeToDoc(setNode, db);
+        Document setDoc = Parser.fromNodeToDoc(setNode, db);
         List<Tile> hand = parser.fromTileSetXML(setDoc);
 
         Node nNode = setNode.getNextSibling();
         int tilesLeft = Integer.parseInt(nNode.getFirstChild().getTextContent());
 
         Tile tile = mPlayer.playTurn(board, hand, tilesLeft);
-        Document tileXML = tileParser.buildXML(tile);
+        Document tileXML = parser.tileParser.buildXML(tile);
         sendXMLToClient(socket, tileXML, "Admin: play-turn complete");
     }
 
     public static void processEndGame(DocumentBuilder db, AdminSocket socket, Node node) throws Exception {
-        BoardParser boardParser = new BoardParser(db);
-
         Node boardNode = node.getFirstChild();
-        Document boardDoc = parser.fromNodeToDoc(boardNode, db);
-        Board board = boardParser.fromXML(boardDoc);
+        Document boardDoc = Parser.fromNodeToDoc(boardNode, db);
+        Board board = parser.boardParser.fromXML(boardDoc);
 
         Node setNode = boardNode.getNextSibling();
-        Document setDoc = parser.fromNodeToDoc(setNode, db);
+        Document setDoc = Parser.fromNodeToDoc(setNode, db);
         List<Integer> colors = parser.fromColorListSetXML(setDoc);
 
         mPlayer.endGame(board, colors);

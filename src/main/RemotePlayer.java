@@ -11,15 +11,11 @@ import java.util.*;
 public class RemotePlayer implements IPlayer {
 
     public int color;
-    private Socket socket;
-    private DocumentBuilder db;
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
     private Parser parser;
 
     public RemotePlayer(Socket socket, DocumentBuilder db) throws IOException {
-        this.socket = socket;
-        this.db = db;
         this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.printWriter = new PrintWriter(socket.getOutputStream(), true);
         this.parser = new Parser(db);

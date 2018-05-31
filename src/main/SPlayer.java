@@ -41,7 +41,7 @@ public class SPlayer {
      * @param player SPlayer to be checked against this SPlayer
      * @return true if colors are the same
      */
-    public boolean isSamePlayer(SPlayer player) {
+    public boolean isSameSPlayer(SPlayer player) {
         return this.getToken().getColor() == player.getToken().getColor();
     }
 

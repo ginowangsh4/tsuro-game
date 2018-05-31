@@ -26,10 +26,10 @@ public class Parser {
 
     public Parser(DocumentBuilder db) {
         this.db = db;
-        boardParser = new BoardParser(db);
-        tileParser = new TileParser(db);
-        pawnParser = new PawnParser(db);
-        sPlayerParser = new SPlayerParser(db);
+        this.boardParser = new BoardParser(db);
+        this.tileParser = new TileParser(db);
+        this.pawnParser = new PawnParser(db);
+        this.sPlayerParser = new SPlayerParser(db);
     }
 
     // ******************************* Network Architecture ***********************************

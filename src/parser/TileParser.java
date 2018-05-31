@@ -9,7 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class TileParser implements IParser<Tile> {
+public class TileParser {
     private DocumentBuilder db;
 
     public TileParser(DocumentBuilder db) {

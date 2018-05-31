@@ -8,7 +8,7 @@ import tsuro.*;
 
 import javax.xml.parsers.DocumentBuilder;
 
-public class BoardParser implements IParser<Board> {
+public class BoardParser {
     private DocumentBuilder db;
     private TileParser tileParser;
     private PawnParser pawnParser;

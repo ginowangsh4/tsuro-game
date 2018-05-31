@@ -57,7 +57,7 @@ public class Token {
     }
 
     /**
-     * Check whether two tokens are the same based on color
+     * Check whether two tokens are the same
      * @param t a token to be checked against
      * @return true of the two tokens are the same; false if not
      */
