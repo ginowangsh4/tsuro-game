@@ -33,8 +33,8 @@ public class BoardParser implements IParser<Board> {
         // Generate list-of-tile XML
         for (int i = 0; i < b.SIZE; i++) {
             for (int j = 0; j < b.SIZE; j++) {
-                if (b.board[i][j] != null) {
-                    Node d = tileParser.buildXML(b.board[i][j]).getFirstChild();
+                if (b.getBoard()[i][j] != null) {
+                    Node d = tileParser.buildXML(b.getBoard()[i][j]).getFirstChild();
                     Node tile = doc.importNode(d, true);
 
                     Element ent = generateTileEntry(doc,i,j,tile);

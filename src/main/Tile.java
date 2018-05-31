@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Tile {
 
-    public int[][] paths;
+    private int[][] paths;
 
     public static final Map<Integer, Integer> neighborIndex = new HashMap<Integer, Integer>() {{
         put(0, 5);
@@ -28,6 +28,10 @@ public class Tile {
             this.paths[i][0] = paths[i][0];
             this.paths[i][1] = paths[i][1];
         }
+    }
+
+    public int[][] getPaths() {
+        return this.paths;
     }
 
     /**
@@ -129,7 +133,7 @@ public class Tile {
      * Count the number of ways a given tile can be placed
      * @return the number of ways it can be placed
      */
-    private int countSymmetricPaths(){
+    public int countSymmetricPaths(){
         int count = 1;
         Tile copy = this.copyTile();
         for (int i = 0; i < 3; i++ ){
@@ -138,10 +142,9 @@ public class Tile {
                 count++;
             }
         }
-        // if we have count = 3, it means we have two pathways that are different from the original
-        // but these two pathways must be the same
-        // so we need to subtract count by 1 to get the number of ways it can be placed.
-        // count can only be 1, 2, or 4
+        // if we have count = 3, it means we have two paths that are different from the original
+        // but these two paths must be the same
+        // so we need to subtract count by 1 to get the number of ways it can be placed
         return count == 3 ? count - 1 : count;
     }
 

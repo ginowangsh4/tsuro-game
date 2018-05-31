@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.*;
 
 public class RemotePlayer implements IPlayer {
+
     public int color;
     private Socket socket;
     private DocumentBuilder db;

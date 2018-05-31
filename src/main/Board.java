@@ -4,13 +4,18 @@ import java.util.*;
 import java.util.List;
 
 public class Board {
-    public Tile[][] board;
+    
     public final int SIZE = 6;
+    private Tile[][] board;
     private List<SPlayer> sPlayerList;
 
     public Board() {
         this.board = new Tile[SIZE][SIZE];
         this.sPlayerList = new ArrayList<>();
+    }
+
+    public Tile[][] getBoard() {
+        return this.board;
     }
 
     /**

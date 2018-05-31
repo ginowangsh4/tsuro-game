@@ -171,11 +171,11 @@ public class BoardParserTest {
 
         for(int i = 0; i < board.SIZE; i++){
             for(int j = 0; j<board.SIZE; j++){
-                if(board.board[i][j] != null && expected.board[i][j] != null){
-                    assertTrue(board.board[i][j].isSameTile(expected.board[i][j]),
+                if(board.getBoard()[i][j] != null && expected.getBoard()[i][j] != null){
+                    assertTrue(board.getBoard()[i][j].isSameTile(expected.getBoard()[i][j]),
                              "Generated board is different from expected");
                 }
-                else if(board.board[i][j] != null || expected.board[i][j] != null){
+                else if(board.getBoard()[i][j] != null || expected.getBoard()[i][j] != null){
                     assertTrue(false);
                 }
             }

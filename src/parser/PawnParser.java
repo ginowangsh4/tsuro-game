@@ -187,7 +187,7 @@ public class PawnParser {
             int[] downPos = new int[]{column,downRow};
             if (b.isOffBoard(downPos)){
                 // if tile location below this pos is out of bound
-                if (b.board[upPos[0]][upPos[1]] != null){
+                if (b.getBoard()[upPos[0]][upPos[1]] != null){
                     // pawn at upTilePos
                     oldPos[1] = upRow;
                     oldPos[2] = upIndex;
@@ -197,7 +197,7 @@ public class PawnParser {
                     oldPos[2] = downIndex;
                 }
             } else {
-                if (b.board[downPos[0]][downPos[1]] == null){
+                if (b.getBoard()[downPos[0]][downPos[1]] == null){
                     oldPos[1] = upRow;
                     oldPos[2] = upIndex;
                 } else {
@@ -216,7 +216,7 @@ public class PawnParser {
             int[] rightPos = new int[]{rightColumn,row};
 
             if (b.isOffBoard(rightPos)){
-                if (b.board[leftPos[0]][leftPos[1]] != null){
+                if (b.getBoard()[leftPos[0]][leftPos[1]] != null){
                     oldPos[0] = leftColumn;
                     oldPos[2] = leftIndex;
                 } else {
@@ -224,7 +224,7 @@ public class PawnParser {
                     oldPos[2] = rightIndex;
                 }
             } else {
-                if (b.board[rightPos[0]][rightPos[1]] == null){
+                if (b.getBoard()[rightPos[0]][rightPos[1]] == null){
                     oldPos[0] = leftColumn;
                     oldPos[2] = leftIndex;
                 } else {

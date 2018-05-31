@@ -36,28 +36,28 @@ public class MPlayerTest {
         Tile t = new Tile(path1);
         Tile copy = t.copyTile();
         copy.rotateTile(); // Second Way
-        assertTrue(Arrays.deepEquals(copy.paths, path2), "Error: paths are not in order");
+        assertTrue(Arrays.deepEquals(copy.getPaths(), path2), "Error: paths are not in order");
 
         copy.rotateTile();//has the same pathways as the first way
-        assertTrue(Arrays.deepEquals(copy.paths, path1), "Error: paths are not in order");
+        assertTrue(Arrays.deepEquals(copy.getPaths(), path1), "Error: paths are not in order");
 
         copy.rotateTile();//has the same pathways as the second way
-        assertTrue(Arrays.deepEquals(copy.paths, path2), "Error: paths are not in order");
+        assertTrue(Arrays.deepEquals(copy.getPaths(), path2), "Error: paths are not in order");
 
         //This tile is symmetric and only has one way to be placed
         //no matter how it is rotated, the pathways are all the same
         Tile symmetricTile = new Tile(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}});
         Tile symmetricCopy = symmetricTile.copyTile();
         symmetricCopy.rotateTile();
-        assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
+        assertTrue(Arrays.deepEquals(symmetricTile.getPaths(), symmetricCopy.getPaths()), "Error: paths are not in order");
 
         symmetricCopy.rotateTile();
         symmetricCopy.rotateTile();
-        assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
+        assertTrue(Arrays.deepEquals(symmetricTile.getPaths(), symmetricCopy.getPaths()), "Error: paths are not in order");
 
         symmetricCopy.rotateTile();
         symmetricCopy.rotateTile();
-        assertTrue(Arrays.deepEquals(symmetricTile.paths, symmetricCopy.paths), "Error: paths are not in order");
+        assertTrue(Arrays.deepEquals(symmetricTile.getPaths(), symmetricCopy.getPaths()), "Error: paths are not in order");
     }
 
     @Test
@@ -91,9 +91,9 @@ public class MPlayerTest {
         tileList.add(symmetricTile);
         tileList.add(asymmetricTile);
         Collections.sort(tileList, new Tile.SymmetricComparator());
-        assertTrue(Arrays.deepEquals(symmetricTile.paths, tileList.get(0).paths), "Error: the symmetric tile is not the first tile in tileList");
-        assertTrue(Arrays.deepEquals(halfSymmetricTile.paths, tileList.get(1).paths), "Error: the half symmetric tile is not the second tile in tileList");
-        assertTrue(Arrays.deepEquals(asymmetricTile.paths, tileList.get(2).paths), "Error: the asymmetric tile is not the third tile in tileList");
+        assertTrue(Arrays.deepEquals(symmetricTile.getPaths(), tileList.get(0).getPaths()), "Error: the symmetric tile is not the first tile in tileList");
+        assertTrue(Arrays.deepEquals(halfSymmetricTile.getPaths(), tileList.get(1).getPaths()), "Error: the half symmetric tile is not the second tile in tileList");
+        assertTrue(Arrays.deepEquals(asymmetricTile.getPaths(), tileList.get(2).getPaths()), "Error: the asymmetric tile is not the third tile in tileList");
     }
 
     // Three tiles at hand:
@@ -133,7 +133,7 @@ public class MPlayerTest {
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLAY;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
-        assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.paths), "Error: Picked wrong tile to play");
+        assertTrue(Arrays.deepEquals(new int[][] {{0, 3}, {1, 4}, {2, 6}, {5, 7}}, t.getPaths()), "Error: Picked wrong tile to play");
         SPlayer.deal(t);
         server.playATurn(t);
 
@@ -180,7 +180,7 @@ public class MPlayerTest {
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLAY;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
-        assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.paths), "Error: Picked wrong tile to play");
+        assertTrue(Arrays.deepEquals(new int[][] {{0, 5}, {1, 3}, {2, 6}, {4, 7}}, t.getPaths()), "Error: Picked wrong tile to play");
         SPlayer.deal(t);
         server.playATurn(t);
 
@@ -227,7 +227,7 @@ public class MPlayerTest {
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLAY;
         Tile t = mPlayer.playTurn(b, hand, pile.size());
-        assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.paths), "Error: Picked wrong tile to play");
+        assertTrue(Arrays.deepEquals(new int[][] {{0, 1}, {2, 3}, {4, 5}, {6, 7}}, t.getPaths()), "Error: Picked wrong tile to play");
         SPlayer.deal(t);
 
         server.playATurn(t);

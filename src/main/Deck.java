@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Deck {
+
     private List<Tile> pile;
 
-    Deck() {
+    public Deck() {
         // initialize by adding all 35 tiles
         pile = new ArrayList<>();
         int[][][] input = new int[][][] {   {{0, 1}, {2, 3}, {4, 5}, {6, 7}},

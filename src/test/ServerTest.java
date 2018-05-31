@@ -220,11 +220,5 @@ public class ServerTest {
         playerTwo.initialize(1, null);
         Token tokenTwo = playerTwo.placePawn(board);
         server.registerPlayer(playerTwo, tokenTwo);
-
     }
-
-
-
-
-
 }

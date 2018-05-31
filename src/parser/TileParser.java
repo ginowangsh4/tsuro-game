@@ -24,7 +24,7 @@ public class TileParser implements IParser<Tile> {
     public Document buildXML(Tile t) {
         Document doc = db.newDocument();
         Element tile = doc.createElement("tile");
-        int[][] paths = t.paths;
+        int[][] paths = t.getPaths();
         for (int i = 0; i < 4; i++) {
             Element connect = generateConnectElement(doc, paths[i][0], paths[i][1]);
             tile.appendChild(connect);
