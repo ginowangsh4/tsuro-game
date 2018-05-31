@@ -46,7 +46,7 @@ public class SPlayer {
     }
 
     /**
-     * Get a player's token
+     * Get a SPlayer's token
      * @return a token
      */
     public Token getToken() {
@@ -54,7 +54,7 @@ public class SPlayer {
     }
 
     /**
-     * Update a player's token
+     * Update a SPlayer's token
      * @param token new token
      */
     public void updateToken(Token token) {
@@ -64,9 +64,9 @@ public class SPlayer {
 ;    }
 
     /**
-     * Check if a player has this input tile on hand
+     * Check if a SPlayer has this input tile on hand
      * @param tile to be checked
-     * @return true if play has this tile
+     * @return true if SPlayer has this tile
      */
     public boolean hasTile(Tile tile) {
         for (Tile t : getHand()) {
@@ -77,17 +77,6 @@ public class SPlayer {
         return false;
     }
 
-    /**
-     * Get a player's hand
-     * @return a list of tiles on player's hand
-     */
-    public List<Tile> getHand() {
-        return this.hand;
-    }
-
-    public void setHand(List<Tile> hand) {
-        this.hand = hand;
-    }
     /**
      * SPlayer draws a tile
      * @param t tile to be added to the player's hand
@@ -102,7 +91,7 @@ public class SPlayer {
     }
 
     /**
-     * Player deals a tile
+     * SPlayer deals a tile
      * @param t tile to be deal
      */
     public void deal(Tile t) {
@@ -113,6 +102,22 @@ public class SPlayer {
             }
         }
         throw new IllegalArgumentException("The tile to be dealt is not in player's hand");
+    }
+
+    /**
+     * Get a SPlayer's hand
+     * @return a list of tiles on player's hand
+     */
+    public List<Tile> getHand() {
+        return this.hand;
+    }
+
+    /**
+     * Set a SPlayer's hand
+     * @param hand list of tiles to be set as hand
+     */
+    public void setHand(List<Tile> hand) {
+        this.hand = hand;
     }
 }
 

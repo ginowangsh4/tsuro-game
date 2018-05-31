@@ -129,7 +129,7 @@ public class Tile {
      * Count the number of ways a given tile can be placed
      * @return the number of ways it can be placed
      */
-    public int countSymmetricPaths(){
+    private int countSymmetricPaths(){
         int count = 1;
         Tile copy = this.copyTile();
         for (int i = 0; i < 3; i++ ){

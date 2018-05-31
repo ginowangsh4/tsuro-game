@@ -73,7 +73,7 @@ public class Board {
     }
 
     /**
-     * Return the splayer with token of the given color
+     * Return the SPlayer with token of the given color
      * @param color color of the token
      * @return
      */
@@ -97,24 +97,28 @@ public class Board {
         return false;
     }
 
+    /**
+     * Add a SPlayer to the board
+     * @param sPlayer SPlayer to be added
+     */
     public void addSPlayer(SPlayer sPlayer){
         if (!sPlayer.getToken().isLegalPosition()){
-            throw new IllegalArgumentException("SPlayer token's position and index are not legal");
+            throw new IllegalArgumentException("SPlayer's token position and index are not legal");
         }
         if(containsSPlayer(sPlayer)){
-            throw new IllegalArgumentException("SPlayer token given already exists on board");
+            throw new IllegalArgumentException("SPlayer's token given already exists on board");
         }
         sPlayerList.add(sPlayer);
     }
 
 
     /**
-     * Remove a splayer from the board
-     * @param sPlayer a splayer to be removed
+     * Remove a SPlayer from the board
+     * @param sPlayer a SPlayer to be removed
      */
     public void removeSPlayer(SPlayer sPlayer) {
         if (!containsSPlayer(sPlayer))
-            throw new IllegalArgumentException("The token given doesn't exist on board");
+            throw new IllegalArgumentException("SPlayer's token doesn't exist on board");
         sPlayerList.remove(sPlayer);
     }
 

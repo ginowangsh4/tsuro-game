@@ -60,9 +60,9 @@ public class SPlayerParser {
         Boolean hasDragon;
         if (sPlayer.getNodeName().equals("splayer-dragon")) {
             hasDragon = true;
-        } else if(sPlayer.getNodeName().equals("splayer-nodragon")){
+        } else if (sPlayer.getNodeName().equals("splayer-nodragon")){
             hasDragon = false;
-        } else{
+        } else {
             throw new Exception("Trying to parse XML document that is not <ent></ent>");
         }
 
@@ -73,7 +73,6 @@ public class SPlayerParser {
         }
 
         Node setTiles = color.getNextSibling();
-
         List<Tile> hand = new ArrayList<>();
         NodeList tileList = setTiles.getChildNodes();
         for(int i = 0; i < tileList.getLength(); i++){
@@ -85,6 +84,4 @@ public class SPlayerParser {
         sp.setHand(hand);
         return hasDragon;
     }
-
-
 }

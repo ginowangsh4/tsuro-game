@@ -33,7 +33,7 @@ public class TileParser implements IParser<Tile> {
         return doc;
     }
 
-    public Element generateConnectElement(Document doc, int start, int end) {
+    private Element generateConnectElement(Document doc, int start, int end) {
         Element connect = doc.createElement("connect");
         Element n1 = doc.createElement("n");
         Element n2 = doc.createElement("n");
@@ -44,7 +44,7 @@ public class TileParser implements IParser<Tile> {
         return connect;
     }
 
-    public int[] parseConnectNode(Document doc, Node connect) {
+    private int[] parseConnectNode(Document doc, Node connect) {
         Node n1 = connect.getFirstChild();
         Node n2 = connect.getLastChild();
         int[] path = new int[2];

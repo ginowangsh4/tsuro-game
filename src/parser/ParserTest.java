@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ParserTest {
     private static DocumentBuilder db;
     private static Parser parser;
+    
     @BeforeAll
     public static void beforeAll() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

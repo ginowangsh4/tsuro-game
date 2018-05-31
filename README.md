@@ -16,9 +16,9 @@ Run with IntelliJ IDEA: Open project -> Right click `test/` -> Click "Run All Te
 
 ### Tournament over network
 
-Run `src/main/Tsuro` to start a localhost server which starts a tournament with one remote player and three machine player.
+Localhost: Run `src/main/Tsuro` to start a localhost server which starts a tournament with one remote player and three machine player.
 
-Then run `src/admin/Admin` to connect with localhost and join the tournament!
+Network Client: Run `src/admin/Admin` to connect with localhost or a remote host to join the tournament `java -cp bin/ tsuro.admin.Admin PORTNUMBER PLAYERNAME STRATEGY(R/MS/LS)`
 
 ### Run from command line 
 

@@ -172,7 +172,8 @@ public class BoardParserTest {
         for(int i = 0; i < board.SIZE; i++){
             for(int j = 0; j<board.SIZE; j++){
                 if(board.board[i][j] != null && expected.board[i][j] != null){
-                    assertTrue(board.board[i][j].isSameTile(expected.board[i][j]),"Generated board is different from expected");
+                    assertTrue(board.board[i][j].isSameTile(expected.board[i][j]),
+                             "Generated board is different from expected");
                 }
                 else if(board.board[i][j] != null || expected.board[i][j] != null){
                     assertTrue(false);
@@ -180,7 +181,8 @@ public class BoardParserTest {
             }
         }
         for(int i = 0; i < board.getSPlayerList().size(); i++) {
-            assertTrue(board.getSPlayerList().get(i).getToken().isSameToken(expected.getSPlayerList().get(i).getToken()),"Generated board is different from expected");
+            assertTrue(board.getSPlayerList().get(i).getToken().isSameToken(expected.getSPlayerList().get(i).getToken()),
+                    "Generated board is different from expected");
         }
     }
 }

@@ -24,15 +24,11 @@ public class MPlayer implements IPlayer {
         return this.name;
     }
 
-    public int getColor() {
-        return this.color;
-    }
-
-    public List<Integer> getColors() {
-        return this.colors;
-    }
-
     public void initialize (int color, List<Integer> colors) {
+        if (state != State.DEAD && state != null) {
+            throw new IllegalArgumentException("Sequence Contracts: Cannot initialize at this time");
+        }
+        state = State.BORN;
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid player's color");
         }
@@ -41,10 +37,6 @@ public class MPlayer implements IPlayer {
                 throw new IllegalArgumentException("Player list contains invalid" + "player color");
             }
         }
-        if (state != State.DEAD && state != null) {
-            throw new IllegalArgumentException("Sequence Contracts: Cannot initialize at this time");
-        }
-        state = State.BORN;
         this.color = color;
         this.colors = colors;
     }
@@ -58,7 +50,6 @@ public class MPlayer implements IPlayer {
         if (!colors.contains(color)){
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
-
         int x = Integer.MAX_VALUE;
         int y = Integer.MAX_VALUE;
         int indexOnTile = Integer.MAX_VALUE;
@@ -88,12 +79,11 @@ public class MPlayer implements IPlayer {
         if (!colors.contains(this.color)){
             throw new IllegalArgumentException("Player is not authorized to place pawn");
         }
-
         List<Tile> legalMoves = new ArrayList<>();
         for (Tile t : hand) {
             Tile copy = t.copyTile();
             for (int i = 0; i < 4; i++) {
-                SPlayer tempPlayer = new SPlayer(b.getSPlayer(getColor()).getToken(), hand);
+                SPlayer tempPlayer = new SPlayer(b.getSPlayer(color).getToken(), hand);
                 tempPlayer.linkPlayer(this);
                 if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
                     legalMoves.add(copy.copyTile());
@@ -101,7 +91,6 @@ public class MPlayer implements IPlayer {
                 copy.rotateTile();
             }
         }
-
         Tile tileToPlay = null;
         switch (strategy) {
             case R: {
@@ -136,7 +125,7 @@ public class MPlayer implements IPlayer {
         this.isWinner = false;
     }
 
-    public int[] findStartPosition() {
+    private int[] findStartPosition() {
         Random rand = new Random();
         int x, y, indexOnTile;
         // choose a random number in {0, 1, 2, 3}

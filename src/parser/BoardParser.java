@@ -116,8 +116,6 @@ public class BoardParser implements IParser<Board> {
             SPlayer sp = new SPlayer(token, null);
             board.addSPlayer(sp);
         }
-
         return board;
     }
-
 }

@@ -62,10 +62,8 @@ public class Token {
      * @return true of the two tokens are the same; false if not
      */
     public boolean isSameToken(Token t) {
-        return color == t.color &&
-                indexOnTile == t.indexOnTile &&
-                position[0] == t.position[0] &&
-                position[1] == t.position[1];
+        return color == t.color && indexOnTile == t.indexOnTile &&
+                position[0] == t.position[0] && position[1] == t.position[1];
     }
 
     /**

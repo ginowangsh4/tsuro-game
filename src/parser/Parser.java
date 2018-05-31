@@ -31,6 +31,7 @@ public class Parser {
         pawnParser = new PawnParser(db);
         sPlayerParser = new SPlayerParser(db);
     }
+
     // ******************************* Network Architecture ***********************************
     //                   ----->              ---||-->        ----->
     //            Server         RemotePlayer   ||     Admin        MPlayer
@@ -76,7 +77,6 @@ public class Parser {
         initialize.appendChild(ac);
         initialize.appendChild(cList);
         doc.appendChild(initialize);
-
         return doc;
     }
 
@@ -148,7 +148,6 @@ public class Parser {
         endGame.appendChild(b);
         endGame.appendChild(cSet);
         doc.appendChild(endGame);
-
         return doc;
     }
 
@@ -160,7 +159,6 @@ public class Parser {
      */
     public Document buildTileListXML(List<Tile> tiles) {
         Document doc = db.newDocument();
-
         Element list = doc.createElement("list");
         for (Tile tile : tiles) {
             Node t = doc.importNode(tileParser.buildXML(tile).getFirstChild(), true);
@@ -300,6 +298,7 @@ public class Parser {
         return tileParser.fromXML(doc);
     }
 
+    // helpers used by playATurnAdapter
     public Document buildWinnersXML(Server server, List<SPlayer> winners) {
         Document winnersRes = db.newDocument();
         if (winners == null) {
@@ -348,7 +347,7 @@ public class Parser {
         return new Pair(inSPlayer, dragonOwner);
     }
 
-    // other helpers
+    // other generic helpers
     public String documentToString(Document doc) throws Exception {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         StreamResult result = new StreamResult(new StringWriter());

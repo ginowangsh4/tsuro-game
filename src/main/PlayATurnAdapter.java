@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("Duplicates")
 public class PlayATurnAdapter {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -31,7 +30,6 @@ public class PlayATurnAdapter {
             String outPlayerStr = br.readLine();
             String boardStr = br.readLine();
             String tileStr = br.readLine();
-
 
             // ***************************************************
             // Parse input XMLs to game objects
@@ -85,19 +83,14 @@ public class PlayATurnAdapter {
             // output to stdout
             printResult(parser, tileRes, inPlayerRes, outPlayerRes, boardRes, winnersRes);
         }
-
     }
 
-    private static void printResult(Parser parser, Document tileRes, Document inPlayerRes,Document outPlayerRes,
-                                    Document boardRes,Document winnersRes) throws Exception {
+    private static void printResult(Parser parser, Document tileRes, Document inPlayerRes,
+                                    Document outPlayerRes, Document boardRes, Document winnersRes) throws Exception {
         System.out.println(parser.documentToString(tileRes));
         System.out.println(parser.documentToString(inPlayerRes));
         System.out.println(parser.documentToString(outPlayerRes));
         System.out.println(parser.documentToString(boardRes));
         System.out.println(parser.documentToString(winnersRes));
     }
-
-
-
-
 }

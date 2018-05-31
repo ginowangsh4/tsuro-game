@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
 
-@SuppressWarnings("Duplicates")
 public class Server {
 
     public Board board;
@@ -53,73 +52,6 @@ public class Server {
     public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, List<SPlayer> winners, List<Integer> colors, Deck drawPile) {
         setState(board, inSPlayer, outSPlayer, winners, drawPile);
         this.colors = colors;
-    }
-
-    /**
-     * Start a tournament over the network with a remote player
-     * @throws Exception
-     */
-    public void startGame() throws Exception {
-        ServerSocket socketListener = new ServerSocket(PORT_NUM);
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-
-            // create players
-            // for remote players, initialize a new socket
-            IPlayer rP = new RemotePlayer(socketListener.accept(), db);
-            IPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "MPlayer 1");
-            IPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "MPlayer 2");
-            IPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "MPlayer 3");
-
-            for (int i = 0; i < 4; i++) {
-                colors.add(i);
-            }
-
-            mP1.initialize(1, colors);
-            mP2.initialize(2, colors);
-            mP3.initialize(3, colors);
-            rP.initialize(0, colors);
-
-            Token t1 = mP1.placePawn(board);
-            server.registerPlayer(mP1, t1);
-            Token t2 = mP2.placePawn(board);
-            server.registerPlayer(mP2, t2);
-            Token t3 = mP3.placePawn(board);
-            server.registerPlayer(mP3, t3);
-            Token t0 = rP.placePawn(board);
-            server.registerPlayer(rP, t0);
-
-            // play game over network
-            while(!server.isGameOver()) {
-                SPlayer currentP = inSPlayer.get(0);
-                System.out.println("Server: current player = " + currentP.getPlayer().getName());
-                Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
-                currentP.deal(tileToPlay);
-                server.playATurn(tileToPlay);
-            }
-
-            // prints
-            List<Integer> winnerColors = server.getCurrentColors();
-            for (SPlayer sPlayer : winners) {
-                System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
-                sPlayer.getPlayer().endGame(server.board, winnerColors);
-            }
-            for (SPlayer sPlayer : outSPlayer) {
-                System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
-                sPlayer.getPlayer().endGame(server.board, winnerColors);
-            }
-            System.out.println("Server: game over? = " + server.gameOver);
-            for (SPlayer sPlayer : server.winners) {
-                System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
-            }
-
-        } catch (ParserConfigurationException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            // close connection
-            socketListener.close();
-        }
     }
 
     /**
@@ -557,6 +489,73 @@ public class Server {
             colors.add(sPlayer.getToken().getColor());
         }
         return colors;
+    }
+
+    /**
+     * Start a tournament over the network with a remote player
+     * @throws Exception
+     */
+    public void startGame() throws Exception {
+        ServerSocket socketListener = new ServerSocket(PORT_NUM);
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            // create players
+            // for remote players, initialize a new socket
+            IPlayer rP = new RemotePlayer(socketListener.accept(), db);
+            IPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "MPlayer 1");
+            IPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "MPlayer 2");
+            IPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "MPlayer 3");
+
+            for (int i = 0; i < 4; i++) {
+                colors.add(i);
+            }
+
+            mP1.initialize(1, colors);
+            mP2.initialize(2, colors);
+            mP3.initialize(3, colors);
+            rP.initialize(0, colors);
+
+            Token t1 = mP1.placePawn(board);
+            server.registerPlayer(mP1, t1);
+            Token t2 = mP2.placePawn(board);
+            server.registerPlayer(mP2, t2);
+            Token t3 = mP3.placePawn(board);
+            server.registerPlayer(mP3, t3);
+            Token t0 = rP.placePawn(board);
+            server.registerPlayer(rP, t0);
+
+            // play game over network
+            while(!server.isGameOver()) {
+                SPlayer currentP = inSPlayer.get(0);
+                System.out.println("Server: current player = " + currentP.getPlayer().getName());
+                Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
+                currentP.deal(tileToPlay);
+                server.playATurn(tileToPlay);
+            }
+
+            // prints
+            List<Integer> winnerColors = server.getCurrentColors();
+            for (SPlayer sPlayer : winners) {
+                System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
+                sPlayer.getPlayer().endGame(server.board, winnerColors);
+            }
+            for (SPlayer sPlayer : outSPlayer) {
+                System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
+                sPlayer.getPlayer().endGame(server.board, winnerColors);
+            }
+            System.out.println("Server: game over? = " + server.gameOver);
+            for (SPlayer sPlayer : server.winners) {
+                System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
+            }
+
+        } catch (ParserConfigurationException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            // close connection
+            socketListener.close();
+        }
     }
 }
 

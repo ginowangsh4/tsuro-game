@@ -10,11 +10,11 @@ import java.util.*;
 
 public class RemotePlayer implements IPlayer {
     public int color;
-    Socket socket;
-    DocumentBuilder db;
-    BufferedReader bufferedReader;
-    PrintWriter printWriter;
-    Parser parser;
+    private Socket socket;
+    private DocumentBuilder db;
+    private BufferedReader bufferedReader;
+    private PrintWriter printWriter;
+    private Parser parser;
 
     public RemotePlayer(Socket socket, DocumentBuilder db) throws IOException {
         this.socket = socket;
@@ -63,7 +63,8 @@ public class RemotePlayer implements IPlayer {
         Pair<int[], Integer> pair = parser.fromPlacePawnXML(outDoc);
         Token token = new Token(this.color, pair.second, pair.first);
 
-        System.out.println("Remote: placePawn complete - player starts at [" + token.getPosition()[0] + ", " + token.getPosition()[1] + "], index " + token.getIndex());
+        System.out.println("Remote: placePawn complete - player starts at [" + token.getPosition()[0] +
+                ", " + token.getPosition()[1] + "], index " + token.getIndex());
         return token;
     }
 

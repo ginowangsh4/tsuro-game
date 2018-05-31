@@ -54,10 +54,8 @@ public class PawnParser {
 
         Node pawnLoc = color.getNextSibling();
         int[] oldPos = parsePawnLocXML(board, pawnLoc);
-        Token token = new Token(colorIndex, oldPos[2], new int[]{oldPos[0], oldPos[1]});
 
-        return token;
-
+        return new Token(colorIndex, oldPos[2], new int[]{oldPos[0], oldPos[1]});
     }
 
     public static int[] parsePawnLocXML(Board board, Node pawnLoc) {
@@ -111,14 +109,10 @@ public class PawnParser {
      * @return true if pawn is on horizontal line
      */
     public Boolean isHorizontal(int index){
-        if(index > 7 || index < 0){
+        if (index > 7 || index < 0) {
             throw new IllegalArgumentException("Index is out of bound");
         }
-        if(index == 0 || index == 1 || index == 4 || index ==5)
-        {
-            return true;
-        }
-        return false;
+        return index == 0 || index == 1 || index == 4 || index == 5;
     }
 
     /**
@@ -141,43 +135,33 @@ public class PawnParser {
      * @return int[2] that represents pawn's location on specs' representation of board
      */
     public int[] getNewPos(int[]pos, int index){
-        if(index < 0 || index > 7){
+        if (index < 0 || index > 7) {
             throw new IllegalArgumentException("Index is out of bound");
         }
         int[] newPos = new int[2];
-
-        if(index == 0 || index == 1){
+        if (index == 0 || index == 1) {
             newPos[0] = pos[1];
-        }
-        else if(index == 2 || index == 3){
+        } else if (index == 2 || index == 3) {
             newPos[0] = pos[0]+1;
-        }
-        else if(index == 4 || index == 5){
+        } else if (index == 4 || index == 5) {
             newPos[0] = pos[1]+1;
-        }
-        else{
+        } else {
             newPos[0] = pos[0];
         }
-
-        if(isHorizontal(index)){
-            if(index == 0 || index == 5){
+        if (isHorizontal(index)) {
+            if(index == 0 || index == 5) {
                 newPos[1] = 2 * pos[0];
-            }
-            else if(index == 1 || index == 4){
+            } else if(index == 1 || index == 4) {
                 newPos[1] = 2 * pos[0] + 1;
-            }
-            else{
+            } else {
                 throw new IllegalArgumentException("Index should not be horizontal");
             }
-        }
-        else{
-            if(index == 2 || index == 7){
+        } else {
+            if(index == 2 || index == 7) {
                 newPos[1] = 2 * pos[1];
-            }
-            else if(index == 3 || index == 6){
+            } else if (index == 3 || index == 6) {
                 newPos[1] = 2 * pos[1] + 1;
-            }
-            else{
+            } else {
                 throw new IllegalArgumentException("Index should not be vertical");
             }
         }
@@ -207,26 +191,22 @@ public class PawnParser {
                     // pawn at upTilePos
                     oldPos[1] = upRow;
                     oldPos[2] = upIndex;
-                }
-                else {
+                } else {
                     // pawn at starting position aka downTilePos
                     oldPos[1] = downRow;
                     oldPos[2] = downIndex;
                 }
-            }
-            else {
+            } else {
                 if (b.board[downPos[0]][downPos[1]] == null){
                     oldPos[1] = upRow;
                     oldPos[2] = upIndex;
-                }
-                else {
+                } else {
                     oldPos[1] = downRow;
                     oldPos[2] = downIndex;
                 }
             }
             oldPos[0] = column;
-        }
-        else {
+        } else {
             int leftIndex = index2 % 2 + 2;
             int rightIndex = Tile.neighborIndex.get(leftIndex);
             int leftColumn = index1 - 1;
@@ -239,18 +219,15 @@ public class PawnParser {
                 if (b.board[leftPos[0]][leftPos[1]] != null){
                     oldPos[0] = leftColumn;
                     oldPos[2] = leftIndex;
-                }
-                else {
+                } else {
                     oldPos[0] = rightColumn;
                     oldPos[2] = rightIndex;
                 }
-            }
-            else {
+            } else {
                 if (b.board[rightPos[0]][rightPos[1]] == null){
                     oldPos[0] = leftColumn;
                     oldPos[2] = leftIndex;
-                }
-                else {
+                } else {
                     oldPos[0] = rightColumn;
                     oldPos[2] = rightIndex;
                 }

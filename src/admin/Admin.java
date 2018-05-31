@@ -14,36 +14,32 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.List;
 
 public class Admin {
-
+    // public static final int PORT_NUM = 12345;
     public static Parser parser;
-    public static final int PORT_NUM = 12345;
     public static MPlayer mPlayer;
 
-    // Enter from stdin "name strategy (M, LS, MS)"
+    // Enter from stdin "PORT_NUMBER PLAYER_NAME STRATEGY(R/MS/LS)"
     public static void main(String[] args) throws Exception {
         // set up connection to local host 
         String hostname = "127.0.0.1";
-        int port = PORT_NUM;
+        int port = Integer.parseInt(args[0]);
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         parser = new Parser(db);
-
         AdminSocket socket = new AdminSocket(hostname, port, db);
-
-        switch (args[1]) {
+        switch (args[2]) {
             case "R":
-                mPlayer = new MPlayer(MPlayer.Strategy.R, args[0]);
+                mPlayer = new MPlayer(MPlayer.Strategy.R, args[1]);
                 break;
             case "LS":
-                mPlayer = new MPlayer(MPlayer.Strategy.LS, args[0]);
+                mPlayer = new MPlayer(MPlayer.Strategy.LS, args[1]);
                 break;
             case "MS":
-                mPlayer = new MPlayer(MPlayer.Strategy.MS, args[0]);
+                mPlayer = new MPlayer(MPlayer.Strategy.MS, args[1]);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid strategy!");
         }
-
         while (socket.connectionEstablished()) {
             String res = socket.readInputFromClient();
             // server has closed the connection
@@ -56,23 +52,15 @@ public class Admin {
                     break;
                 case "initialize":
                     processInitialize(db, socket, node);
-                    System.out.println("["+mPlayer.state.toString()+"]");
-
                     break;
                 case "place-pawn":
                     processPlacePawn(db, socket, node);
-                    System.out.println("["+mPlayer.state.toString()+"]");
-
                     break;
                 case "play-turn":
                     processPlayTurn(db, socket, node);
-                    System.out.println("["+mPlayer.state.toString()+"]");
-
                     break;
                 case "end-game":
                     processEndGame(db, socket, node);
-                    System.out.println("["+mPlayer.state.toString()+"]");
-
                     break;
                 default:
                     break;
