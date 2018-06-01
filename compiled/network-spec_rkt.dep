@@ -1,1 +1,0 @@
-("6.12" ("92669dcd8a2e291add67b61b3203b04928e3e24e" . "b42d3946c670187a4b6463332b9acb296d8a798f") (collects #"racket" #"base.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt") (collects #"rackunit" #"main.rkt") (collects #"redex" #"reduction-semantics.rkt") (collects #"syntax" #"parse.rkt"))
