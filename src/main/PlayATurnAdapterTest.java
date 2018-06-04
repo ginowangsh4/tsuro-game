@@ -33,13 +33,13 @@ public class PlayATurnAdapterTest {
         // parse board XML
         Board board = parser.boardParser.fromXML(parser.stringToDocument(boardStr));
 
-        // parse inSPlayer XML
+        // parse inSPlayers XML
         SPlayer dragonOwner = null;
         Pair<List<SPlayer>, SPlayer> inRes = parser.fromSPlayerListXML(inPlayerStr, board);
         List<SPlayer> inSPlayer = inRes.first;
         dragonOwner = inRes.second;
 
-        // parse outSPlayer XML
+        // parse outSPlayers XML
         Pair<List<SPlayer>, SPlayer> outRes = parser.fromSPlayerListXML(outPlayerStr, board);
         List<SPlayer> outSPlayer = outRes.first;
 

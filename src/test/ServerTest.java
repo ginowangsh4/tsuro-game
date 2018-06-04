@@ -142,10 +142,10 @@ public class ServerTest {
         Token tokenTwo = new Token(1, 0, new int[]{0, 6});
         server.registerPlayer(playerTwo, tokenTwo);
 
-        assertEquals(MPlayer.Strategy.LS, server.inSPlayer.get(0).getMPlayer().strategy, "Player 1's strategy changed");
-        assertEquals(MPlayer.Strategy.R, server.inSPlayer.get(1).getMPlayer().strategy, "Player 2's strategy didn't change to R");
-        assertFalse(server.inSPlayer.get(1).getToken().getIndex() == 0 && server.inSPlayer.get(1).getToken().getPosition()[0] == 0
-                        && server.inSPlayer.get(1).getToken().getPosition()[1] == 6, "Player 2's starting position wasn't updated");
+        assertEquals(MPlayer.Strategy.LS, server.inSPlayers.get(0).getMPlayer().strategy, "Player 1's strategy changed");
+        assertEquals(MPlayer.Strategy.R, server.inSPlayers.get(1).getMPlayer().strategy, "Player 2's strategy didn't change to R");
+        assertFalse(server.inSPlayers.get(1).getToken().getIndex() == 0 && server.inSPlayers.get(1).getToken().getPosition()[0] == 0
+                        && server.inSPlayers.get(1).getToken().getPosition()[1] == 6, "Player 2's starting position wasn't updated");
     }
 
     @Test

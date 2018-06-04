@@ -327,7 +327,7 @@ public class Parser {
     }
 
     public Pair<List<SPlayer>, SPlayer> fromSPlayerListXML(String inSPlayerStr, Board board) throws Exception {
-        // parse inSPlayer XML
+        // parse inSPlayers XML
         List<SPlayer> inSPlayer = new ArrayList<>();
         Document inPlayerDoc = stringToDocument(inSPlayerStr);
         NodeList inPlayerList = inPlayerDoc.getFirstChild().getChildNodes();

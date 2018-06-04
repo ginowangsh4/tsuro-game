@@ -1,13 +1,7 @@
 package tsuro;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import tsuro.parser.BoardParser;
 import tsuro.parser.Parser;
-import tsuro.parser.SPlayerParser;
-import tsuro.parser.TileParser;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,13 +31,13 @@ public class PlayATurnAdapter {
             // parse board XML
             Board board = parser.boardParser.fromXML(parser.stringToDocument(boardStr));
 
-            // parse inSPlayer XML
+            // parse inSPlayers XML
             SPlayer dragonOwner = null;
             Pair<List<SPlayer>, SPlayer> inRes = parser.fromSPlayerListXML(inPlayerStr, board);
             List<SPlayer> inSPlayer = inRes.first;
             dragonOwner = inRes.second;
 
-            // parse outSPlayer XML
+            // parse outSPlayers XML
             Pair<List<SPlayer>, SPlayer> outRes = parser.fromSPlayerListXML(outPlayerStr, board);
             List<SPlayer> outSPlayer = outRes.first;
 
@@ -68,11 +62,11 @@ public class PlayATurnAdapter {
             // parse back deck/draw pile
             Document tileRes = parser.buildTileListXML(server.drawPile.getPile());
 
-            // parse back inSPlayer
-            Document inPlayerRes = parser.buildSPlayerListXML(server, server.inSPlayer);
+            // parse back inSPlayers
+            Document inPlayerRes = parser.buildSPlayerListXML(server, server.inSPlayers);
 
-            // parse back outSPlayer
-            Document outPlayerRes = parser.buildSPlayerListXML(server, server.outSPlayer);
+            // parse back outSPlayers
+            Document outPlayerRes = parser.buildSPlayerListXML(server, server.outSPlayers);
 
             // parse back board
             Document boardRes = parser.boardParser.buildXML(server.board);

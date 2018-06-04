@@ -9,24 +9,24 @@ import java.util.*;
 
 public class Server {
 
+    public final int PORT_NUM = 8000;
+
     public Board board;
     public Deck drawPile;
-    public List<SPlayer> inSPlayer;
-    public List<SPlayer> outSPlayer;
+    public List<SPlayer> inSPlayers;
+    public List<SPlayer> outSPlayers;
     public List<SPlayer> winners;
     public List<Integer> colors;
     public SPlayer dragonHolder = null;
     public boolean gameOver = false;
-
-    public final int PORT_NUM = 8000;
 
     private static Server server = null;
 
     private Server() {
         this.board = new Board();
         this.drawPile = new Deck();
-        this.inSPlayer = new ArrayList<>();
-        this.outSPlayer = new ArrayList<>();
+        this.inSPlayers = new ArrayList<>();
+        this.outSPlayers = new ArrayList<>();
         this.winners = new ArrayList<>();
         this.colors = new ArrayList<>();
     }
@@ -41,8 +41,8 @@ public class Server {
     // both mainly used by unit tests
     public void setState(Board board, List<SPlayer> inSPlayer, List<SPlayer> outSPlayer, List<SPlayer> winners, Deck drawPile) {
         this.board = board;
-        this.inSPlayer = inSPlayer;
-        this.outSPlayer = outSPlayer;
+        this.inSPlayers = inSPlayer;
+        this.outSPlayers = outSPlayer;
         this.winners = winners;
         this.drawPile = drawPile;
         this.dragonHolder = null;
@@ -56,21 +56,21 @@ public class Server {
 
     /**
      * Register a IPlayer with Server; also create corresponding SPlayer
-     * @param player a given player
+     * @param ip a given player
      */
-    public void registerPlayer(IPlayer player, Token token) throws Exception {
+    public void registerPlayer(IPlayer ip, Token token) throws Exception {
         List<Tile> hand = new ArrayList<>();
-        SPlayer splayer = new SPlayer(token, hand);
-        splayer.linkPlayer(player);
+        SPlayer sp = new SPlayer(token, hand);
+        sp.linkPlayer(ip);
         // check if starting position is legal
         if (!token.isStartingPosition() || board.tokenAtSamePosition(token)) {
             System.err.println("Caught cheating: Player starts the game at an illegal position");
-            playerCheatIllegalPawn(splayer);
+            playerCheatIllegalPawn(sp);
         }
-        inSPlayer.add(splayer);
-        board.addSPlayer(splayer);
+        inSPlayers.add(sp);
+        board.addSPlayer(sp);
         for (int i = 0; i < 3; i++){
-            splayer.draw(drawPile.pop());
+            sp.draw(drawPile.pop());
         }
     }
 
@@ -79,44 +79,43 @@ public class Server {
      * 1) the tile is not (a possibly rotated version of) one of the tiles of the SPlayer
      * 2) the placement of the tile is an elimination move for the SPlayer, unless all of
      * the possible moves of all tiles in player's hand are elimination moves,
-     * @param p the player that attempts to place a tile
+     * @param sp the player that attempts to place a tile
      * @param b the board before the tile placement
      * @param t the tile that the player wishes to place on the board
      * @return true if this tile is a legal play
      */
-    public boolean legalPlay(SPlayer p, Board b, Tile t) {
-        // check condition (1) above
-        if (!p.hasTile(t)) {
+    public boolean legalPlay(SPlayer sp, Board b, Tile t) {
+        // check condition (1)
+        if (!sp.hasTile(t)) {
             return false;
         }
-        // check condition (2) above
-        Token currentT = p.getToken();
-        int[] location = Board.getAdjacentLocation(currentT);
+        // check condition (2)
+        Token currT = sp.getToken();
+        int[] location = Board.getAdjacentLocation(currT);
         b.placeTile(t, location[0], location[1]);
-        Token newT = b.simulateMove(currentT);
+        Token newT = b.simulateMove(currT);
         b.deleteTile(location[0], location[1]);
         if (!newT.isOffBoard()){
-            // original rotation is legal without considering other rotations
+            // original rotation is legal, return true
             return true;
         }
-        else {
-            for (Tile tile : p.getHand()) {
-                Tile copy = tile.copyTile();
-                for (int i = 0; i < 4; i++) {
-                    copy.rotateTile();
-                    b.placeTile(copy, location[0], location[1]);
-                    newT = b.simulateMove(currentT);
-                    b.deleteTile(location[0], location[1]);
-                    if (!newT.isOffBoard()) {
-                        // original rotation is illegal, as there is at least one
-                        // 1. other legal rotation of this tile
-                        // 2. other legal tile
-                        return false;
-                    }
+        // try placing other tiles and rotations
+        for (Tile tile : sp.getHand()) {
+            Tile copy = tile.copyTile();
+            for (int i = 0; i < 4; i++) {
+                copy.rotateTile();
+                b.placeTile(copy, location[0], location[1]);
+                newT = b.simulateMove(currT);
+                b.deleteTile(location[0], location[1]);
+                if (!newT.isOffBoard()) {
+                    // original rotation is illegal for one of below is true:
+                    // 1. one other rotation of this tile is legal
+                    // 2. one other tile with some rotation is legal
+                    return false;
                 }
             }
         }
-        // all possible moves lead to elimination
+        // all possible moves lead to elimination, current move is legal
         return true;
     }
 
@@ -124,22 +123,22 @@ public class Server {
      * Computes the state of the game after the completion of a turn given the state of the game before the turn
      * @param t the tile to be placed on that board
      * @return the list of winner if the game is over; otherwise return null
-     *         (drawPile, inSPlayer, outSPlayer are themselves updated and updated in server's fields)
+     *         (drawPile, inSPlayers, outSPlayers are themselves updated and updated in server's fields)
      */
     public List<SPlayer> playATurn(Tile t) throws Exception {
-        SPlayer currentP = inSPlayer.get(0);
+        SPlayer currentP = inSPlayers.get(0);
         // *****************************************
         // ****** Step 1: Contract Validation ******
         // *****************************************
-        // check if SPlayer is cheating by purposefully playing an illegal move
+        // check if SPlayer is cheating by playing an illegal move
         currentP.draw(t);
         if (!legalPlay(currentP, board, t)) {
             System.err.println("Caught cheating: Player tried to play an illegal tile while holding at least one other legal tile");
             t = playerCheatIllegalTile(currentP);
         }
         currentP.deal(t);
-        // check if this SPlayer's hand is legal at the start of this turn
-        legalHand(currentP);
+        // check if this SPlayer's hand is legal
+        checkLegalHand(currentP);
 
         // ***********************************************
         // ****** Step 2: Board & Player Operation *******
@@ -147,11 +146,10 @@ public class Server {
         // place tile on the board
         int[] location = Board.getAdjacentLocation(currentP.getToken());
         board.placeTile(t, location[0], location[1]);
-        // move all remaining SPlayers
+        // move all remaining active SPlayers
         List<SPlayer> deadP = new ArrayList<>();
-        for (int i = 0; i < inSPlayer.size(); i++)
-        {
-            SPlayer player = inSPlayer.get(i);
+        for (int i = 0; i < inSPlayers.size(); i++) {
+            SPlayer player = inSPlayers.get(i);
             Token token = board.simulateMove(player.getToken());
             player.updateToken(token);
             if (token.isOffBoard()) {
@@ -168,8 +166,8 @@ public class Server {
             }
         }
         // move the current SPlayer
-        inSPlayer.remove(0);
-        inSPlayer.add(currentP);
+        inSPlayers.remove(0);
+        inSPlayers.add(currentP);
 
         // ****************************************
         // ** Step 3: Update Game Over Condition **
@@ -181,9 +179,9 @@ public class Server {
         }
         // game not over, eliminate SPlayers
         returnHandToDeck(deadP);
-        eliminatePlayers(deadP);
+        eliminateSPlayers(deadP);
         drawAndPassDragon();
-        outSPlayer.addAll(deadP);
+        outSPlayers.addAll(deadP);
         return null;
     }
 
@@ -196,72 +194,72 @@ public class Server {
         // game over if board is full
         if (board.isFull()) {
             gameOver = true;
-            if (inSPlayer.size() == deadP.size()) {
-                inSPlayer.clear();
-                outSPlayer.addAll(deadP);
+            if (inSPlayers.size() == deadP.size()) {
+                inSPlayers.clear();
+                outSPlayers.addAll(deadP);
                 winners.addAll(deadP);
                 returnHandToDeck(deadP);
             } else {
-                outSPlayer.addAll(deadP);
+                outSPlayers.addAll(deadP);
                 returnHandToDeck(deadP);
-                eliminatePlayers(deadP);
-                winners.addAll(inSPlayer);
+                eliminateSPlayers(deadP);
+                winners.addAll(inSPlayers);
                 drawAndPassDragon();
             }
         }
         // game over if all remaining SPlayers are eliminated at this round
-        else if (inSPlayer.size() == deadP.size()) {
+        else if (inSPlayers.size() == deadP.size()) {
             gameOver = true;
-            inSPlayer.clear();
-            outSPlayer.addAll(deadP);
+            inSPlayers.clear();
+            outSPlayers.addAll(deadP);
             winners.addAll(deadP);
             returnHandToDeck(deadP);
         }
         // game over if only one SPlayer remains
-        else if ((inSPlayer.size() - deadP.size()) == 1) {
+        else if ((inSPlayers.size() - deadP.size()) == 1) {
             gameOver = true;
-            outSPlayer.addAll(deadP);
+            outSPlayers.addAll(deadP);
             returnHandToDeck(deadP);
-            eliminatePlayers(deadP);
-            winners.addAll(inSPlayer);
+            eliminateSPlayers(deadP);
+            winners.addAll(inSPlayers);
             drawAndPassDragon();
         }
     }
 
     /**
      * Handle elimination mechanism of a server player
-     * @param deadPlayers the players to eliminate from the game
+     * @param deadSPlayers the players to eliminate from the game
      */
-    private void eliminatePlayers(List<SPlayer> deadPlayers) throws Exception {
-        for (SPlayer deadP : deadPlayers) {
-            int pIndex = Integer.MAX_VALUE;
-            for (SPlayer inP : inSPlayer) {
-                if (deadP.isSameSPlayer(inP)) {
-                    pIndex = inSPlayer.indexOf(inP);
+    private void eliminateSPlayers(List<SPlayer> deadSPlayers) throws Exception {
+        for (SPlayer deadP : deadSPlayers) {
+            int pi = Integer.MAX_VALUE;
+            for (SPlayer inSPlayer : inSPlayers) {
+                if (deadP.isSameSPlayer(inSPlayer)) {
+                    pi = this.inSPlayers.indexOf(inSPlayer);
                 }
             }
-            if (pIndex == Integer.MAX_VALUE) {
+            if (pi == Integer.MAX_VALUE) {
                 throw new Exception("Cannot eliminate player");
             }
-            SPlayer p = inSPlayer.get(pIndex);
+            SPlayer sp = inSPlayers.get(pi);
             // assign dragon holder to be the next player
-            if (p.equals(dragonHolder)) {
-                int index = findNextHolder(pIndex);
-                dragonHolder = index == -1 ? null : inSPlayer.get(index);
+            if (sp.equals(dragonHolder)) {
+                int index = findNextHolder(pi);
+                dragonHolder = index == -1 ? null : inSPlayers.get(index);
             }
-            inSPlayer.remove(pIndex);
-            // System.out.println("Player " + p.getName() + " eliminated!");
+            inSPlayers.remove(pi);
+            // System.out.println("Player " + sp.getName() + " eliminated!");
         }
     }
 
     /**
      * Return a list of server player's hand back to deck
-     * @param deadPlayers the players to return their hand
+     * @param deadSPlayers the players to return their hand
      */
-    private void returnHandToDeck(List<SPlayer> deadPlayers) {
-        for (SPlayer deadP : deadPlayers) {
-            drawPile.addAndShuffle(deadP.getHand());
-            deadP.getHand().clear();
+    private void returnHandToDeck(List<SPlayer> deadSPlayers) {
+        for (SPlayer deadSPlayer : deadSPlayers) {
+            drawPile.addAndShuffle(deadSPlayer.getHand());
+            deadSPlayer.getHand().clear();
         }
     }
 
@@ -290,10 +288,10 @@ public class Server {
     }
 
     /**
-     * Check whether player's hand is legal against behavior contracts
+     * Check whether player's hand is legal against a set of behavior contracts
      * @param p current player
      */
-    private void legalHand(SPlayer p) {
+    private void checkLegalHand(SPlayer p) {
         List<Tile> hand = p.getHand();
         if (hand == null ||hand.size() == 0) {
             return;
@@ -303,7 +301,7 @@ public class Server {
             throw new IllegalArgumentException("Player's hand illegal: more than 3 tiles on hand");
         }
         List<Tile> inHands = new ArrayList<>();
-        for (SPlayer player : inSPlayer) {
+        for (SPlayer player : inSPlayers) {
             inHands.addAll(player.getHand());
         }
         for (Tile playerTile : hand) {
@@ -354,11 +352,11 @@ public class Server {
 
     /**
      * Assign dragon tile to a player
-     * @param p the player to assign to
+     * @param sp the player to assign to
      */
-    public void giveDragon(SPlayer p) {
+    public void giveDragon(SPlayer sp) {
         if (dragonHolder == null) {
-            dragonHolder = p;
+            dragonHolder = sp;
         }
     }
 
@@ -370,7 +368,7 @@ public class Server {
         if (dragonHolder == null) {
             return;
         }
-        int index = inSPlayer.indexOf(dragonHolder);
+        int index = inSPlayers.indexOf(dragonHolder);
         while (!drawPile.isEmpty()) {
             dragonHolder.getHand().add(drawPile.pop());
             // if game over, dragon holder tries to draw until full hand
@@ -385,7 +383,7 @@ public class Server {
                 dragonHolder = null;
                 return;
             }
-            dragonHolder = inSPlayer.get(index);
+            dragonHolder = inSPlayers.get(index);
         }
     }
 
@@ -396,9 +394,9 @@ public class Server {
      */
     public int findNextHolder(int index) {
         int i = 0;
-        while (i < inSPlayer.size() - 1) {
-            index = (index + 1) % inSPlayer.size();
-            if (inSPlayer.get(index).getHand().size() < 3) {
+        while (i < inSPlayers.size() - 1) {
+            index = (index + 1) % inSPlayers.size();
+            if (inSPlayers.get(index).getHand().size() < 3) {
                 return index;
             }
             i++;
@@ -437,7 +435,7 @@ public class Server {
      */
     public List<Integer> getCurrentColors() throws Exception {
         List<Integer> colors = new ArrayList<>();
-        for (SPlayer sPlayer : inSPlayer) {
+        for (SPlayer sPlayer : inSPlayers) {
             colors.add(sPlayer.getToken().getColor());
         }
         return colors;
@@ -480,7 +478,7 @@ public class Server {
 
             // play game over network
             while(!server.isGameOver()) {
-                SPlayer currentP = inSPlayer.get(0);
+                SPlayer currentP = inSPlayers.get(0);
                 System.out.println("Server: current player = " + currentP.getPlayer().getName());
                 Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
                 currentP.deal(tileToPlay);
@@ -493,7 +491,7 @@ public class Server {
                 System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winnerColors);
             }
-            for (SPlayer sPlayer : outSPlayer) {
+            for (SPlayer sPlayer : outSPlayers) {
                 System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
                 sPlayer.getPlayer().endGame(server.board, winnerColors);
             }

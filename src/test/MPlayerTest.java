@@ -138,7 +138,7 @@ public class MPlayerTest {
         server.playATurn(t);
 
         assertEquals(1, winners.size(), "check winner list");
-        assertEquals(0, outSPlayer.size(), "check outSPlayer list");
+        assertEquals(0, outSPlayer.size(), "check outSPlayers list");
         assertTrue(Arrays.equals(winners.get(0).getToken().getPosition(), new int[] {0, 1}), "check SPlayer 1 token position");
         assertEquals(4, winners.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
@@ -185,7 +185,7 @@ public class MPlayerTest {
         server.playATurn(t);
 
         assertEquals(1, winners.size(), "check winner list");
-        assertEquals(0, outSPlayer.size(), "check outSPlayer list");
+        assertEquals(0, outSPlayer.size(), "check outSPlayers list");
         assertTrue(Arrays.equals(winners.get(0).getToken().getPosition(), new int[] {0, 1}), "check SPlayer 1 token position");
         assertEquals(3, winners.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
@@ -233,7 +233,7 @@ public class MPlayerTest {
         server.playATurn(t);
 
         assertEquals(1, winners.size(), "check winner list");
-        assertEquals(0, outSPlayer.size(), "check outSPlayer list");
+        assertEquals(0, outSPlayer.size(), "check outSPlayers list");
         assertTrue(Arrays.equals(winners.get(0).getToken().getPosition(), new int[] {0, 0}), "check SPlayer 1 token position");
         assertEquals(3, winners.get(0).getToken().getIndex(),"check SPlayer 1 token index");
     }
