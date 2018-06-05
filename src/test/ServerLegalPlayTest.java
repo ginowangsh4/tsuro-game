@@ -18,7 +18,7 @@ public class ServerLegalPlayTest {
     @Test
     public void legalPlayTest1() {
         b = new Board();
-        token = new Token(0, 4, new int[]{0, 0});
+        token = new Token(0, new int[]{0, 0}, 4);
         tile = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         List<Tile> hand = new ArrayList<>();
         p = new SPlayer(token, hand);
@@ -31,7 +31,7 @@ public class ServerLegalPlayTest {
     @Test
     public void legalPlayTest2() {
         b = new Board();
-        token = new Token(0, 4,new int[] {0,0});
+        token = new Token(0, new int[] {0,0}, 4);
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         Tile tile2= new Tile(new int[][] {{0,5}, {1,2}, {3,6}, {4,7}});
         b.placeTile(tile1, 0, 0);
@@ -48,7 +48,7 @@ public class ServerLegalPlayTest {
     @Test
     public void legalPlayTest3() {
         b = new Board();
-        token = new Token(0, 1, new int[]{0, 1});
+        token = new Token(0, new int[]{0, 1}, 1);
         Tile tile1 = new Tile(new int[][]{{0, 7}, {1, 4}, {2, 5}, {3, 6}});
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][]{{0, 5}, {1, 4}, {2, 7}, {3, 6}});
@@ -65,7 +65,7 @@ public class ServerLegalPlayTest {
     @Test
     public void legalPlayTest4() {
         b = new Board();
-        token = new Token(0, 1,new int[] {0,1});
+        token = new Token(0, new int[] {0,1}, 1);
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
@@ -82,7 +82,7 @@ public class ServerLegalPlayTest {
     @Test
     public void legalPlayTest5() {
         b = new Board();
-        token = new Token(0, 1,new int[] {0,1});
+        token = new Token(0, new int[] {0,1}, 1);
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         List<Tile> hand = new ArrayList<>();
@@ -96,7 +96,7 @@ public class ServerLegalPlayTest {
     @Test
     public void legalPlayTest6() {
         b = new Board();
-        token = new Token(0, 4,new int[] {0,0});
+        token = new Token(0, new int[] {0,0}, 4);
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         b.placeTile(tile1, 0, 0);
         tile = new Tile(new int[][] {{0,2}, {1,7}, {3,4}, {5,6}});
@@ -111,7 +111,7 @@ public class ServerLegalPlayTest {
     @Test
     public void legalPlayTest7() {
         b = new Board();
-        token = new Token(0, 1,new int[] {0,1});
+        token = new Token(0, new int[] {0,1}, 1);
         Tile tile1 = new Tile(new int[][] {{0,7}, {1,4}, {2,5}, {3,6}});
         b.placeTile(tile1, 0, 1);
         tile = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});

@@ -21,9 +21,9 @@ public class DragonTest {
     public void dragonTest1(){
         b = new Board();
         deck = new Deck();
-        t1 = new Token(1, 4, new int[]{0, -1});
-        t2 = new Token(2, 2, new int[]{-1, 3});
-        t3 = new Token(3, 0, new int[]{3, 6});
+        t1 = new Token(1, new int[]{0, -1}, 4);
+        t2 = new Token(2, new int[]{-1, 3}, 2);
+        t3 = new Token(3, new int[]{3, 6}, 0);
         p1 = new SPlayer(t1, new ArrayList<>());
         p2 = new SPlayer(t2, new ArrayList<>());
         p3 = new SPlayer(t3, new ArrayList<>());
@@ -101,9 +101,9 @@ public class DragonTest {
         Tile tile9 = new Tile(new int[][]{{0, 4}, {1, 5}, {2, 6}, {3, 7}});
         pile.add(tile9);
         deck = new Deck(pile);
-        t1 = new Token(1, 4, new int[]{0, -1});
-        t2 = new Token(2, 2, new int[]{-1, 3});
-        t3 = new Token(3, 0, new int[]{3, 6});
+        t1 = new Token(1, new int[]{0, -1}, 4);
+        t2 = new Token(2, new int[]{-1, 3}, 2);
+        t3 = new Token(3, new int[]{3, 6}, 0);
         p1 = new SPlayer(t1, new ArrayList<>());
         p2 = new SPlayer(t2, new ArrayList<>());
         p3 = new SPlayer(t3, new ArrayList<>());
@@ -161,9 +161,9 @@ public class DragonTest {
         b.placeTile(tb2, 2, 1);
         b.placeTile(tb3, 1, 2);
         b.placeTile(tb4, 0, 2);
-        t1 = new Token(1, 3, new int[]{1, 2});
-        t2 = new Token(2, 5, new int[]{2, 1});
-        t3 = new Token(3, 6, new int[]{4, 4});
+        t1 = new Token(1, new int[]{1, 2}, 3);
+        t2 = new Token(2, new int[]{2, 1}, 5);
+        t3 = new Token(3, new int[]{4, 4}, 6);
         p1 = new SPlayer(t1, new ArrayList<>());
         p2 = new SPlayer(t2, new ArrayList<>());
         p3 = new SPlayer(t3, new ArrayList<>());
@@ -219,9 +219,9 @@ public class DragonTest {
         b.placeTile(tb2, 2, 1);
         b.placeTile(tb3, 1, 2);
         b.placeTile(tb4, 0, 2);
-        t1 = new Token(1, 3, new int[]{1, 2});
-        t2 = new Token(2, 5, new int[]{2, 1});
-        t3 = new Token(3, 6, new int[]{4, 4});
+        t1 = new Token(1, new int[]{1, 2}, 3);
+        t2 = new Token(2, new int[]{2, 1}, 5);
+        t3 = new Token(3, new int[]{4, 4}, 6);
         p1 = new SPlayer(t1, new ArrayList<>());
         p2 = new SPlayer(t2, new ArrayList<>());
         p3 = new SPlayer(t3, new ArrayList<>());
@@ -276,9 +276,9 @@ public class DragonTest {
         b.placeTile(tb2, 2, 1);
         b.placeTile(tb3, 1, 2);
         b.placeTile(tb4, 0, 2);
-        t1 = new Token(1, 2, new int[]{1, 2});
-        t2 = new Token(2, 5, new int[]{2, 1});
-        t3 = new Token(3, 6, new int[]{4, 4});
+        t1 = new Token(1, new int[]{1, 2}, 2);
+        t2 = new Token(2, new int[]{2, 1}, 5);
+        t3 = new Token(3, new int[]{4, 4}, 6);
         p1 = new SPlayer(t1, new ArrayList<>());
         p2 = new SPlayer(t2, new ArrayList<>());
         p3 = new SPlayer(t3, new ArrayList<>());

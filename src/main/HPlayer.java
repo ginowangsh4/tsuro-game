@@ -101,6 +101,6 @@ public class HPlayer implements IPlayer {
             indexOnTile = Tile.neighborIndex.get(index % 2 + 2);
         }
         int[] pos = new int[]{x,y};
-        return new Token(colorIndex, indexOnTile, pos);
+        return new Token(colorIndex, pos, indexOnTile);
     }
 }

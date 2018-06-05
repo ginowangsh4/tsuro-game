@@ -33,7 +33,7 @@ public class SPlayerParserTest {
     @Test
     public void buildXMLTest() throws Exception {
         int[] pos= new int[]{4, 5};
-        Token token = new Token(0,1,pos);
+        Token token = new Token(0, pos, 1);
         List<Tile> hand = new ArrayList<>();
         Tile tile = new Tile(new int[][] {{0,4},{1,7},{2,3},{5,6}});
         hand.add(tile);
@@ -76,7 +76,7 @@ public class SPlayerParserTest {
         Document doc = db.parse(is);
 
         int[] pos= new int[]{4, 5};
-        Token token = new Token(0,1,pos);
+        Token token = new Token(0, pos, 1);
         SPlayer sp = new SPlayer(token, null);
         
         Boolean hasDragon = parser.fromXML(doc, sp);

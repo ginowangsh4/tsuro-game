@@ -34,7 +34,7 @@ public class Parser {
 
     // ******************************* Network Architecture ***********************************
     //                   ----->              ---||-->        ----->
-    //            Server         RemotePlayer   ||     Admin        MPlayer
+    //            Server         RemotePlayer   ||     Admin        IPlayer
     //                   <-----              <--||---        <-----
     // ****************************************************************************************
 
@@ -298,7 +298,11 @@ public class Parser {
         return tileParser.fromXML(doc);
     }
 
-    // helpers used by playATurnAdapter
+
+    // ****************************************************************************************
+    // ************************ Helpers used by playATurnAdapter ******************************
+    // ****************************************************************************************
+
     public Document buildWinnersXML(Server server, List<SPlayer> winners) {
         Document winnersRes = db.newDocument();
         if (winners == null) {
@@ -347,7 +351,10 @@ public class Parser {
         return new Pair(inSPlayer, dragonOwner);
     }
 
-    // other generic helpers
+    // ****************************************************************************************
+    // ***************************** Other generic helpers ************************************
+    // ****************************************************************************************
+
     public String documentToString(Document doc) throws Exception {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         StreamResult result = new StreamResult(new StringWriter());

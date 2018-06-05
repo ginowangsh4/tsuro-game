@@ -97,11 +97,11 @@ public class ServerTest {
         mP2.initialize(2, colors);
         mP3.initialize(3, colors);
 
-        Token t1 = new Token(1, 1, new int[]{1, 1});
+        Token t1 = new Token(1, new int[]{1, 1}, 1);
         server.registerPlayer(mP1, t1);
-        Token t2 = new Token(2, 2, new int[]{2, 2});
+        Token t2 = new Token(2, new int[]{2, 2}, 2);
         server.registerPlayer(mP2, t2);
-        Token t3 = new Token(3, 3, new int[]{3, 3});
+        Token t3 = new Token(3, new int[]{3, 3}, 3);
         server.registerPlayer(mP3, t3);
 
         while (!server.isGameOver()) {
@@ -135,11 +135,11 @@ public class ServerTest {
         server.setState(board, inSPlayer, outSPlayer, winners, colors, deck);
 
         playerOne.initialize(0, colors);
-        Token tokenOne = new Token(0, 0, new int[]{0, 6});
+        Token tokenOne = new Token(0, new int[]{0, 6}, 0);
         server.registerPlayer(playerOne, tokenOne);
 
         playerTwo.initialize(1, colors);
-        Token tokenTwo = new Token(1, 0, new int[]{0, 6});
+        Token tokenTwo = new Token(1, new int[]{0, 6}, 0);
         server.registerPlayer(playerTwo, tokenTwo);
 
         assertEquals(MPlayer.Strategy.LS, server.inSPlayers.get(0).getMPlayer().strategy, "Player 1's strategy changed");

@@ -38,7 +38,7 @@ class PawnParserTest {
         InputStream is = new ByteArrayInputStream(buffer.getBytes());
         Document expected, doc;
         int[] pos= new int[]{4, 5};
-        Token token = new Token(1,1,pos);
+        Token token = new Token(1, pos, 1);
         expected = db.parse(is);
         doc = parser.buildXML(token);
         assertTrue(expected.isEqualNode(doc),"Parsing token does not give the expected XML");
@@ -59,7 +59,7 @@ class PawnParserTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Token expected = new Token(1,2,new int[]{-1,2});
+        Token expected = new Token(1, new int[]{-1,2}, 2);
         assertTrue(token.isSameToken(expected),"Generated token is different from expected");
     }
 

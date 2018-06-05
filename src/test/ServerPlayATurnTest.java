@@ -32,8 +32,8 @@ public class ServerPlayATurnTest {
         b.placeTile(tile2, 2, 1);
         b.placeTile(tile4, 1, 2);
         b.placeTile(tile5, 0, 2);
-        Token token1 = new Token(0, 2,new int[] {1,2});
-        Token token2 = new Token(1, 5,new int[] {2,1});
+        Token token1 = new Token(0, new int[] {1,2}, 2);
+        Token token2 = new Token(1, new int[] {2,1}, 5);
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
         SPlayer SPlayer1 = new SPlayer(token1, hand1);
@@ -79,8 +79,8 @@ public class ServerPlayATurnTest {
         b.placeTile(tile3, 2, 2);
         b.placeTile(tile4, 1, 2);
         b.placeTile(tile5, 0, 2);
-        Token token1 = new Token(0, 1,new int[] {2,2});
-        Token token2 = new Token(1, 5,new int[] {2,0});
+        Token token1 = new Token(0, new int[] {2,2}, 1);
+        Token token2 = new Token(1, new int[] {2,0}, 5);
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
         SPlayer SPlayer1 = new SPlayer(token1, hand1);
@@ -125,8 +125,8 @@ public class ServerPlayATurnTest {
         b.placeTile(tile2, 2, 1);
         b.placeTile(tile4, 1, 2);
         b.placeTile(tile5, 0, 2);
-        Token token1 = new Token(0, 3, new int[] {1,2});
-        Token token2 = new Token(1, 5, new int[] {2,1});
+        Token token1 = new Token(0, new int[] {1,2}, 3);
+        Token token2 = new Token(1, new int[] {2,1}, 5);
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
         SPlayer SPlayer1 = new SPlayer(token1, hand1);
@@ -164,8 +164,8 @@ public class ServerPlayATurnTest {
         b = new Board();
         Tile tile1 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
         Tile tile2 = new Tile(new int[][] {{0,5}, {1,4}, {2,7}, {3,6}});
-        Token token1 = new Token(0, 4, new int[] {1,-1});
-        Token token2 = new Token(1, 4, new int[] {3,-1});
+        Token token1 = new Token(0, new int[] {1,-1}, 4);
+        Token token2 = new Token(1, new int[] {3,-1}, 4);
         List<Tile> hand1 = new ArrayList<>();
         List<Tile> hand2 = new ArrayList<>();
         SPlayer SPlayer1 = new SPlayer(token1, hand1);

@@ -47,7 +47,7 @@ public class MPlayer implements IPlayer {
                 }
             }
         }
-        return new Token(color, pos[2], new int[]{pos[0], pos[1]});
+        return new Token(color, new int[]{pos[0], pos[1]}, pos[2]);
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {

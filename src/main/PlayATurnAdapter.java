@@ -2,7 +2,6 @@ package tsuro;
 
 import org.w3c.dom.Document;
 import tsuro.parser.Parser;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
@@ -16,7 +15,11 @@ public class PlayATurnAdapter {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Parser parser = new Parser(db);
+
         while (true) {
+            // ***************************************************
+            // Parse input XMLs to game objects
+            // ***************************************************
             // input from stdin
             String deckStr = br.readLine();
             if (deckStr == null) break;
@@ -25,9 +28,6 @@ public class PlayATurnAdapter {
             String boardStr = br.readLine();
             String tileStr = br.readLine();
 
-            // ***************************************************
-            // Parse input XMLs to game objects
-            // ***************************************************
             // parse board XML
             Board board = parser.boardParser.fromXML(parser.stringToDocument(boardStr));
 
@@ -49,7 +49,7 @@ public class PlayATurnAdapter {
             Deck deck = new Deck(tileList);
 
             // ***************************************************
-            // Play a turn
+            // Now call play a turn
             // ***************************************************
             Server server = Server.getInstance();
             server.setState(board, inSPlayer, outSPlayer, new ArrayList<>(), deck);
@@ -57,21 +57,21 @@ public class PlayATurnAdapter {
             List<SPlayer> winners = server.playATurn(tileToPlay);
 
             // ***************************************************
-            // Parse game objects to output XMLs
+            // Parse game objects back to output XMLs
             // ***************************************************
-            // parse back deck/draw pile
+            // build deck/draw pile XML
             Document tileRes = parser.buildTileListXML(server.drawPile.getPile());
 
-            // parse back inSPlayers
+            // build inSPlayers XML
             Document inPlayerRes = parser.buildSPlayerListXML(server, server.inSPlayers);
 
-            // parse back outSPlayers
+            // build outSPlayers XML
             Document outPlayerRes = parser.buildSPlayerListXML(server, server.outSPlayers);
 
-            // parse back board
+            // build board XML
             Document boardRes = parser.boardParser.buildXML(server.board);
 
-            // parse back winners
+            // build winners XML
             Document winnersRes = parser.buildWinnersXML(server, winners);
 
             // output to stdout

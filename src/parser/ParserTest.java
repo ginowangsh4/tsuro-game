@@ -122,8 +122,8 @@ public class ParserTest {
         board.placeTile(t1,0,5);
         board.placeTile(t2,3,2);
         board.placeTile(t3,4,1);
-        Token token1 = new Token(0, 2, new int[] {0, 5});
-        Token token2 = new Token(1, 5, new int[] {4, 1});
+        Token token1 = new Token(0, new int[] {0, 5}, 2);
+        Token token2 = new Token(1, new int[] {4, 1}, 5);
         SPlayer sp1 = new SPlayer(token1, null);
         SPlayer sp2 = new SPlayer(token2, null);
         board.addSPlayer(sp1);
@@ -197,8 +197,8 @@ public class ParserTest {
         board.placeTile(t1,0,5);
         board.placeTile(t2,3,2);
         board.placeTile(t3,4,1);
-        Token token1 = new Token(0, 2,new int[] {0,5});
-        Token token2 = new Token(1, 5,new int[] {4,1});
+        Token token1 = new Token(0, new int[] {0,5}, 2);
+        Token token2 = new Token(1, new int[] {4,1}, 5);
         SPlayer sp1 = new SPlayer(token1, null);
         SPlayer sp2 = new SPlayer(token2, null);
         board.addSPlayer(sp1);
@@ -268,8 +268,8 @@ public class ParserTest {
         board.placeTile(t1,0,5);
         board.placeTile(t2,3,2);
         board.placeTile(t3,4,1);
-        Token token1 = new Token(0, 2,new int[] {0,5});
-        Token token2 = new Token(1, 5,new int[] {4,1});
+        Token token1 = new Token(0, new int[] {0,5}, 2);
+        Token token2 = new Token(1, new int[] {4,1}, 5);
         SPlayer sp1 = new SPlayer(token1, null);
         SPlayer sp2 = new SPlayer(token2, null);
         board.addSPlayer(sp1);
@@ -362,7 +362,7 @@ public class ParserTest {
         Board board = new Board();
         Tile tile = new Tile(new int[][]{{0, 6}, {1, 5}, {2, 4}, {3, 7}});
         board.placeTile(tile, 0, 0);
-        Token token = new Token(1, 4, new int[] {0, 0});
+        Token token = new Token(1, new int[] {0, 0}, 4);
         SPlayer sp = new SPlayer(token, null);
         board.addSPlayer(sp);
 

@@ -58,7 +58,7 @@ public class RemotePlayer implements IPlayer {
         // from socket
         Document outDoc = parser.stringToDocument(bufferedReader.readLine());
         Pair<int[], Integer> pair = parser.fromPlacePawnXML(outDoc);
-        Token token = new Token(this.color, pair.second, pair.first);
+        Token token = new Token(this.color, pair.first, pair.second);
 
         System.out.println("Remote: placePawn complete - player starts at [" + token.getPosition()[0] +
                 ", " + token.getPosition()[1] + "], index " + token.getIndex());
@@ -66,8 +66,7 @@ public class RemotePlayer implements IPlayer {
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
-        Set<Tile> handSet = new HashSet<>();
-        handSet.addAll(hand);
+        Set<Tile> handSet = new HashSet<>(hand);
         // to socket
         Document inDoc = parser.buildPlayTurnXML(b, handSet, tilesLeft);
         printWriter.println(parser.documentToString(inDoc));
@@ -82,8 +81,7 @@ public class RemotePlayer implements IPlayer {
     }
 
     public void endGame(Board b, List<Integer> colors) throws Exception {
-        Set<Integer> colorsSet = new HashSet<>();
-        colorsSet.addAll(colors);
+        Set<Integer> colorsSet = new HashSet<>(colors);
         // to socket
         Document inDoc = parser.buildEndGameXML(b, colorsSet);
         printWriter.println(parser.documentToString(inDoc));

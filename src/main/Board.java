@@ -184,7 +184,7 @@ public class Board {
         int pathStart = Tile.neighborIndex.get(token.getIndex());
         int pathEnd = nextTile.getPathEnd(pathStart);
         // recursion step
-        Token nt = new Token(token.getColor(), pathEnd, newPosition);
+        Token nt = new Token(token.getColor(), newPosition, pathEnd);
         return simulateMove(nt);
     }
 

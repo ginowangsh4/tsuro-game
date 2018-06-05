@@ -55,10 +55,10 @@ public class PawnParser {
         Node pawnLoc = color.getNextSibling();
         int[] oldPos = parsePawnLocXML(board, pawnLoc);
 
-        return new Token(colorIndex, oldPos[2], new int[]{oldPos[0], oldPos[1]});
+        return new Token(colorIndex, new int[]{oldPos[0], oldPos[1]}, oldPos[2]);
     }
 
-    public static int[] parsePawnLocXML(Board board, Node pawnLoc) {
+    public int[] parsePawnLocXML(Board board, Node pawnLoc) {
         Boolean horizontal = false;
         Node orientation = pawnLoc.getFirstChild();
         if(orientation.getNodeName().equals("h")) {
@@ -169,23 +169,23 @@ public class PawnParser {
     }
 
     /**
-     * @param index1 line number
-     * @param index2 the index on line
+     * @param n1 line number
+     * @param n2 the index on line
      * @param horizontal whether the pawn is at a horizontal line or vertical line
      * @param b board with tiles placed on it
      * @return {x, y, indexOnTile} as how tokens are represented in the game
      */
-    public static int[] getOldPos(int index1, int index2, Boolean horizontal, Board b){
+    public int[] getOldPos(int n1, int n2, Boolean horizontal, Board b){
         int[] oldPos = new int[3];
-        if(horizontal) {
-            int downIndex = index2 % 2;
+        if (horizontal) {
+            int downIndex = n2 % 2;
             int upIndex = Tile.neighborIndex.get(downIndex);
-            int upRow = index1 - 1;
-            int downRow = index1;
-            int column = index2 / 2;
+            int upRow = n1 - 1;
+            int downRow = n1;
+            int column = n2 / 2;
             int[] upPos = new int[]{column, upRow};
             int[] downPos = new int[]{column, downRow};
-            if (b.posOffBoard(downPos)){
+            if (Board.posOffBoard(downPos)){
                 // if tile location below this pos is out of bound
                 if (b.getBoard()[upPos[0]][upPos[1]] != null){
                     // pawn at upTilePos
@@ -207,15 +207,14 @@ public class PawnParser {
             }
             oldPos[0] = column;
         } else {
-            int leftIndex = index2 % 2 + 2;
+            int leftIndex = n2 % 2 + 2;
             int rightIndex = Tile.neighborIndex.get(leftIndex);
-            int leftColumn = index1 - 1;
-            int rightColumn = index1;
-            int row = index2 / 2;
+            int leftColumn = n1 - 1;
+            int rightColumn = n1;
+            int row = n2 / 2;
             int[] leftPos = new int[]{leftColumn, row};
             int[] rightPos = new int[]{rightColumn, row};
-
-            if (b.posOffBoard(rightPos)){
+            if (Board.posOffBoard(rightPos)){
                 if (b.getBoard()[leftPos[0]][leftPos[1]] != null){
                     oldPos[0] = leftColumn;
                     oldPos[2] = leftIndex;

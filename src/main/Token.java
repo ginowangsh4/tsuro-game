@@ -19,13 +19,13 @@ public class Token {
             put(7, "purple");
     }};
 
-    public Token(int color, int indexOnTile, int[] position) {
+    public Token(int color, int[] position, int indexOnTile) {
         if (color < 0 || color > 7) {
             throw new IllegalArgumentException("Invalid token color");
         }
         this.color = color;
-        this.indexOnTile = indexOnTile;
         this.position = position;
+        this.indexOnTile = indexOnTile;
         if (!isLegalPosition()) {
             throw new IllegalArgumentException("Invalid token position");
         }

@@ -1,7 +1,6 @@
 package tsuro;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
-import java.util.Spliterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,9 +50,9 @@ public class BoardTest {
     @Test
     public void addRemoveUpdateSPlayerTest() {
         b = new Board();
-        Token t1 = new Token(1, 3, new int[]{0, 1});
-        Token t2 = new Token(2, 7, new int[]{2, 3});
-        Token t3 = new Token(2, 3, new int[]{0, 4});
+        Token t1 = new Token(1, new int[]{0, 1}, 3);
+        Token t2 = new Token(2, new int[]{2, 3}, 7);
+        Token t3 = new Token(2, new int[]{0, 4}, 3);
         SPlayer sp1 = new SPlayer(t1, null);
         SPlayer sp2 = new SPlayer(t2, null);
         SPlayer sp3 = new SPlayer(t3, null);
@@ -71,8 +70,8 @@ public class BoardTest {
     @Test
     public void addSPlayerThrowExceptionTest() {
         b = new Board();
-        Token t1 = new Token(1, 5, new int[]{3, 5});
-        Token t2 = new Token(1, 2, new int[]{0, 4});
+        Token t1 = new Token(1, new int[]{3, 5}, 5);
+        Token t2 = new Token(1, new int[]{0, 4}, 2);
         SPlayer sp1 = new SPlayer(t1, null);
         b.addSPlayer(sp1);
         SPlayer sp2 = new SPlayer(t2, null);
@@ -82,7 +81,7 @@ public class BoardTest {
     @Test
     public void removeSPlayerThrowExceptionTest() {
         b = new Board();
-        Token t = new Token(1, 3, new int[]{0, 1});
+        Token t = new Token(1, new int[]{0, 1}, 3);
         SPlayer sp = new SPlayer(t, null);
         assertThrows(IllegalArgumentException.class, () -> b.removeSPlayer(sp));
     }
