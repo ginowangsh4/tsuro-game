@@ -15,7 +15,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(App.class.getResource("PlayTurn.fxml"));
+        loader.setLocation(App.class.getResource("StartGame.fxml"));
         BorderPane startGameView = loader.load();
         Scene scene = new Scene(startGameView);
         stage.setScene(scene);
