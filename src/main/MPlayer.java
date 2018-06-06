@@ -21,7 +21,7 @@ public class MPlayer implements IPlayer {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void initialize (int color, List<Integer> colors) {
@@ -89,9 +89,9 @@ public class MPlayer implements IPlayer {
         checkState("end-game");
         this.colors = colors;
         if (colors.contains(this.color)) {
-            this.isWinner = true;
+            isWinner = true;
         }
-        this.isWinner = false;
+        isWinner = false;
     }
 
     /**
@@ -110,7 +110,7 @@ public class MPlayer implements IPlayer {
                 if (state != State.BORN) {
                     throw new IllegalArgumentException("Sequential Contracts: Cannot place pawn at this time");
                 }
-                this.state = State.PLAY;
+                state = State.PLAY;
                 break;
             case "play-turn":
                 if (state != State.PLAY) {

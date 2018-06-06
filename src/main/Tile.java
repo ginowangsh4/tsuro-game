@@ -31,7 +31,7 @@ public class Tile {
     }
 
     public int[][] getPaths() {
-        return this.paths;
+        return paths;
     }
 
     /**
@@ -68,10 +68,10 @@ public class Tile {
      * e.g. {{2, 6}, {3, 7}, {4, 1}, {5, 0}} -> {{0, 5}, {1, 4}, {2, 6}, {3, 7}}
      */
     private void reorderPath() {
-        for (int[] path : this.paths) {
+        for (int[] path : paths) {
             Arrays.sort(path);
         }
-        Arrays.sort(this.paths, new ListFirstElementComparator());
+        Arrays.sort(paths, new ListFirstElementComparator());
     }
 
     /**
@@ -79,7 +79,6 @@ public class Tile {
      * @return a copy of a given tile
      */
     public Tile copyTile(){
-        int[][] paths = this.paths;
         int[][] newPaths = new int[paths.length][paths[0].length];
         for (int i = 0; i < paths.length; i++) {
             newPaths[i] = Arrays.copyOf(paths[i], paths[i].length);
@@ -93,7 +92,7 @@ public class Tile {
      * @return true if equal; false if not
      */
     public boolean isSamePaths(Tile tile){
-        return Arrays.deepEquals(this.paths, tile.paths);
+        return Arrays.deepEquals(paths, tile.paths);
     }
 
     /**
@@ -106,7 +105,7 @@ public class Tile {
         Tile inputCopy = tile.copyTile();
         for (int i = 0; i < paths.length; i++) {
             inputCopy.rotateTile();
-            if (Arrays.deepEquals(inputCopy.paths, this.paths)) {
+            if (Arrays.deepEquals(paths, inputCopy.paths)) {
                 return true;
             }
         }
@@ -119,7 +118,7 @@ public class Tile {
      * @return the end index
      */
     public int getPathEnd(int start) {
-        for (int[] array : this.paths) {
+        for (int[] array : paths) {
             if (start == array[0]) {
                 return array[1];
             } else if (start == array[1]) {
@@ -135,7 +134,7 @@ public class Tile {
      */
     public int countSymmetricPaths(){
         int count = 1;
-        Tile copy = this.copyTile();
+        Tile copy = copyTile();
         for (int i = 0; i < 3; i++ ){
             copy.rotateTile();
             if (!isSamePaths(copy)) {

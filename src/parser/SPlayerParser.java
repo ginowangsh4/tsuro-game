@@ -48,7 +48,6 @@ public class SPlayerParser {
         return doc;
     }
 
-
     /**
      * Convert XML format to splayer game object
      * @param doc with the XML of the splayer in <ent>color pawn-loc</ent> format as its first child

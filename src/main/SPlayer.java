@@ -22,7 +22,7 @@ public class SPlayer {
 
     // only used if certain that associated IPlayer is MPlayer
     public MPlayer getMPlayer() {
-        return (MPlayer) this.player;
+        return (MPlayer) player;
     }
 
     /**
@@ -30,7 +30,7 @@ public class SPlayer {
      * @param player IPlayer to be linked
      */
     public void linkPlayer(IPlayer player) throws Exception {
-        if (getPlayer() != null && !player.getName().equals(this.getPlayer().getName())) {
+        if (getPlayer() != null && !player.getName().equals(getPlayer().getName())) {
             throw new IllegalArgumentException("SPlayer and Player mismatch");
         }
         this.player = player;
@@ -42,7 +42,7 @@ public class SPlayer {
      * @return true if colors are the same
      */
     public boolean isSameSPlayer(SPlayer player) {
-        return this.getToken().getColor() == player.getToken().getColor();
+        return getToken().getColor() == player.getToken().getColor();
     }
 
     /**
@@ -50,7 +50,7 @@ public class SPlayer {
      * @return a token
      */
     public Token getToken() {
-        return this.token;
+        return token;
     }
 
     /**
@@ -109,7 +109,7 @@ public class SPlayer {
      * @return a list of tiles on player's hand
      */
     public List<Tile> getHand() {
-        return this.hand;
+        return hand;
     }
 
     /**

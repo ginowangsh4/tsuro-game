@@ -235,7 +235,7 @@ public class Server {
             int pi = Integer.MAX_VALUE;
             for (SPlayer inSPlayer : inSPlayers) {
                 if (deadP.isSameSPlayer(inSPlayer)) {
-                    pi = this.inSPlayers.indexOf(inSPlayer);
+                    pi = inSPlayers.indexOf(inSPlayer);
                 }
             }
             if (pi == Integer.MAX_VALUE) {
@@ -269,18 +269,18 @@ public class Server {
      * 2) Player chooses an illegal tile to play a turn
      * Cheating player is replaced with a MPlayer with Random strategy
      */
-    public void playerCheatIllegalPawn(SPlayer p) throws Exception {
+    private void playerCheatIllegalPawn(SPlayer p) throws Exception {
         replaceWithMPlayer(p);
         p.updateToken(p.getPlayer().placePawn(board));
     }
 
-    public Tile playerCheatIllegalTile(SPlayer p) throws Exception {
+    private Tile playerCheatIllegalTile(SPlayer p) throws Exception {
         replaceWithMPlayer(p);
         p.getMPlayer().state = MPlayer.State.PLAY;
         return p.getPlayer().playTurn(board, p.getHand(), drawPile.size());
     }
 
-    public void replaceWithMPlayer(SPlayer p) throws Exception {
+    private void replaceWithMPlayer(SPlayer p) throws Exception {
         System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
         MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R, p.getPlayer().getName());
         newPlayer.initialize(p.getToken().getColor(), colors);
@@ -334,14 +334,6 @@ public class Server {
     }
 
     /**
-     * Get the current dragon holder
-     * @return the player with da dragon
-     */
-    public SPlayer getDragonHolder() {
-        return dragonHolder;
-    }
-
-    /**
      * Check whether sp has dragon
      * @param sp the SPlayer to be checked
      * @return true if this sp has dragon
@@ -364,7 +356,7 @@ public class Server {
      * Pass dragon to the next player who has less than three tile on hand,
      * set dragon holder to be nobody if cannot find any or there is a winner
      */
-    public void drawAndPassDragon() {
+    private void drawAndPassDragon() {
         if (dragonHolder == null) {
             return;
         }
@@ -392,7 +384,7 @@ public class Server {
      * @param index index of current dragon holder
      * @return the index of next player with < 3 tiles on hand
      */
-    public int findNextHolder(int index) {
+    private int findNextHolder(int index) {
         int i = 0;
         while (i < inSPlayers.size() - 1) {
             index = (index + 1) % inSPlayers.size();
@@ -409,7 +401,7 @@ public class Server {
      * @return true if game is over
      */
     public boolean isGameOver() {
-        return this.gameOver;
+        return gameOver;
     }
 
     /**
@@ -417,15 +409,7 @@ public class Server {
      * @param b boolean value to set
      */
     public void setGameOver(boolean b) {
-        this.gameOver = b;
-    }
-
-    /**
-     * Get the board associated with the game
-     * @return the board
-     */
-    public Board getBoard() {
-        return this.board;
+        gameOver = b;
     }
 
     /**

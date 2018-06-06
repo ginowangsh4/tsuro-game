@@ -58,7 +58,7 @@ public class RemotePlayer implements IPlayer {
         // from socket
         Document outDoc = parser.stringToDocument(bufferedReader.readLine());
         Pair<int[], Integer> pair = parser.fromPlacePawnXML(outDoc);
-        Token token = new Token(this.color, pair.first, pair.second);
+        Token token = new Token(color, pair.first, pair.second);
 
         System.out.println("Remote: placePawn complete - player starts at [" + token.getPosition()[0] +
                 ", " + token.getPosition()[1] + "], index " + token.getIndex());

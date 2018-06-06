@@ -15,8 +15,36 @@ public class Board {
     }
 
     public Tile[][] getBoard() {
-        return this.board;
+        return board;
     }
+
+    public List<SPlayer> getSPlayerList() {
+        return sPlayerList;
+    }
+
+//
+//    public void setBoard(Tile[][] board) {
+//        this.board = board;
+//    }
+//
+//    public void setsPlayerList(List<SPlayer> sPlayerList) {
+//        this.sPlayerList = sPlayerList;
+//    }
+//
+//    public Board copyBoard() {
+//        Tile[][] newBoard = new Tile[SIZE][SIZE];
+//        for (int i = 0; i < SIZE; i++) {
+//            for (int j = 0; j < SIZE; j++) {
+//                if (board[i][j] != null) {
+//                    newBoard[i][j] = new Tile(board[i][j].getPaths());
+//                }
+//            }
+//        }
+//        Board newB = new Board();
+//        newB.setBoard(newBoard);
+//        newB.setsPlayerList();
+//    }
+//
 
     /**
      * Get the tile on a given location on board
@@ -28,7 +56,7 @@ public class Board {
         if (x < 0 || y < 0 || x > 5 || y > 5) {
             return null;
         }
-        return this.board[x][y];
+        return board[x][y];
     }
 
     /**
@@ -71,10 +99,6 @@ public class Board {
             throw new IllegalArgumentException("The location given doesn't contain a tile");
         }
         board[x][y] = null;
-    }
-
-    public List<SPlayer> getSPlayerList() {
-        return sPlayerList;
     }
 
     /**

@@ -138,7 +138,7 @@ public class DragonTest {
             e.printStackTrace();
         }
         assertEquals(2, p1.getHand().size(), "Error: player 1 should not draw any new tile");
-        assertEquals(p2, server.getDragonHolder(),"Error: dragon tile should not belong to other than SPlayer 2");
+        assertEquals(p2, server.dragonHolder, "Error: dragon tile should not belong to other than SPlayer 2");
     }
 
     // Moving where the player that has the dragon tile makes a move that causes an elimination (of another player)
@@ -195,7 +195,7 @@ public class DragonTest {
         assertEquals(1, p3.getHand().size(), "Error: player 3 should have 1 tile");
         assertEquals(tp2, p1.getHand().get(0), "Error: player 1 drew the wrong tile");
         assertEquals(0, deck.size(), "Error: deck should be empty");
-        assertEquals(p3, server.getDragonHolder(), "Error: player 1 should have the dragon tile");
+        assertEquals(p3, server.dragonHolder, "Error: player 1 should have the dragon tile");
     }
 
     // Moving where a player that does not have the dragon tile makes a move and it causes an elimination of
@@ -253,7 +253,7 @@ public class DragonTest {
         assertEquals(2, p3.getHand().size(), "Error: player 3 should have 2 tiles");
         assertEquals(tp2, p3.getHand().get(1), "Error: player 3 drew the wrong tile");
         assertEquals(0, deck.size(), "Error: deck should be empty");
-        assertEquals(p1, server.getDragonHolder(), "Error: player 3 should have the dragon tile");
+        assertEquals(p1, server.dragonHolder, "Error: player 3 should have the dragon tile");
     }
 
     // Moving where the player that has the dragon tile makes a move that causes themselves to be eliminated
@@ -311,6 +311,6 @@ public class DragonTest {
         assertEquals(2, p3.getHand().size(), "Error: player 3 should have 2 tiles");
         assertEquals(tp2, p3.getHand().get(1), "Error: player 3 drew the wrong tile");
         assertEquals(0, deck.size(), "Error: deck should be empty");
-        assertEquals(null, server.getDragonHolder(), "Error: no one should have the dragon tile");
+        assertEquals(null, server.dragonHolder, "Error: no one should have the dragon tile");
     }
 }

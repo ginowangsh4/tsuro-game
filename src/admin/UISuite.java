@@ -141,36 +141,36 @@ public class UISuite {
         stage.setScene(scene);
         stage.show();
     }
-
-    public static void generateBoardImage(Document doc) throws Exception {
-        String command = "./visualize -b -i image/uiboard.png";
-        String line;
-        Process p = Runtime.getRuntime().exec(command);
-        PrintWriter out = new PrintWriter(p.getOutputStream(), true);
-        out.println(parser.documentToString(doc));
-        BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        while ((line = in.readLine()) != null) {
-            System.out.println(line);
-        }
-        in.close();
-    }
-
-    public static int generateTileImage(DocumentBuilder db, Document doc) throws Exception {
-        NodeList list = doc.getFirstChild().getChildNodes();
-        for (int i = 0; i < list.getLength(); i++) {
-            String command = "./visualize -t -i image/uitile" + i + ".png";
-            String line;
-            Process p = Runtime.getRuntime().exec(command);
-            PrintWriter out = new PrintWriter(p.getOutputStream(), true);
-            Document tileDoc = db.newDocument();
-            tileDoc.appendChild(doc.importNode(list.item(i), true));
-            out.println(parser.documentToString(tileDoc));
-            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            while ((line = in.readLine()) != null) {
-                System.out.println(line);
-            }
-            in.close();
-        }
-        return list.getLength();
-    }
+//
+//    public static void generateBoardImage(Document doc) throws Exception {
+//        String command = "./visualize -b -i image/uiboard.png";
+//        String line;
+//        Process p = Runtime.getRuntime().exec(command);
+//        PrintWriter out = new PrintWriter(p.getOutputStream(), true);
+//        out.println(parser.documentToString(doc));
+//        BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//        while ((line = in.readLine()) != null) {
+//            System.out.println(line);
+//        }
+//        in.close();
+//    }
+//
+//    public static int generateTileImage(DocumentBuilder db, Document doc) throws Exception {
+//        NodeList list = doc.getFirstChild().getChildNodes();
+//        for (int i = 0; i < list.getLength(); i++) {
+//            String command = "./visualize -t -i image/uitile" + i + ".png";
+//            String line;
+//            Process p = Runtime.getRuntime().exec(command);
+//            PrintWriter out = new PrintWriter(p.getOutputStream(), true);
+//            Document tileDoc = db.newDocument();
+//            tileDoc.appendChild(doc.importNode(list.item(i), true));
+//            out.println(parser.documentToString(tileDoc));
+//            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//            while ((line = in.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//            in.close();
+//        }
+//        return list.getLength();
+//    }
 }

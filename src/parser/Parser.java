@@ -283,7 +283,7 @@ public class Parser {
         int[] oldPos = pawnParser.getOldPos(Integer.parseInt(index1.getTextContent()),
                                             Integer.parseInt(index2.getTextContent()),
                                             horizontal,
-                                            Server.getInstance().getBoard());
+                                            Server.getInstance().board);
 
         return new Pair<>(new int[] {oldPos[0], oldPos[1]}, oldPos[2]);
     }

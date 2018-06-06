@@ -32,7 +32,7 @@ public class Token {
     }
 
     public int getColor() {
-        return this.color;
+        return color;
     }
 
     public int getIndex() {

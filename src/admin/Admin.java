@@ -19,6 +19,7 @@ public class Admin {
     private static MPlayer mPlayer;
 
     // Commend line arguments as "PORT_NUMBER PLAYER_NAME STRATEGY(R/MS/LS)"
+    // If there is not argument for strategy, the default is to use a Random strategy
     public static void main(String[] args) throws Exception {
         // set up connection to local host 
         String hostname = "127.0.0.1";
@@ -38,7 +39,7 @@ public class Admin {
                 mPlayer = new MPlayer(MPlayer.Strategy.MS, args[1]);
                 break;
             default:
-                throw new IllegalArgumentException("Admin: Invalid input strategy");
+                mPlayer = new MPlayer(MPlayer.Strategy.R, args[1]);
         }
         while (socket.connectionEstablished()) {
             String res = socket.readInputFromClient();
@@ -68,6 +69,12 @@ public class Admin {
         }
     }
 
+    public static void processGetName(DocumentBuilder db, AdminSocket socket) throws Exception {
+        String playerName = mPlayer.getName();
+        Document getNameResXML = parser.buildPlayerNameXML(playerName);
+        sendXMLToClient(socket, getNameResXML, "Admin: get-name complete");
+    }
+
     public static void processInitialize(DocumentBuilder db, AdminSocket socket, Node node) throws Exception {
         Node colorNode = node.getFirstChild();
 
@@ -90,12 +97,6 @@ public class Admin {
         Token token = mPlayer.placePawn(board);
         Document pawnLocXML = parser.buildPawnLocXML(token.getPosition(), token.getIndex());
         sendXMLToClient(socket, pawnLocXML, "Admin: place-pawn complete");
-    }
-
-    public static void processGetName(DocumentBuilder db, AdminSocket socket) throws Exception {
-        String playerName = mPlayer.getName();
-        Document getNameResXML = parser.buildPlayerNameXML(playerName);
-        sendXMLToClient(socket, getNameResXML, "Admin: get-name complete");
     }
 
     public static void processPlayTurn(DocumentBuilder db, AdminSocket socket, Node node) throws Exception {
