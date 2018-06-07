@@ -9,27 +9,29 @@ import java.net.Socket;
 
 public class AdminSocket {
     Socket socket;
-    DocumentBuilder db;
-    BufferedReader bufferedReader;
-    PrintWriter printWriter;
+    BufferedReader in;
+    PrintWriter out;
 
-    public AdminSocket(String hostName, int postNum, DocumentBuilder db) throws IOException {
+    public AdminSocket(String hostName, int postNum) throws IOException {
         this.socket = new Socket(hostName, postNum);
-        this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.printWriter = new PrintWriter(socket.getOutputStream(), true);
-        this.db = db;
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.out = new PrintWriter(socket.getOutputStream(), true);
     }
 
     public boolean connectionEstablished() {
         return socket.isConnected();
     }
 
-    public String readInputFromClient() throws IOException {
-        String input = bufferedReader.readLine();
+    public String readInputFromServer() throws IOException {
+        String input = in.readLine();
         return input;
     }
 
-    public void writeOutputToClient(String output) {
-        printWriter.println(output);
+    public void writeOutputToServer(String output) {
+        out.println(output);
+    }
+
+    public void closeConnection() throws IOException {
+        socket.close();
     }
 }

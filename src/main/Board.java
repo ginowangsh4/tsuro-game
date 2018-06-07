@@ -22,30 +22,6 @@ public class Board {
         return sPlayerList;
     }
 
-//
-//    public void setBoard(Tile[][] board) {
-//        this.board = board;
-//    }
-//
-//    public void setsPlayerList(List<SPlayer> sPlayerList) {
-//        this.sPlayerList = sPlayerList;
-//    }
-//
-//    public Board copyBoard() {
-//        Tile[][] newBoard = new Tile[SIZE][SIZE];
-//        for (int i = 0; i < SIZE; i++) {
-//            for (int j = 0; j < SIZE; j++) {
-//                if (board[i][j] != null) {
-//                    newBoard[i][j] = new Tile(board[i][j].getPaths());
-//                }
-//            }
-//        }
-//        Board newB = new Board();
-//        newB.setBoard(newBoard);
-//        newB.setsPlayerList();
-//    }
-//
-
     /**
      * Get the tile on a given location on board
      * @param x x-coordinate

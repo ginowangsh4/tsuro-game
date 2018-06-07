@@ -1,9 +1,13 @@
 package tsuro.admin;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import tsuro.parser.Parser;
@@ -14,8 +18,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+// WORK IN PROGRESS
 public class PlayTurnController {
-    private Parser parser;
     @FXML
     private ImageView boardImage;
     @FXML
@@ -35,15 +39,16 @@ public class PlayTurnController {
     @FXML
     private Button commitMoveButton;
 
-    private Map tileMap;
-
     private Button currTileButton;
 
     @FXML
-    public void initialize() {
-        boardImage.setOnMouseClicked(event -> {
+    public void initialize() throws Exception {
+        Image image = new Image(new FileInputStream("image/board/board.png"));
+        boardImage.setImage(image);
 
-        });
+        tile1Image.setImage(new Image(new FileInputStream("image/hand/tile.png")));
+        tile2Image.setImage(new Image(new FileInputStream("image/hand/tile.png")));
+        tile3Image.setImage(new Image(new FileInputStream("image/hand/tile.png")));
 
         chooseTile1Button.setOnAction(event -> {
             currTileButton = chooseTile1Button;
@@ -59,19 +64,22 @@ public class PlayTurnController {
 
         rotateTileButton.setOnAction(event -> {
             System.out.println("Rotating tile [" + currTileButton.getText() + "]");
-
-            Image image = null;
-            try {
-                image = new Image(new FileInputStream("image/uiboard.png"));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            boardImage.setImage(image);
-            System.out.println("Board image updated!");
         });
 
         commitMoveButton.setOnAction(event -> {
 
         });
+
+        commitMoveButton.setOnMouseClicked(event -> {
+            try {
+                startServer();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void startServer() throws IOException {
+        App.socket.writeOutputToServer("Testing sending back stuff from play turn controller");
     }
 }

@@ -1,15 +1,20 @@
 package tsuro.admin;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
-public class StartGameController {
+public class PlacePawnController {
     public static enum Side { TOP, LEFT, RIGHT, BOTTOM }
 
     @FXML
@@ -62,6 +67,28 @@ public class StartGameController {
             else{
                 System.out.println("should not submit now");
             }
+            try {
+                startServer();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // now switch to play turn scene
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(App.class.getResource("PlayTurn.fxml"));
+            BorderPane playTurnView = null;
+            try {
+                playTurnView = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Stage stage = (Stage) submitButton.getScene().getWindow();
+            stage.setScene(new Scene(playTurnView));
         });
+    }
+
+    private void startServer() throws IOException {
+        AdminSocket socket = new AdminSocket("127.0.0.1", 9000);
+        App.socket.writeOutputToServer("Testing sending back stuff from start game controller");
     }
 }

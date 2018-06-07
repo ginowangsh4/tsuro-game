@@ -1,25 +1,24 @@
 package tsuro;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import tsuro.admin.App;
-import tsuro.admin.StartGameController;
-import tsuro.admin.UISuite;
-import tsuro.parser.BoardParser;
+import tsuro.admin.PlacePawnController;
 import tsuro.parser.Parser;
 
-import javax.swing.event.DocumentEvent;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.List;
 
 public class HPlayer implements IPlayer {
 
+    private BufferedReader in;
+    private PrintWriter out;
     private Parser parser;
+
 
     private String name;
     private int color;
@@ -27,11 +26,16 @@ public class HPlayer implements IPlayer {
     private boolean isWinner;
 
     public HPlayer(String name) throws Exception {
+        ServerSocket socketListener = new ServerSocket(9000);
+        Socket socket = socketListener.accept();
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.out = new PrintWriter(socket.getOutputStream(), true);
         this.name = name;
         this.parser = new Parser(DocumentBuilderFactory.newInstance().newDocumentBuilder());
     }
 
-    public String getName() {
+    public String getName() throws IOException {
+        System.out.println(in.readLine());
         return name;
     }
 
@@ -42,16 +46,12 @@ public class HPlayer implements IPlayer {
 
     public Token placePawn(Board b) throws Exception {
         generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
-
-
-        Token token = generateTokenBySideIndex(color, StartGameController.startSide, StartGameController.startIndex);
-        return token;
+        System.out.println(in.readLine());
+        return null;
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         generateImages(b, hand);
-
-
         return null;
     }
 
@@ -75,22 +75,22 @@ public class HPlayer implements IPlayer {
      * @param index index of location clicked
      * @return token game object
      */
-    public static Token generateTokenBySideIndex(int colorIndex, StartGameController.Side side, int index) throws Exception {
+    public static Token generateTokenBySideIndex(int colorIndex, PlacePawnController.Side side, int index) throws Exception {
         if (index < 0 || index > 11) {
             throw new Exception("Index is not valid");
         }
         int indexOnTile, x, y;
-        if (side == StartGameController.Side.TOP) {
+        if (side == PlacePawnController.Side.TOP) {
             x = index / 2;
             y = -1;
             indexOnTile = Tile.neighborIndex.get(index % 2);
         }
-        else if (side == StartGameController.Side.BOTTOM) {
+        else if (side == PlacePawnController.Side.BOTTOM) {
             x = index / 2;
             y = 6;
             indexOnTile = index % 2;
         }
-        else if (side == StartGameController.Side.LEFT) {
+        else if (side == PlacePawnController.Side.LEFT) {
             x = -1;
             y = index / 2;
             indexOnTile = index % 2 + 2;
@@ -152,5 +152,11 @@ public class HPlayer implements IPlayer {
             System.out.println(line);
         }
         in.close();
+    }
+
+    public static void main(String[] args) throws Exception {
+        HPlayer p = new HPlayer("Jeff");
+        p.getName();
+        p.placePawn(new Board());
     }
 }
