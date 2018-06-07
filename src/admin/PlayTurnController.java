@@ -50,6 +50,9 @@ public class PlayTurnController {
         tile2Image.setImage(new Image(new FileInputStream("image/hand/tile.png")));
         tile3Image.setImage(new Image(new FileInputStream("image/hand/tile.png")));
 
+        rotateTileButton.setDisable(true);
+        commitMoveButton.setDisable(true);
+
         chooseTile1Button.setOnAction(event -> {
             currTileButton = chooseTile1Button;
         });
@@ -71,15 +74,7 @@ public class PlayTurnController {
         });
 
         commitMoveButton.setOnMouseClicked(event -> {
-            try {
-                startServer();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            App.socket.writeOutputToServer("Testing sending back stuff from play turn controller");
         });
-    }
-
-    private void startServer() throws IOException {
-        App.socket.writeOutputToServer("Testing sending back stuff from play turn controller");
     }
 }

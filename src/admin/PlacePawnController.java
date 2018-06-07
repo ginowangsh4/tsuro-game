@@ -1,18 +1,14 @@
 package tsuro.admin;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class PlacePawnController {
     public static enum Side { TOP, LEFT, RIGHT, BOTTOM }
@@ -34,13 +30,14 @@ public class PlacePawnController {
     private int BOARD_SIZE = 360;
 
 
+
     public void initialize() throws FileNotFoundException {
 
         Image boardImage = new Image(new FileInputStream("image/board/board.png"), BOARD_SIZE, BOARD_SIZE, false, true);
         boardImageView.setImage(boardImage);
 
         boardImageView.setOnMouseClicked(event -> {
-            System.out.println("image clicked");
+            System.out.println("Image clicked");
         });
 
         sideDropdown.getItems().addAll(Side.TOP, Side.BOTTOM, Side.LEFT, Side.RIGHT);
@@ -49,46 +46,30 @@ public class PlacePawnController {
             indexDropdown.getItems().add(i);
         }
         sideDropdown.setOnMouseClicked(event -> {
-            System.out.println("startSide dropdown clicked");
+            System.out.println("StartSide dropdown clicked");
         });
 
         indexDropdown.setOnMouseClicked(event -> {
-            System.out.println("startIndex dropdown clicked");
+            System.out.println("StartIndex dropdown clicked");
         });
 
         submitButton.setOnMouseClicked(event -> {
-            System.out.println("submit clicked");
+            System.out.println("Submit button clicked");
             startSide = sideDropdown.getValue();
             startIndex = indexDropdown.getValue();
-            if(startSide != null && startIndex != null){
-                System.out.println(startSide);
-                System.out.println(startIndex);
-            }
-            else{
-                System.out.println("should not submit now");
-            }
-            try {
-                startServer();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if (startSide != null && startIndex != null) {
+                System.out.println("Selected side = " + startSide);
+                System.out.println("Selected index = " + startIndex);
 
-            // now switch to play turn scene
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(App.class.getResource("PlayTurn.fxml"));
-            BorderPane playTurnView = null;
-            try {
-                playTurnView = loader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
+                App.socket.writeOutputToServer(startSide.toString() + "," + startIndex.toString());
+
+                App.changeScene(submitButton, "PlayTurn.fxml");
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Tsuro Game Dialog");
+                alert.setContentText("Shouldn't submit now. Please choose both side and index!");
+                alert.showAndWait();
             }
-            Stage stage = (Stage) submitButton.getScene().getWindow();
-            stage.setScene(new Scene(playTurnView));
         });
-    }
-
-    private void startServer() throws IOException {
-        AdminSocket socket = new AdminSocket("127.0.0.1", 9000);
-        App.socket.writeOutputToServer("Testing sending back stuff from start game controller");
     }
 }

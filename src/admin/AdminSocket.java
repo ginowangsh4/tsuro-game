@@ -8,9 +8,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class AdminSocket {
-    Socket socket;
-    BufferedReader in;
-    PrintWriter out;
+    private Socket socket;
+    private BufferedReader in;
+    private PrintWriter out;
 
     public AdminSocket(String hostName, int postNum) throws IOException {
         this.socket = new Socket(hostName, postNum);

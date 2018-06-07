@@ -1,6 +1,8 @@
 package tsuro;
 
+import javafx.application.Application;
 import org.w3c.dom.Document;
+import tsuro.admin.App;
 import tsuro.admin.PlacePawnController;
 import tsuro.parser.Parser;
 
@@ -35,7 +37,6 @@ public class HPlayer implements IPlayer {
     }
 
     public String getName() throws IOException {
-        System.out.println(in.readLine());
         return name;
     }
 
@@ -46,8 +47,8 @@ public class HPlayer implements IPlayer {
 
     public Token placePawn(Board b) throws Exception {
         generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
-        System.out.println(in.readLine());
-        return null;
+        String[] sideIndex= in.readLine().split(",");
+        return buildTokenFromSideAndIndex(color, sideIndex[0], Integer.parseInt(sideIndex[1]));
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
@@ -75,22 +76,22 @@ public class HPlayer implements IPlayer {
      * @param index index of location clicked
      * @return token game object
      */
-    public static Token generateTokenBySideIndex(int colorIndex, PlacePawnController.Side side, int index) throws Exception {
+    public static Token buildTokenFromSideAndIndex(int colorIndex, String side, int index) throws Exception {
         if (index < 0 || index > 11) {
             throw new Exception("Index is not valid");
         }
         int indexOnTile, x, y;
-        if (side == PlacePawnController.Side.TOP) {
+        if (side == "TOP") {
             x = index / 2;
             y = -1;
             indexOnTile = Tile.neighborIndex.get(index % 2);
         }
-        else if (side == PlacePawnController.Side.BOTTOM) {
+        else if (side == "BOTTOM") {
             x = index / 2;
             y = 6;
             indexOnTile = index % 2;
         }
-        else if (side == PlacePawnController.Side.LEFT) {
+        else if (side == "LEFT") {
             x = -1;
             y = index / 2;
             indexOnTile = index % 2 + 2;
@@ -157,6 +158,7 @@ public class HPlayer implements IPlayer {
     public static void main(String[] args) throws Exception {
         HPlayer p = new HPlayer("Jeff");
         p.getName();
-        p.placePawn(new Board());
+        Token t = p.placePawn(new Board());
+        System.out.println();
     }
 }
