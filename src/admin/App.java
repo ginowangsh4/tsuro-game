@@ -17,7 +17,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        socket = new AdminSocket("127.0.0.1", 9000);
+        socket = new AdminSocket("127.0.0.1", 10000);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(App.class.getResource("PlacePawn.fxml"));
         BorderPane startGameView = loader.load();

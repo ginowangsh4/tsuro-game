@@ -430,17 +430,19 @@ public class Server {
      * @throws Exception
      */
     public void startGame() throws Exception {
-        ServerSocket socketListener = new ServerSocket(PORT_NUM);
+        //ServerSocket socketListener = new ServerSocket(PORT_NUM);
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
 
             // create players
             // for remote players, initialize a new socket
-            IPlayer rP = new RemotePlayer(socketListener.accept(), db);
+            // IPlayer rP = new RemotePlayer(socketListener.accept(), db);
             IPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "MPlayer 1");
             IPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "MPlayer 2");
             IPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "MPlayer 3");
+            IPlayer hP = new HPlayer("HPlayer 1");
+
 
             for (int i = 0; i < 4; i++) {
                 colors.add(i);
@@ -449,7 +451,7 @@ public class Server {
             mP1.initialize(1, colors);
             mP2.initialize(2, colors);
             mP3.initialize(3, colors);
-            rP.initialize(0, colors);
+            hP.initialize(0, colors);
 
             Token t1 = mP1.placePawn(board);
             server.registerPlayer(mP1, t1);
@@ -457,8 +459,8 @@ public class Server {
             server.registerPlayer(mP2, t2);
             Token t3 = mP3.placePawn(board);
             server.registerPlayer(mP3, t3);
-            Token t0 = rP.placePawn(board);
-            server.registerPlayer(rP, t0);
+            Token t0 = hP.placePawn(board);
+            server.registerPlayer(hP, t0);
 
             // play game over network
             while(!server.isGameOver()) {
@@ -488,7 +490,7 @@ public class Server {
             e.printStackTrace();
         } finally {
             // close connection
-            socketListener.close();
+            //socketListener.close();
         }
     }
 }

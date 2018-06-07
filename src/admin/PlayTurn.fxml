@@ -32,12 +32,12 @@
                <children>
                   <Button fx:id="rotateTileButton" mnemonicParsing="false" text="Rotate Tile" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
                   <Button fx:id="commitMoveButton" mnemonicParsing="false" text="Commit Move" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                  <Button fx:id="chooseTile1Button" mnemonicParsing="false" text="Choose Tile 1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                  <Button fx:id="chooseTile2Button" mnemonicParsing="false" text="Choose Tile 2" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                  <Button fx:id="chooseTile3Button" mnemonicParsing="false" text="Choose Tile 3" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                  <ImageView fx:id="tile1Image" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <ImageView fx:id="tile2Image" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <ImageView fx:id="tile3Image" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Button fx:id="chooseTile0Button" mnemonicParsing="false" text="Choose Tile 1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Button fx:id="chooseTile1Button" mnemonicParsing="false" text="Choose Tile 2" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Button fx:id="chooseTile2Button" mnemonicParsing="false" text="Choose Tile 3" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <ImageView fx:id="tile0Image" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <ImageView fx:id="tile1Image" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <ImageView fx:id="tile2Image" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                </children>
             </GridPane>
          </children></VBox>

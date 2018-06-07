@@ -1,14 +1,10 @@
 package tsuro;
 
-import javafx.application.Application;
 import org.w3c.dom.Document;
-import tsuro.admin.App;
-import tsuro.admin.PlacePawnController;
 import tsuro.parser.Parser;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -21,22 +17,21 @@ public class HPlayer implements IPlayer {
     private PrintWriter out;
     private Parser parser;
 
-
     private String name;
     private int color;
     private List<Integer> colors;
     private boolean isWinner;
 
     public HPlayer(String name) throws Exception {
-        ServerSocket socketListener = new ServerSocket(9000);
+        ServerSocket socketListener = new ServerSocket(10000);
         Socket socket = socketListener.accept();
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new PrintWriter(socket.getOutputStream(), true);
-        this.name = name;
         this.parser = new Parser(DocumentBuilderFactory.newInstance().newDocumentBuilder());
+        this.name = name;
     }
 
-    public String getName() throws IOException {
+    public String getName() {
         return name;
     }
 
@@ -47,13 +42,22 @@ public class HPlayer implements IPlayer {
 
     public Token placePawn(Board b) throws Exception {
         generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
-        String[] sideIndex= in.readLine().split(",");
-        return buildTokenFromSideAndIndex(color, sideIndex[0], Integer.parseInt(sideIndex[1]));
+        System.out.println("HPlayer: place-pawn board generated");
+        // format: [side, index on side]
+        String[] chosenSideIndex= in.readLine().split(",");
+        return generateTokenFromSideAndIndex(color, chosenSideIndex[0], Integer.parseInt(chosenSideIndex[1]));
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         generateImages(b, hand);
-        return null;
+        out.println("generate place-pawn images complete");
+        // format: [index of tile in hand, index of tile rotation]
+        String[] chosenTile = in.readLine().split(",");
+        return generateTile(hand, Integer.parseInt(chosenTile[0]), Integer.parseInt(chosenTile[1]));
+    }
+
+    public void endGame(Board b, List<Integer> colors) throws Exception {
+
     }
 
     private Token findMyToken(Board b) {
@@ -65,44 +69,43 @@ public class HPlayer implements IPlayer {
         throw new IllegalArgumentException("Cannot find token on board");
     }
 
-    public void endGame(Board b, List<Integer> colors) throws Exception {
-
-    }
-
-    /**
-     * Generate token game object based on pawn location clicked from UI
-     * @param colorIndex HPlayer's color index
-     * @param side side of location clicked
-     * @param index index of location clicked
-     * @return token game object
-     */
-    public static Token buildTokenFromSideAndIndex(int colorIndex, String side, int index) throws Exception {
+    public Token generateTokenFromSideAndIndex(int colorIndex, String side, int index) throws Exception {
         if (index < 0 || index > 11) {
             throw new Exception("Index is not valid");
         }
         int indexOnTile, x, y;
-        if (side == "TOP") {
-            x = index / 2;
-            y = -1;
-            indexOnTile = Tile.neighborIndex.get(index % 2);
-        }
-        else if (side == "BOTTOM") {
-            x = index / 2;
-            y = 6;
-            indexOnTile = index % 2;
-        }
-        else if (side == "LEFT") {
-            x = -1;
-            y = index / 2;
-            indexOnTile = index % 2 + 2;
-        }
-        else {
-            x = 6;
-            y = index / 2;
-            indexOnTile = Tile.neighborIndex.get(index % 2 + 2);
+        switch (side) {
+            case "TOP":
+                x = index / 2;
+                y = -1;
+                indexOnTile = Tile.neighborIndex.get(index % 2);
+                break;
+            case "BOTTOM":
+                x = index / 2;
+                y = 6;
+                indexOnTile = index % 2;
+                break;
+            case "LEFT":
+                x = -1;
+                y = index / 2;
+                indexOnTile = index % 2 + 2;
+                break;
+            default: // RIGHT
+                x = 6;
+                y = index / 2;
+                indexOnTile = Tile.neighborIndex.get(index % 2 + 2);
+                break;
         }
         int[] pos = new int[]{x,y};
         return new Token(colorIndex, pos, indexOnTile);
+    }
+
+    private Tile generateTile(List<Tile> hand, int handIndex, int rotationIndex) {
+        Tile move = hand.get(handIndex).copyTile();
+        for (int i = 0; i < rotationIndex; i++) {
+            move.rotateTile();
+        }
+        return move;
     }
 
     private void generateImages(Board b, List<Tile> hand) throws Exception {
@@ -118,11 +121,13 @@ public class HPlayer implements IPlayer {
                     sp.updateToken(tempBoard.simulateMove(sp.getToken()));
                 }
                 generateBoardImage(parser.boardParser.buildXML(tempBoard), i, j);
+                System.out.println("HPlayer: play-turn board image (" + i + ", " + j + ") generated");
                 copy.rotateTile();
             }
         }
         for (int i = 0; i < hand.size(); i++) {
             generateTileImage(parser.tileParser.buildXML(hand.get(i)), i);
+            System.out.println("HPlayer: play-turn tile image (" + i + ") generated");
         }
     }
 
@@ -143,7 +148,7 @@ public class HPlayer implements IPlayer {
     }
 
     private void generateTileImage(Document doc, int tileIndex) throws Exception {
-        String command = "./visualize -t -i image/tile/" + tileIndex + ".png";
+        String command = "./visualize -t -i image/hand/" + tileIndex + ".png";
         String line;
         Process p = Runtime.getRuntime().exec(command);
         PrintWriter out = new PrintWriter(p.getOutputStream(), true);
@@ -153,12 +158,5 @@ public class HPlayer implements IPlayer {
             System.out.println(line);
         }
         in.close();
-    }
-
-    public static void main(String[] args) throws Exception {
-        HPlayer p = new HPlayer("Jeff");
-        p.getName();
-        Token t = p.placePawn(new Board());
-        System.out.println();
     }
 }

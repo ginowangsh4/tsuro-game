@@ -60,7 +60,7 @@ public class Parser {
      * @return a document with the XML of the initialize message in <initialize>color list-of-color</initialize>
      * format as its first child
      */
-    public Document buildInitializeXML( int color, List<Integer> colors) {
+    public Document buildInitializeXML(int color, List<Integer> colors) {
         Document doc = db.newDocument();
         Element initialize = doc.createElement("initialize");
 
@@ -331,7 +331,6 @@ public class Parser {
     }
 
     public Pair<List<SPlayer>, SPlayer> fromSPlayerListXML(String inSPlayerStr, Board board) throws Exception {
-        // parse inSPlayers XML
         List<SPlayer> inSPlayer = new ArrayList<>();
         Document inPlayerDoc = stringToDocument(inSPlayerStr);
         NodeList inPlayerList = inPlayerDoc.getFirstChild().getChildNodes();
@@ -348,7 +347,7 @@ public class Parser {
             }
             inSPlayer.add(sp);
         }
-        return new Pair(inSPlayer, dragonOwner);
+        return new Pair<>(inSPlayer, dragonOwner);
     }
 
     // ****************************************************************************************
