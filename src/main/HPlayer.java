@@ -2,6 +2,8 @@ package tsuro;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import tsuro.admin.App;
+import tsuro.admin.StartGameController;
 import tsuro.admin.UISuite;
 import tsuro.parser.BoardParser;
 import tsuro.parser.Parser;
@@ -39,7 +41,10 @@ public class HPlayer implements IPlayer {
     }
 
     public Token placePawn(Board b) throws Exception {
-        Token token = generateTokenBySideIndex(color, UISuite.startSide, UISuite.startIndex);
+        generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
+
+
+        Token token = generateTokenBySideIndex(color, StartGameController.startSide, StartGameController.startIndex);
         return token;
     }
 
@@ -70,22 +75,22 @@ public class HPlayer implements IPlayer {
      * @param index index of location clicked
      * @return token game object
      */
-    public static Token generateTokenBySideIndex(int colorIndex, UISuite.Side side, int index) throws Exception {
+    public static Token generateTokenBySideIndex(int colorIndex, StartGameController.Side side, int index) throws Exception {
         if (index < 0 || index > 11) {
             throw new Exception("Index is not valid");
         }
         int indexOnTile, x, y;
-        if (side == UISuite.Side.TOP) {
+        if (side == StartGameController.Side.TOP) {
             x = index / 2;
             y = -1;
             indexOnTile = Tile.neighborIndex.get(index % 2);
         }
-        else if (side == UISuite.Side.BOTTOM) {
+        else if (side == StartGameController.Side.BOTTOM) {
             x = index / 2;
             y = 6;
             indexOnTile = index % 2;
         }
-        else if (side == UISuite.Side.LEFT) {
+        else if (side == StartGameController.Side.LEFT) {
             x = -1;
             y = index / 2;
             indexOnTile = index % 2 + 2;
@@ -122,6 +127,9 @@ public class HPlayer implements IPlayer {
 
     private void generateBoardImage(Document doc, int tileIndex, int rotationIndex) throws Exception {
         String command = "./visualize -b -i image/board/" + tileIndex + "/" + rotationIndex + ".png";
+        if (tileIndex == -1 && rotationIndex == -1) {
+            command = "./visualize -b -i image/board/board.png";
+        }
         String line;
         Process p = Runtime.getRuntime().exec(command);
         PrintWriter out = new PrintWriter(p.getOutputStream(), true);
