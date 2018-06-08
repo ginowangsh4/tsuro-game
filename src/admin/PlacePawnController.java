@@ -32,38 +32,34 @@ public class PlacePawnController {
             indexDropdown.getItems().add(i);
         }
 
-        sideDropdown.setOnMouseClicked(event -> {
-            System.out.println("StartSide dropdown clicked");
-        });
-
-        indexDropdown.setOnMouseClicked(event -> {
-            System.out.println("StartIndex dropdown clicked");
-        });
-
         submitButton.setOnMouseClicked(event -> {
-            System.out.println("Submit button clicked");
-            startSide = sideDropdown.getValue();
-            startIndex = indexDropdown.getValue();
-            if (startSide != null && startIndex != null) {
-                System.out.println("Selected side = " + startSide);
-                System.out.println("Selected index = " + startIndex);
-                App.socket.writeOutputToServer(startSide.toString() + "," + startIndex.toString());
-                App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for other players finish turn.");
-                try {
-                    // let UI block until play turn
-                    String response = App.socket.readInputFromServer();
-                    System.out.println(response);
-                    if (response == null || !response.equals("<play-turn>")) {
-                        throw new IllegalArgumentException("Response for place pawn view is invalid");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                // switch to play turn scene
-                App.changeScene(submitButton, "PlayTurn.fxml");
-            } else {
-                App.generateAlert(Alert.AlertType.WARNING, "Shouldn't submit now. Please choose both side and index!");
-            }
+            handleSubmitButton();
         });
+    }
+
+    private void handleSubmitButton() {
+        System.out.println("Submit button clicked");
+        startSide = sideDropdown.getValue();
+        startIndex = indexDropdown.getValue();
+        if (startSide != null && startIndex != null) {
+            System.out.println("Selected side = " + startSide);
+            System.out.println("Selected index = " + startIndex);
+            App.socket.writeOutputToServer(startSide.toString() + "," + startIndex.toString());
+            App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for other players finish turn.");
+            try {
+                // let UI block until play turn
+                String response = App.socket.readInputFromServer();
+                System.out.println(response);
+                if (response == null || !response.equals("<play-turn>")) {
+                    throw new IllegalArgumentException("Response for place pawn view is invalid");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // switch to play turn scene
+            App.changeScene(submitButton, "PlayTurn.fxml");
+        } else {
+            App.generateAlert(Alert.AlertType.WARNING, "Shouldn't submit now. Please choose both side and index!");
+        }
     }
 }

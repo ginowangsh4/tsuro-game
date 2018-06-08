@@ -42,71 +42,67 @@ public class PlayTurnController {
         commitMoveButton.setDisable(true);
 
         chooseTile0Button.setOnAction(event -> {
-            currTileButton = new Pair<>(chooseTile0Button, new int[]{0, 0});
-            rotateTileButton.setDisable(false);
-            commitMoveButton.setDisable(false);
-            try {
-                boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
-                        currTileButton.second[1] + ".png")));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            tileButtonEvents(chooseTile0Button, 0);
         });
 
         chooseTile1Button.setOnAction(event -> {
-            currTileButton = new Pair<>(chooseTile1Button, new int[]{1, 0});
-            rotateTileButton.setDisable(false);
-            commitMoveButton.setDisable(false);
-            try {
-                boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
-                        currTileButton.second[1] + ".png")));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            tileButtonEvents(chooseTile1Button, 1);
         });
 
         chooseTile2Button.setOnAction(event -> {
-            currTileButton = new Pair<>(chooseTile2Button, new int[]{2, 0});
-            rotateTileButton.setDisable(false);
-            commitMoveButton.setDisable(false);
-            try {
-                boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
-                        currTileButton.second[1] + ".png")));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            tileButtonEvents(chooseTile2Button, 2);
         });
 
         rotateTileButton.setOnAction(event -> {
-            System.out.println("Before rotation [" + currTileButton.second[0] + ", " + currTileButton.second[1] + "]");
-            currTileButton.second[1] = (currTileButton.second[1] + 1) % 4;
-            System.out.println("After rotation: [" + currTileButton.second[0] + ", " + currTileButton.second[1] + "]");
-            try {
-                boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
-                        currTileButton.second[1] + ".png")));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            handleRotateTileButton();
         });
 
         commitMoveButton.setOnAction(event -> {
-            App.socket.writeOutputToServer(String.valueOf(currTileButton.second[0]) + "," + String.valueOf(currTileButton.second[1]));
-            App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for other players finish turn.");
-            try {
-                // let UI block until next turn
-                String response = App.socket.readInputFromServer();
-                System.out.println(response);
-                if (response == null || (!response.equals("<play-turn>") && !response.equals("<end-game>"))) {
-                    throw new IllegalArgumentException("Response for play turn view is invalid");
-                } else if (response.equals("<end-game>")) {
-                    // switch to end game scene
-                    App.changeScene(commitMoveButton, "EndGame.fxml");
-                }
-                setBoardAndTileImages();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            handleCommitMoveButton();
         });
+    }
+
+    private void tileButtonEvents(Button button, int index) {
+        currTileButton = new Pair<>(button, new int[]{index, 0});
+        rotateTileButton.setDisable(false);
+        commitMoveButton.setDisable(false);
+        try {
+            boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
+                    currTileButton.second[1] + ".png")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleRotateTileButton() {
+        System.out.println("Before rotation [" + currTileButton.second[0] + ", " + currTileButton.second[1] + "]");
+        currTileButton.second[1] = (currTileButton.second[1] + 1) % 4;
+        System.out.println("After rotation: [" + currTileButton.second[0] + ", " + currTileButton.second[1] + "]");
+        try {
+            boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
+                    currTileButton.second[1] + ".png")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleCommitMoveButton() {
+        App.socket.writeOutputToServer(String.valueOf(currTileButton.second[0]) + "," + String.valueOf(currTileButton.second[1]));
+        App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for other players finish turn.");
+        try {
+            // let UI block until next turn
+            String response = App.socket.readInputFromServer();
+            System.out.println(response);
+            if (response == null || (!response.equals("<play-turn>") && !response.equals("<end-game>"))) {
+                throw new IllegalArgumentException("Response for play turn view is invalid");
+            } else if (response.equals("<end-game>")) {
+                // switch to end game scene
+                App.changeScene(commitMoveButton, "EndGame.fxml");
+            }
+            setBoardAndTileImages();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setBoardAndTileImages() throws Exception {

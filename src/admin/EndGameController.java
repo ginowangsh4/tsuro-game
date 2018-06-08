@@ -20,7 +20,7 @@ public class EndGameController {
 
     public void initialize() throws Exception {
         boardImageView.setImage(new Image(new FileInputStream("image/board/board.png")));
-        String temp = App.socket.readInputFromServer();
-        winnerList.setText(temp);
+        String winners = App.socket.readInputFromServer();
+        winnerList.setText(winners);
     }
 }
