@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.List;
 
 public class HPlayer implements IPlayer {
@@ -51,6 +52,8 @@ public class HPlayer implements IPlayer {
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         generateImages(b, hand);
         out.println("<play-turn>");
+        // inform GUI about hand size
+        out.println(String.valueOf(hand.size()));
         // format: [index of tile in hand, index of tile rotation]
         String[] chosenTile = in.readLine().split(",");
         return generateTile(hand, Integer.parseInt(chosenTile[0]), Integer.parseInt(chosenTile[1]));
@@ -58,7 +61,16 @@ public class HPlayer implements IPlayer {
 
     public void endGame(Board b, List<Integer> colors) throws Exception {
         generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
-        out.print("<end-game>");
+        out.println("<end-game>");
+        String winnerList = "";
+        for (int i = 0; i < colors.size(); i++) {
+            String colorString = Token.colorMap.get(colors.get(i));
+            winnerList = winnerList + colorString;
+            if (i != colors.size() - 1) {
+                winnerList += ", ";
+            }
+        }
+        out.println(winnerList);
     }
 
     private Token findMyToken(Board b) {

@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tsuro.admin.EndGameController">
+    <center>
+        <ImageView fx:id="boardImageView" fitHeight="360.0" fitWidth="360.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+    </center>
+    <top>
+        <VBox prefHeight="160.0" prefWidth="480.0" style="-fx-border-color: black;" BorderPane.alignment="CENTER">
+            <children>
+                <Label alignment="CENTER" prefHeight="40.0" prefWidth="480.0" text="Here is the list of winners!" />
+            <Label fx:id="winnerList" alignment="CENTER" prefWidth="480.0" text="Label" textAlignment="CENTER" />
+            </children></VBox>
+    </top>
+    <left>
+        <VBox prefHeight="360.0" prefWidth="60.0" BorderPane.alignment="CENTER" />
+    </left>
+    <right>
+        <VBox prefHeight="360.0" prefWidth="60.0" BorderPane.alignment="CENTER" />
+    </right>
+    <bottom>
+        <HBox prefHeight="30.0" prefWidth="480.0" BorderPane.alignment="CENTER" />
+    </bottom>
+</BorderPane>
