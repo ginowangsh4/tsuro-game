@@ -485,18 +485,13 @@ public class Server {
             server.playATurn(tileToPlay);
         }
 
-        // prints
+        // end game
         List<Integer> winnerColors = server.getCurrentColors();
-        for (SPlayer sPlayer : winners) {
-            System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
-            sPlayer.getPlayer().endGame(server.board, winnerColors);
+        for (int i = 0; i < totalNum; i++) {
+            allPlayers.get(i).endGame(server.board, winnerColors);
         }
-        for (SPlayer sPlayer : outSPlayers) {
-            System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
-            if (!winners.contains(sPlayer)){
-                sPlayer.getPlayer().endGame(server.board, winnerColors);
-            }
-        }
+
+        // print winners
         System.out.println("Server: game over? = " + server.gameOver);
         for (SPlayer sPlayer : server.winners) {
             System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
