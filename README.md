@@ -6,6 +6,12 @@ Implementation of board game Tsuro with Java
 - Jennifer Liu - jenniferliu2018@u.northwestern.edu 
 - Jin Han - jinhan2019@u.northwestern.edu
 
+## UPDATE - GUI
+
+We are struggling to run our GUI from command line, but please try it out using IDE. Firstly compile and run all unit tests with `make`. Then run this command `java -cp bin/ tsuro.Tsuro 10086 1 7 0`, which starting a local tournament with 1 HPlayer and 7 MPlayer. Finally in the IDE, run the class (the main function of that class) under src/admin/App. This should fire up the GUI and allow you to play the game as the HPlayer.
+
+We also need to implement the case when HPlayer trying to place at an illegal starting position or to commit an illegal move - please give us some feedbacks!
+
 ## Test
 
 Run all unit tests: 
