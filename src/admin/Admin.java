@@ -2,10 +2,7 @@ package tsuro.admin;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import tsuro.Board;
-import tsuro.MPlayer;
-import tsuro.Tile;
-import tsuro.Token;
+import tsuro.*;
 import tsuro.parser.Parser;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,28 +17,32 @@ public class Admin {
     private static DocumentBuilder db;
     private static AdminSocket socket;
     private static Parser parser;
-    private static MPlayer mPlayer;
+    private static IPlayer player;
 
-    // commend line arguments as "PORT_NUMBER PLAYER_NAME STRATEGY(R/MS/LS)"
-    // if there is not argument for strategy, the default is to use a Random strategy
+    // TODO: make HPlayer work by launching App from CML
+    // CML arguments "0: Port_Number, 1: Player_Name, 2: Player_Type (H/M), 3: Strategy (R/MS/LS) if Player_Type is M"
     public static void main(String[] args) throws Exception {
-        // set up connection to local host
         db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         parser = new Parser(db);
         socket = new AdminSocket("127.0.0.1", Integer.parseInt(args[0]));
-        switch (args[2]) {
-            case "R":
-                mPlayer = new MPlayer(MPlayer.Strategy.R, args[1]);
-                break;
-            case "LS":
-                mPlayer = new MPlayer(MPlayer.Strategy.LS, args[1]);
-                break;
-            case "MS":
-                mPlayer = new MPlayer(MPlayer.Strategy.MS, args[1]);
-                break;
-            default:
-                mPlayer = new MPlayer(MPlayer.Strategy.R, args[1]);
+        if (args[2].equals("M")) {
+            switch (args[3]) {
+                case "R":
+                    player = new MPlayer(MPlayer.Strategy.R, args[1]);
+                    break;
+                case "LS":
+                    player = new MPlayer(MPlayer.Strategy.LS, args[1]);
+                    break;
+                case "MS":
+                    player = new MPlayer(MPlayer.Strategy.MS, args[1]);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Entered invalid strategy for MPlayer!");
+            }
+        } else {
+            player = new HPlayer(args[1]);
         }
+
         while (socket.connectionEstablished()) {
             String res = socket.readInputFromServer();
             // server has closed the connection
@@ -71,7 +72,7 @@ public class Admin {
     }
 
     private static void processGetName() throws Exception {
-        String playerName = mPlayer.getName();
+        String playerName = player.getName();
         Document getNameResXML = parser.buildPlayerNameXML(playerName);
         sendXMLToClient(getNameResXML, "Admin: get-name complete");
     }
@@ -85,7 +86,7 @@ public class Admin {
         Document colorsDoc = Parser.fromNodeToDoc(colorsNode, db);
         List<Integer> colors = parser.fromColorListSetXML(colorsDoc);
 
-        mPlayer.initialize(color, colors);
+        player.initialize(color, colors);
         Document voidXML = parser.buildVoidXML();
         sendXMLToClient(voidXML, "Admin: initialize complete ");
     }
@@ -95,7 +96,7 @@ public class Admin {
         Document boardDoc = Parser.fromNodeToDoc(boardNode, db);
         Board board = parser.boardParser.fromXML(boardDoc);
 
-        Token token = mPlayer.placePawn(board);
+        Token token = player.placePawn(board);
         Document pawnLocXML = parser.buildPawnLocXML(token.getPosition(), token.getIndex());
         sendXMLToClient(pawnLocXML, "Admin: place-pawn complete");
     }
@@ -112,7 +113,7 @@ public class Admin {
         Node nNode = setNode.getNextSibling();
         int tilesLeft = Integer.parseInt(nNode.getFirstChild().getTextContent());
 
-        Tile tile = mPlayer.playTurn(board, hand, tilesLeft);
+        Tile tile = player.playTurn(board, hand, tilesLeft);
         Document tileXML = parser.tileParser.buildXML(tile);
         sendXMLToClient(tileXML, "Admin: play-turn complete");
     }
@@ -126,7 +127,7 @@ public class Admin {
         Document setDoc = Parser.fromNodeToDoc(setNode, db);
         List<Integer> colors = parser.fromColorListSetXML(setDoc);
 
-        mPlayer.endGame(board, colors);
+        player.endGame(board, colors);
         Document voidXML = parser.buildVoidXML();
         sendXMLToClient(voidXML, "Admin: end-game complete");
     }

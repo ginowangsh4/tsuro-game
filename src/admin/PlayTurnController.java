@@ -36,10 +36,7 @@ public class PlayTurnController {
 
     @FXML
     public void initialize() throws Exception {
-        boardImage.setImage(new Image(new FileInputStream("image/board/board.png")));
-        tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
-        tile1Image.setImage(new Image(new FileInputStream("image/hand/1.png")));
-        tile2Image.setImage(new Image(new FileInputStream("image/hand/2.png")));
+        setBoardAndTileImages();
 
         rotateTileButton.setDisable(true);
         commitMoveButton.setDisable(true);
@@ -105,13 +102,37 @@ public class PlayTurnController {
                     // switch to end game scene
                     App.changeScene(commitMoveButton, "EndGame.fxml");
                 }
-                boardImage.setImage(new Image(new FileInputStream("image/board/board.png")));
-                tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
-                tile1Image.setImage(new Image(new FileInputStream("image/hand/1.png")));
-                tile2Image.setImage(new Image(new FileInputStream("image/hand/2.png")));
-            } catch (IOException e) {
+                setBoardAndTileImages();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void setBoardAndTileImages() throws Exception {
+        boardImage.setImage(new Image(new FileInputStream("image/board/board.png")));
+        int handSize = Integer.parseInt(App.socket.readInputFromServer());
+        if (handSize == 3) {
+            tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
+            tile1Image.setImage(new Image(new FileInputStream("image/hand/1.png")));
+            tile2Image.setImage(new Image(new FileInputStream("image/hand/2.png")));
+            chooseTile0Button.setDisable(false);
+            chooseTile1Button.setDisable(false);
+            chooseTile2Button.setDisable(false);
+        } else if (handSize == 2) {
+            tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
+            tile1Image.setImage(new Image(new FileInputStream("image/hand/1.png")));
+            tile2Image.setImage(null);
+            chooseTile0Button.setDisable(false);
+            chooseTile1Button.setDisable(false);
+            chooseTile2Button.setDisable(true);
+        } else {
+            tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
+            tile1Image.setImage(null);
+            tile2Image.setImage(null);
+            chooseTile0Button.setDisable(false);
+            chooseTile1Button.setDisable(true);
+            chooseTile2Button.setDisable(true);
+        }
     }
 }

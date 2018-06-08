@@ -21,8 +21,8 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         socket = new AdminSocket("127.0.0.1", 10000);
         FXMLLoader loader = new FXMLLoader();
-        System.err.println("FXML resource: " + App.class.getResource("/StartGame.fxml"));
-        loader.setLocation(App.class.getResource("/StartGame.fxml"));
+        System.out.println(App.class.getResource("StartGame.fxml"));
+        loader.setLocation(getClass().getResource("StartGame.fxml"));
         AnchorPane startGameView = loader.load();
         Scene scene = new Scene(startGameView);
         stage.setScene(scene);
@@ -32,7 +32,7 @@ public class App extends Application {
 
     public static void changeScene(Node node, String source) {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(App.class.getResource("/" + source));
+        loader.setLocation(App.class.getResource(source));
         BorderPane newView = null;
         try {
             newView = loader.load();

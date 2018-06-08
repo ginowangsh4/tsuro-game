@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Server {
 
-    public final int PORT_NUM = 8000;
+    public int PORT_NUM;
 
     public Board board;
     public Deck drawPile;
@@ -434,96 +434,77 @@ public class Server {
             throw new IllegalArgumentException("Entered negative number of player");
         }
         int totalNum = numHPlayer + numMPlayer + numRemotePlayer;
-        System.out.println("There should be " + totalNum + " players joining the game");
-        if(totalNum > 8 || totalNum < 2){
+
+        if (totalNum > 8 || totalNum < 2) {
             throw new IllegalArgumentException("Invalid number of players");
         }
         List<IPlayer> allPlayers = new ArrayList<>();
         ServerSocket socketListener = new ServerSocket(PORT_NUM);
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
 
-            // create players
-            // for remote players, initialize a new socket
-            // IPlayer rP = new RemotePlayer(socketListener.accept(), db);
-//            IPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "MPlayer 1");
-//            IPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "MPlayer 2");
-//            IPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "MPlayer 3");
-//            IPlayer hP = new HPlayer("HPlayer 1");
-            for (int i = 0; i<numRemotePlayer; i++){
-                IPlayer remotePlayer = new RemotePlayer(socketListener.accept(), db);
-                allPlayers.add(remotePlayer);
-            }
-            for (int i = 0; i<numMPlayer; i++){
-                String name = "MPlayer"+ Integer.toString(i);
-                IPlayer mPlayer = new MPlayer(MPlayer.Strategy.R, name);
-                allPlayers.add(mPlayer);
-            }
-            for (int i = 0; i<numHPlayer; i++){
-                String name = "HPlayer"+ Integer.toString(i);
-                IPlayer hPlayer = new HPlayer(name);
-                allPlayers.add(hPlayer);
-            }
-            for (int i = 0; i < totalNum; i++) {
-                colors.add(i);
-            }
-            for (int i = 0; i < totalNum; i++) {
-                allPlayers.get(i).initialize(i,colors);
-            }
-//            mP1.initialize(1, colors);
-//            mP2.initialize(2, colors);
-//            mP3.initialize(3, colors);
-//            hP.initialize(0, colors);
-            for (int i = 0; i < totalNum; i++) {
-                Token token = allPlayers.get(i).placePawn(board);
-                server.registerPlayer(allPlayers.get(i), token);
-            }
-//            Token t1 = mP1.placePawn(board);
-//            server.registerPlayer(mP1, t1);
-//            Token t2 = mP2.placePawn(board);
-//            server.registerPlayer(mP2, t2);
-//            Token t3 = mP3.placePawn(board);
-//            server.registerPlayer(mP3, t3);
-//            Token t0 = hP.placePawn(board);
-//            System.out.println("t0 is generated");
-//            System.out.println("color of t0 is "+t0.getColorString());
-//            System.out.println("position of t0 is "+ t0.getPosition()[0]+","+t0.getPosition()[1]);
-//            System.out.println("index of t0 is "+ t0.getIndex());
-//            server.registerPlayer(hP, t0);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
 
-            // play game over network
-            while(!server.isGameOver()) {
-                SPlayer currentP = inSPlayers.get(0);
-                System.out.println("Server: current player = " + currentP.getPlayer().getName());
-                Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
-                currentP.deal(tileToPlay);
-                server.playATurn(tileToPlay);
-            }
+        // create players
+        // for each remote player, initialize a new socket
+        for (int i = 0; i < numRemotePlayer; i++) {
+            IPlayer remotePlayer = new RemotePlayer(socketListener.accept(), db);
+            allPlayers.add(remotePlayer);
+        }
 
-            // prints
-            List<Integer> winnerColors = server.getCurrentColors();
-            for (SPlayer sPlayer : winners) {
-                System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
+        for (int i = 0; i < numMPlayer; i++) {
+            String name = "MPlayer"+ Integer.toString(i);
+            IPlayer mPlayer = new MPlayer(MPlayer.Strategy.R, name);
+            allPlayers.add(mPlayer);
+        }
+
+        for (int i = 0; i < numHPlayer; i++) {
+            String name = "HPlayer"+ Integer.toString(i);
+            IPlayer hPlayer = new HPlayer(name);
+            allPlayers.add(hPlayer);
+        }
+
+        for (int i = 0; i < totalNum; i++) {
+            colors.add(i);
+        }
+
+        for (int i = 0; i < totalNum; i++) {
+            allPlayers.get(i).initialize(i,colors);
+        }
+
+        for (int i = 0; i < totalNum; i++) {
+            Token token = allPlayers.get(i).placePawn(board);
+            server.registerPlayer(allPlayers.get(i), token);
+        }
+
+        // play game over network
+        while(!server.isGameOver()) {
+            SPlayer currentP = inSPlayers.get(0);
+            System.out.println("Server: current player = " + currentP.getPlayer().getName());
+            Tile tileToPlay = currentP.getPlayer().playTurn(board, currentP.getHand(), drawPile.size());
+            currentP.deal(tileToPlay);
+            server.playATurn(tileToPlay);
+        }
+
+        // prints
+        List<Integer> winnerColors = server.getCurrentColors();
+        for (SPlayer sPlayer : winners) {
+            System.out.println("Server: ending game for winners = " + sPlayer.getPlayer().getName());
+            sPlayer.getPlayer().endGame(server.board, winnerColors);
+        }
+        for (SPlayer sPlayer : outSPlayers) {
+            System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
+            if (!winners.contains(sPlayer)){
                 sPlayer.getPlayer().endGame(server.board, winnerColors);
             }
-            for (SPlayer sPlayer : outSPlayers) {
-                System.out.println("Server: ending game for losers = " + sPlayer.getPlayer().getName());
-                if (!winners.contains(sPlayer)){
-                    sPlayer.getPlayer().endGame(server.board, winnerColors);
-                }
-            }
-            System.out.println("Server: game over? = " + server.gameOver);
-            for (SPlayer sPlayer : server.winners) {
-                System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
-            }
-
-        } catch (ParserConfigurationException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            // close connection
-            //socketListener.close();
         }
+        System.out.println("Server: game over? = " + server.gameOver);
+        for (SPlayer sPlayer : server.winners) {
+            System.out.println("Server: winner = " + sPlayer.getPlayer().getName());
+        }
+
+        // close connection
+        socketListener.close();
+
     }
 }
 
