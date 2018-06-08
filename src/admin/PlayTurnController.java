@@ -1,6 +1,7 @@
 package tsuro.admin;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -93,6 +94,24 @@ public class PlayTurnController {
 
         commitMoveButton.setOnAction(event -> {
             App.socket.writeOutputToServer(String.valueOf(currTileButton.second[0]) + "," + String.valueOf(currTileButton.second[1]));
+            App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for other players finish turn.");
+            try {
+                // let UI block until next turn
+                String response = App.socket.readInputFromServer();
+                System.out.println(response);
+                if (response == null || (!response.equals("<play-turn>") && !response.equals("<end-game>"))) {
+                    throw new IllegalArgumentException("Response for play turn view is invalid");
+                } else if (response.equals("<end-game>")) {
+                    // switch to end game scene
+                    App.changeScene(commitMoveButton, "EndGame.fxml");
+                }
+                boardImage.setImage(new Image(new FileInputStream("image/board/board.png")));
+                tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
+                tile1Image.setImage(new Image(new FileInputStream("image/hand/1.png")));
+                tile2Image.setImage(new Image(new FileInputStream("image/hand/2.png")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 }

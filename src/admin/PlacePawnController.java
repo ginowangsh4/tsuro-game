@@ -47,19 +47,22 @@ public class PlacePawnController {
             if (startSide != null && startIndex != null) {
                 System.out.println("Selected side = " + startSide);
                 System.out.println("Selected index = " + startIndex);
-
                 App.socket.writeOutputToServer(startSide.toString() + "," + startIndex.toString());
+                App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for other players finish turn.");
                 try {
-                    System.out.println(App.socket.readInputFromServer());
+                    // let UI block until play turn
+                    String response = App.socket.readInputFromServer();
+                    System.out.println(response);
+                    if (response == null || !response.equals("<play-turn>")) {
+                        throw new IllegalArgumentException("Response for place pawn view is invalid");
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                // switch to play turn scene
                 App.changeScene(submitButton, "PlayTurn.fxml");
             } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Tsuro Game Dialog");
-                alert.setContentText("Shouldn't submit now. Please choose both side and index!");
-                alert.showAndWait();
+                App.generateAlert(Alert.AlertType.WARNING, "Shouldn't submit now. Please choose both side and index!");
             }
         });
     }

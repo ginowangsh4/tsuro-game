@@ -42,7 +42,7 @@ public class HPlayer implements IPlayer {
 
     public Token placePawn(Board b) throws Exception {
         generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
-        System.out.println("HPlayer: place-pawn board generated");
+        out.println("<place-pawn>");
         // format: [side, index on side]
         String[] chosenSideIndex= in.readLine().split(",");
         return generateTokenFromSideAndIndex(color, chosenSideIndex[0], Integer.parseInt(chosenSideIndex[1]));
@@ -50,14 +50,15 @@ public class HPlayer implements IPlayer {
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
         generateImages(b, hand);
-        out.println("generate place-pawn images complete");
+        out.println("<play-turn>");
         // format: [index of tile in hand, index of tile rotation]
         String[] chosenTile = in.readLine().split(",");
         return generateTile(hand, Integer.parseInt(chosenTile[0]), Integer.parseInt(chosenTile[1]));
     }
 
     public void endGame(Board b, List<Integer> colors) throws Exception {
-
+        generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
+        out.print("<end-game>");
     }
 
     private Token findMyToken(Board b) {
@@ -69,7 +70,7 @@ public class HPlayer implements IPlayer {
         throw new IllegalArgumentException("Cannot find token on board");
     }
 
-    public Token generateTokenFromSideAndIndex(int colorIndex, String side, int index) throws Exception {
+    public static Token generateTokenFromSideAndIndex(int colorIndex, String side, int index) throws Exception {
         if (index < 0 || index > 11) {
             throw new Exception("Index is not valid");
         }
@@ -110,6 +111,7 @@ public class HPlayer implements IPlayer {
 
     private void generateImages(Board b, List<Tile> hand) throws Exception {
         Document boardXML = parser.boardParser.buildXML(b);
+        generateBoardImage(boardXML, -1, -1);
         Token token = findMyToken(b);
         int[] location = Board.getAdjacentLocation(token);
         for (int i = 0; i < hand.size(); i++) {
@@ -117,7 +119,7 @@ public class HPlayer implements IPlayer {
             for (int j = 0; j < 4; j++) {
                 Board tempBoard = parser.boardParser.fromXML(boardXML);
                 tempBoard.placeTile(copy, location[0], location[1]);
-                for (SPlayer sp : b.getSPlayerList()) {
+                for (SPlayer sp : tempBoard.getSPlayerList()) {
                     sp.updateToken(tempBoard.simulateMove(sp.getToken()));
                 }
                 generateBoardImage(parser.boardParser.buildXML(tempBoard), i, j);
