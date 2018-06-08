@@ -6,6 +6,17 @@ Implementation of board game Tsuro with Java
 - Jennifer Liu - jenniferliu2018@u.northwestern.edu 
 - Jin Han - jinhan2019@u.northwestern.edu
 
+## Update on GUI and HPlayer
+
+We implemented most of the GUI and HPlayer but are struggling to run our app from command line. That being said, please try it out using any IDE (we recommend IntelliJ) following these steps:
+- Compile and run all unit tests with `make`. 
+- Run this command `java -cp bin/ tsuro.Tsuro 10086 1 7 0`, which starts a local tournament with 1 HPlayer and 7 MPlayers, the number, e.g. 10086, is the port number any remote players can connect to should you want to add any to the tournament.
+- Navigate to the IDE and run the class (or the main function of this class) under `src/admin/App.java`. This should fire up the GUI and allow you to play the game as the HPlayer.
+
+We still need to implement the case when a HPlayer tries to place pawn at an illegal starting position or to commit an illegal move.
+
+Please give us some feedback or suggestion about how to start the GUI from command line!
+
 ## Test
 
 Run all unit tests: 
@@ -13,28 +24,28 @@ Run all unit tests:
 
 Run with test-play-a-turn: 
 - Run with `./test-play-a-turn play-a-turn` to check against the game rule with Robby's code.
-- Use `./test-play-a-turn -h` to a options such as number of games to run and enable verbose display on console. 
+- Use `./test-play-a-turn -h` to see options such as number of games to run and enable verbose display on console. 
 
 Run a unit test suite: 
 - Better to compile first with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java`. 
 - Then run with `java -jar lib/junit-platform-console-standalone-1.2.0.jar --class-path bin/ -c TESTNAME`. 
-- You would need to specific package for the `TESTNAME` - see *Run from command line section* for more!
+- You would need to specific package for the `TESTNAME` - see *Run from command line* section for more.
 
 Run in IntelliJ IDEA: 
 - Open project with IntelliJ -> Right click on the folder `test/` -> Click "Run All Test".
 
 ## Tournament over network
 
-Start a Network Client: 
+Start a network client: 
 - Make sure that the server is already running, either a local or remote host. 
-- In `./`, run `java -cp bin/ tsuro.admin.Admin PORTNUMBER PLAYERNAME STRATEGY(R/MS/LS)` to connect with the host to join the tournament. Remember to align the port number to connect to the correct socket.
+- In `./`, run `java -cp bin/ tsuro.admin.Admin Port_Number Player_Name Player_Type(H/M) Strategy(R/MS/LS)` - only add Strategy if `Player_Type = M` - to connect with the host to join the tournament. 
 
-Start a Localhost to Run Simple Tournament:  
-- Run `src/main/Tsuro` to start a localhost server with port number 8000 which starts a tournament with one remote player and three machine player.
+Start a server to run tournament:  
+- Run `java -cp bin/ tsuro.Tsuro Port_Number Number_of_HPlayer Number_of_MPlayer Number_of_RemotePlayer` to start a local server which starts a tournament with number and type of players as specified.
 
 ## Run from command line 
 
-Best to compile everything first with `javac -cp lib/junit-jupiter-api-5.0.0.jar -d bin/ src/main/*.java src/test/*.java src/parser/*.java src/admin/*.java`.
+Best to compile everything first with `make`.
 
 To run a single class from command line, use `java -cp bin/ PACKAGENAME.CLASSNAME arg1 arg2 ...` where `arg` is the input into the main function in the class specified by `CLASSNAME`.
 - Package `tsuro` contains all Tsuro game element definition classes and their tests.
