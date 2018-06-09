@@ -2,15 +2,22 @@ package tsuro.admin;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class StartGameController {
     @FXML
     private Button startGameButton;
-
     @FXML
-    public void initialize() {
+    private ImageView logoImage;
+    @FXML
+    public void initialize() throws FileNotFoundException {
+        logoImage.setImage(new Image(new FileInputStream("image/dragon.png")));
+
         startGameButton.setOnMouseClicked(event -> {
             handleStartGameButton();
         });

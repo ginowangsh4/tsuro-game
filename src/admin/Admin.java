@@ -20,7 +20,11 @@ public class Admin {
     private static IPlayer player;
 
     // TODO: make HPlayer work by launching App from CML
-    // CML arguments "0: Port_Number, 1: Player_Name, 2: Player_Type (H/M), 3: Strategy (R/MS/LS) if Player_Type is M"
+    // CML arguments:
+    // 0: Port_Number,
+    // 1: Player_Name,
+    // 2: Player_Type (H/M),
+    // 3: Strategy (R/MS/LS) if Player_Type is M"
     public static void main(String[] args) throws Exception {
         db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         parser = new Parser(db);

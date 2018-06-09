@@ -2,7 +2,11 @@ package tsuro;
 
 public class Tsuro {
 
-    // CML arguments: "0: Port_Number, 1: Number_of_HPlayer, 2: Number_of_MPlayer, 3: Number_of_RemotePlayer"
+    // CML arguments:
+    // 0: Port_Number,
+    // 1: Number_of_HPlayer,
+    // 2: Number_of_MPlayer,
+    // 3: Number_of_RemotePlayer
     public static void main(String[] args) {
         // start a local host for networked tournament
         Server server = Server.getInstance();

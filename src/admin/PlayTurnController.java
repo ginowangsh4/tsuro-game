@@ -38,9 +38,6 @@ public class PlayTurnController {
     public void initialize() throws Exception {
         setBoardAndTileImages();
 
-        rotateTileButton.setDisable(true);
-        commitMoveButton.setDisable(true);
-
         chooseTile0Button.setOnAction(event -> {
             tileButtonEvents(chooseTile0Button, 0);
         });
@@ -88,7 +85,7 @@ public class PlayTurnController {
 
     private void handleCommitMoveButton() {
         App.socket.writeOutputToServer(String.valueOf(currTileButton.second[0]) + "," + String.valueOf(currTileButton.second[1]));
-        App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for other players finish turn.");
+        App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for others finish to turn.");
         try {
             // let UI block until next turn
             String response = App.socket.readInputFromServer();
@@ -130,5 +127,8 @@ public class PlayTurnController {
             chooseTile1Button.setDisable(true);
             chooseTile2Button.setDisable(true);
         }
+        // disable both rotate tile and commit move button at the start of a turn
+        rotateTileButton.setDisable(true);
+        commitMoveButton.setDisable(true);
     }
 }

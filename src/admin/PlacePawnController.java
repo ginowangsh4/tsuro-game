@@ -42,10 +42,10 @@ public class PlacePawnController {
         startSide = sideDropdown.getValue();
         startIndex = indexDropdown.getValue();
         if (startSide != null && startIndex != null) {
-            System.out.println("Selected side = " + startSide);
-            System.out.println("Selected index = " + startIndex);
+            System.out.println("Submitted side = " + startSide);
+            System.out.println("Submitted index = " + startIndex);
             App.socket.writeOutputToServer(startSide.toString() + "," + startIndex.toString());
-            App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for other players finish turn.");
+            App.generateAlert(Alert.AlertType.INFORMATION, "Please click \"OK\" and wait for others finish to turn.");
             try {
                 // let UI block until play turn
                 String response = App.socket.readInputFromServer();
