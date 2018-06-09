@@ -5,7 +5,7 @@ public class SPlayer {
 
     private Token token;
     private List<Tile> hand;
-    private IPlayer player;
+    private APlayer player;
 
     public SPlayer(Token token, List<Tile> hand) {
         this.token = token;
@@ -13,23 +13,23 @@ public class SPlayer {
     }
 
     /**
-     * Get the IPlayer linked with this SPlayer
-     * @return an IPlayer
+     * Get the APlayer linked with this SPlayer
+     * @return an APlayer
      */
-    public IPlayer getPlayer() {
+    public APlayer getPlayer() {
         return this.player;
     }
 
-    // only used if certain that associated IPlayer is MPlayer
+    // only used if certain that associated APlayer is MPlayer
     public MPlayer getMPlayer() {
         return (MPlayer) player;
     }
 
     /**
-     * Link IPlayer with current SPlayer
-     * @param player IPlayer to be linked
+     * Link APlayer with current SPlayer
+     * @param player APlayer to be linked
      */
-    public void linkPlayer(IPlayer player) throws Exception {
+    public void linkPlayer(APlayer player) throws Exception {
         if (getPlayer() != null && !player.getName().equals(getPlayer().getName())) {
             throw new IllegalArgumentException("SPlayer and Player mismatch");
         }

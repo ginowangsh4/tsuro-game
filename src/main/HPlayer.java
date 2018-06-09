@@ -2,17 +2,15 @@ package tsuro;
 
 import org.w3c.dom.Document;
 import tsuro.parser.Parser;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
 import java.util.List;
 
-public class HPlayer implements IPlayer {
+public class HPlayer extends APlayer {
 
     private BufferedReader in;
     private PrintWriter out;
@@ -21,7 +19,6 @@ public class HPlayer implements IPlayer {
     private String name;
     private int color;
     private List<Integer> colors;
-    private boolean isWinner;
 
     public HPlayer(String name) throws Exception {
         ServerSocket socketListener = new ServerSocket(10000);
@@ -37,11 +34,14 @@ public class HPlayer implements IPlayer {
     }
 
     public void initialize (int color, List<Integer> colors) {
+        checkState("initialize");
+        validColorAndColors(color, colors);
         this.color = color;
         this.colors = colors;
     }
 
     public Token placePawn(Board b) throws Exception {
+        checkState("place-pawn");
         generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
         out.println("<place-pawn>");
         // format: [side, index on side]
@@ -50,27 +50,29 @@ public class HPlayer implements IPlayer {
     }
 
     public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
-        generateImages(b, hand);
+        checkState("play-turn");
+        generateBoardAndTileImages(b, hand);
         out.println("<play-turn>");
         // inform GUI about hand size
         out.println(String.valueOf(hand.size()));
         // format: [index of tile in hand, index of tile rotation]
         String[] chosenTile = in.readLine().split(",");
-        return generateTile(hand, Integer.parseInt(chosenTile[0]), Integer.parseInt(chosenTile[1]));
+        return getTile(hand, Integer.parseInt(chosenTile[0]), Integer.parseInt(chosenTile[1]));
     }
 
     public void endGame(Board b, List<Integer> colors) throws Exception {
+        checkState("end-game");
         generateBoardImage(parser.boardParser.buildXML(b), -1, -1);
         out.println("<end-game>");
-        String winnerList = "";
+        // inform GUI about winners list
+        StringBuilder winnerList = new StringBuilder();
         for (int i = 0; i < colors.size(); i++) {
-            String colorString = Token.colorMap.get(colors.get(i));
-            winnerList = winnerList + colorString;
+            winnerList.append(Token.colorMap.get(colors.get(i)));
             if (i != colors.size() - 1) {
-                winnerList += ", ";
+                winnerList.append(", ");
             }
         }
-        out.println(winnerList);
+        out.println(winnerList.toString());
     }
 
     private Token findMyToken(Board b) {
@@ -113,7 +115,7 @@ public class HPlayer implements IPlayer {
         return new Token(colorIndex, pos, indexOnTile);
     }
 
-    private Tile generateTile(List<Tile> hand, int handIndex, int rotationIndex) {
+    private Tile getTile(List<Tile> hand, int handIndex, int rotationIndex) {
         Tile move = hand.get(handIndex).copyTile();
         for (int i = 0; i < rotationIndex; i++) {
             move.rotateTile();
@@ -121,7 +123,7 @@ public class HPlayer implements IPlayer {
         return move;
     }
 
-    private void generateImages(Board b, List<Tile> hand) throws Exception {
+    private void generateBoardAndTileImages(Board b, List<Tile> hand) throws Exception {
         Document boardXML = parser.boardParser.buildXML(b);
         generateBoardImage(boardXML, -1, -1);
         Token token = findMyToken(b);
@@ -150,19 +152,15 @@ public class HPlayer implements IPlayer {
         if (tileIndex == -1 && rotationIndex == -1) {
             command = "./visualize -b -i image/board/board.png";
         }
-        String line;
-        Process p = Runtime.getRuntime().exec(command);
-        PrintWriter out = new PrintWriter(p.getOutputStream(), true);
-        out.println(parser.documentToString(doc));
-        BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        while ((line = in.readLine()) != null) {
-            System.out.println(line);
-        }
-        in.close();
+        processCommand(doc, command);
     }
 
     private void generateTileImage(Document doc, int tileIndex) throws Exception {
-        String command = "./visualize -t -i image/hand/" + tileIndex + ".png";
+        processCommand(doc, "./visualize -t -i image/hand/" + tileIndex + ".png");
+
+    }
+
+    private void processCommand(Document doc, String command) throws Exception {
         String line;
         Process p = Runtime.getRuntime().exec(command);
         PrintWriter out = new PrintWriter(p.getOutputStream(), true);

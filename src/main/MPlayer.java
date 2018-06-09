@@ -3,17 +3,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MPlayer implements IPlayer {
+public class MPlayer extends APlayer {
 
     private String name;
     private int color;
     private List<Integer> colors;
-    private boolean isWinner;
 
     public Strategy strategy;
     public enum Strategy { R, MS, LS }
-    public State state;
-    public enum State { BORN, PLAY, DEAD }
 
     public MPlayer(Strategy strategy, String name) {
         this.name = name;
@@ -87,64 +84,6 @@ public class MPlayer implements IPlayer {
 
     public void endGame(Board b, List<Integer> colors) {
         checkState("end-game");
-        this.colors = colors;
-        if (colors.contains(this.color)) {
-            isWinner = true;
-        }
-        isWinner = false;
-    }
-
-    /**
-     * Check IPlayer's state against sequential contract
-     * @param method string name of caller method
-     */
-    private void checkState(String method) {
-        switch (method) {
-            case "initialize":
-                if (state != State.DEAD && state != null) {
-                    throw new IllegalArgumentException("Sequential Contracts: Cannot initialize at this time");
-                }
-                state = State.BORN;
-                break;
-            case "place-pawn":
-                if (state != State.BORN) {
-                    throw new IllegalArgumentException("Sequential Contracts: Cannot place pawn at this time");
-                }
-                state = State.PLAY;
-                break;
-            case "play-turn":
-                if (state != State.PLAY) {
-                    throw new IllegalArgumentException("Sequential Contracts: Cannot play turn at this time");
-                }
-                break;
-            case "end-game":
-                if (state != State.PLAY) {
-                    throw new IllegalArgumentException("Sequential Contracts: Cannot end game at this time");
-                }
-                state = State.DEAD;
-                break;
-            default:
-                throw new IllegalArgumentException("Sequential Contract: Invalid caller method");
-        }
-    }
-
-    /**
-     * Check a color and a list of colors against certain constraints
-     * @param color a color
-     * @param colors a list of colors
-     */
-    private void validColorAndColors(int color, List<Integer> colors) {
-        if (!colors.contains(color)){
-            throw new IllegalArgumentException("Player is not authorized to be initialized");
-        }
-        if (color < 0 || color > 7) {
-            throw new IllegalArgumentException("Invalid player's color");
-        }
-        for (int c : colors) {
-            if (c < 0 || c > 7) {
-                throw new IllegalArgumentException("Player list contains invalid" + "player color");
-            }
-        }
     }
 
     /**

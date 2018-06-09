@@ -2,8 +2,6 @@ package tsuro;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
 
@@ -55,10 +53,10 @@ public class Server {
     }
 
     /**
-     * Register a IPlayer with Server; also create corresponding SPlayer
+     * Register a APlayer with Server; also create corresponding SPlayer
      * @param ip a given player
      */
-    public void registerPlayer(IPlayer ip, Token token) throws Exception {
+    public void registerPlayer(APlayer ip, Token token) throws Exception {
         List<Tile> hand = new ArrayList<>();
         SPlayer sp = new SPlayer(token, hand);
         sp.linkPlayer(ip);
@@ -434,7 +432,7 @@ public class Server {
 
         ServerSocket socketListener = new ServerSocket(PORT_NUM);
 
-        List<IPlayer> allPlayers = initializeAllPlayers(numHPlayer, numMPlayer, numRemotePlayer, socketListener);
+        List<APlayer> allPlayers = initializeAllPlayers(numHPlayer, numMPlayer, numRemotePlayer, socketListener);
 
         placePawnAllPlayers(allPlayers);
 
@@ -470,27 +468,27 @@ public class Server {
             throw new IllegalArgumentException("Invalid number of players");
         }
     }
-    private List<IPlayer> initializeAllPlayers(int numHPlayer, int numMPlayer, int numRemotePlayer, ServerSocket socketListener)
+    private List<APlayer> initializeAllPlayers(int numHPlayer, int numMPlayer, int numRemotePlayer, ServerSocket socketListener)
             throws Exception {
-        List<IPlayer> allPlayers = new ArrayList<>();
+        List<APlayer> allPlayers = new ArrayList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
 
         for (int i = 0; i < numRemotePlayer; i++) {
             // for each remote player, initialize a new socket
-            IPlayer remotePlayer = new RemotePlayer(socketListener.accept(), db);
+            APlayer remotePlayer = new RemotePlayer(socketListener.accept(), db);
             allPlayers.add(remotePlayer);
         }
 
         for (int i = 0; i < numMPlayer; i++) {
             String name = "MPlayer"+ Integer.toString(i);
-            IPlayer mPlayer = new MPlayer(MPlayer.Strategy.R, name);
+            APlayer mPlayer = new MPlayer(MPlayer.Strategy.R, name);
             allPlayers.add(mPlayer);
         }
 
         for (int i = 0; i < numHPlayer; i++) {
             String name = "HPlayer"+ Integer.toString(i);
-            IPlayer hPlayer = new HPlayer(name);
+            APlayer hPlayer = new HPlayer(name);
             allPlayers.add(hPlayer);
         }
 
@@ -504,14 +502,14 @@ public class Server {
         return allPlayers;
     }
 
-    private void placePawnAllPlayers(List<IPlayer> allPlayers) throws Exception {
+    private void placePawnAllPlayers(List<APlayer> allPlayers) throws Exception {
         for (int i = 0; i < allPlayers.size(); i++) {
             Token token = allPlayers.get(i).placePawn(board);
             server.registerPlayer(allPlayers.get(i), token);
         }
     }
 
-    private void endGameAllPlayers(List<IPlayer> allPlayers) throws Exception {
+    private void endGameAllPlayers(List<APlayer> allPlayers) throws Exception {
         List<Integer> winnerColors = server.getCurrentColors();
         for (int i = 0; i < allPlayers.size(); i++) {
             allPlayers.get(i).endGame(server.board, winnerColors);

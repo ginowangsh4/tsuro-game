@@ -17,7 +17,7 @@ public class Admin {
     private static DocumentBuilder db;
     private static AdminSocket socket;
     private static Parser parser;
-    private static IPlayer player;
+    private static APlayer player;
 
     // TODO: make HPlayer work by launching App from CML
     // CML arguments:
