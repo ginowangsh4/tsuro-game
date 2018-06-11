@@ -19,7 +19,6 @@ public class Admin {
     private static Parser parser;
     private static APlayer player;
 
-    // TODO: make HPlayer work by launching App from CML
     // CML arguments:
     // 0: Port_Number,
     // 1: Player_Name,

@@ -59,10 +59,7 @@ public class PlayTurnController {
         });
     }
 
-    private void tileButtonEvents(Button button, int index) {
-        currTileButton = new Pair<>(button, new int[]{index, 0});
-        rotateTileButton.setDisable(false);
-        commitMoveButton.setDisable(false);
+    private void updateBoardImage(){
         try {
             boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
                     currTileButton.second[1] + ".png")));
@@ -71,16 +68,18 @@ public class PlayTurnController {
         }
     }
 
+    private void tileButtonEvents(Button button, int index) {
+        currTileButton = new Pair<>(button, new int[]{index, 0});
+        rotateTileButton.setDisable(false);
+        commitMoveButton.setDisable(false);
+        updateBoardImage();
+    }
+
     private void handleRotateTileButton() {
         System.out.println("Before rotation [" + currTileButton.second[0] + ", " + currTileButton.second[1] + "]");
         currTileButton.second[1] = (currTileButton.second[1] + 1) % 4;
         System.out.println("After rotation: [" + currTileButton.second[0] + ", " + currTileButton.second[1] + "]");
-        try {
-            boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
-                    currTileButton.second[1] + ".png")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        updateBoardImage();
     }
 
     private void handleCommitMoveButton() {
@@ -105,28 +104,24 @@ public class PlayTurnController {
     private void setBoardAndTileImages() throws Exception {
         boardImage.setImage(new Image(new FileInputStream("image/board/board.png")));
         int handSize = Integer.parseInt(App.socket.readInputFromServer());
+
+        tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
+        chooseTile0Button.setDisable(false);
+
+        tile1Image.setImage(null);
+        tile2Image.setImage(null);
+        chooseTile1Button.setDisable(true);
+        chooseTile2Button.setDisable(true);
         if (handSize == 3) {
-            tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
             tile1Image.setImage(new Image(new FileInputStream("image/hand/1.png")));
             tile2Image.setImage(new Image(new FileInputStream("image/hand/2.png")));
-            chooseTile0Button.setDisable(false);
             chooseTile1Button.setDisable(false);
             chooseTile2Button.setDisable(false);
         } else if (handSize == 2) {
-            tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
             tile1Image.setImage(new Image(new FileInputStream("image/hand/1.png")));
-            tile2Image.setImage(null);
-            chooseTile0Button.setDisable(false);
             chooseTile1Button.setDisable(false);
-            chooseTile2Button.setDisable(true);
-        } else {
-            tile0Image.setImage(new Image(new FileInputStream("image/hand/0.png")));
-            tile1Image.setImage(null);
-            tile2Image.setImage(null);
-            chooseTile0Button.setDisable(false);
-            chooseTile1Button.setDisable(true);
-            chooseTile2Button.setDisable(true);
         }
+        
         // disable both rotate tile and commit move button at the start of a turn
         rotateTileButton.setDisable(true);
         commitMoveButton.setDisable(true);

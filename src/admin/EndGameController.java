@@ -21,6 +21,7 @@ public class EndGameController {
     public void initialize() throws Exception {
         boardImageView.setImage(new Image(new FileInputStream("image/board/board.png")));
         String winners = App.socket.readInputFromServer();
+        System.out.println("printing winners from controller: "+winners);
         winnerList.setText(winners);
     }
 }

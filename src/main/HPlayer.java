@@ -72,6 +72,7 @@ public class HPlayer extends APlayer {
                 winnerList.append(", ");
             }
         }
+        System.out.println("winners are"+winnerList.toString());
         out.println(winnerList.toString());
     }
 
