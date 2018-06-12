@@ -95,9 +95,7 @@ public class Admin {
     }
 
     private static void processPlacePawn(Node node) throws Exception {
-        Node boardNode = node.getFirstChild();
-        Document boardDoc = Parser.fromNodeToDoc(boardNode, db);
-        Board board = parser.boardParser.fromXML(boardDoc);
+        Board board = parser.boardParser.fromNode(node.getFirstChild());
 
         Token token = player.placePawn(board);
         Document pawnLocXML = parser.buildPawnLocXML(token.getPosition(), token.getIndex());
@@ -106,8 +104,7 @@ public class Admin {
 
     private static void processPlayTurn(Node node) throws Exception {
         Node boardNode = node.getFirstChild();
-        Document boardDoc = Parser.fromNodeToDoc(boardNode, db);
-        Board board = parser.boardParser.fromXML(boardDoc);
+        Board board = parser.boardParser.fromNode(boardNode);
 
         Node setNode = boardNode.getNextSibling();
         Document setDoc = Parser.fromNodeToDoc(setNode, db);
@@ -123,8 +120,7 @@ public class Admin {
 
     private static void processEndGame(Node node) throws Exception {
         Node boardNode = node.getFirstChild();
-        Document boardDoc = Parser.fromNodeToDoc(boardNode, db);
-        Board board = parser.boardParser.fromXML(boardDoc);
+        Board board = parser.boardParser.fromNode(boardNode);
 
         Node setNode = boardNode.getNextSibling();
         Document setDoc = Parser.fromNodeToDoc(setNode, db);

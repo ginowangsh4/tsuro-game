@@ -72,7 +72,6 @@ public class HPlayer extends APlayer {
                 winnerList.append(", ");
             }
         }
-        System.out.println("winners are"+winnerList.toString());
         out.println(winnerList.toString());
     }
 
@@ -158,7 +157,6 @@ public class HPlayer extends APlayer {
 
     private void generateTileImage(Document doc, int tileIndex) throws Exception {
         processCommand(doc, "./visualize -t -i image/hand/" + tileIndex + ".png");
-
     }
 
     private void processCommand(Document doc, String command) throws Exception {

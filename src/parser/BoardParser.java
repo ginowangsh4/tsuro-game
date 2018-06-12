@@ -56,6 +56,7 @@ public class BoardParser {
         return doc;
     }
 
+
     public Element generateTileEntry(Document doc, int i, int j, Node tile){
         Element ent = doc.createElement("ent");
         Element xy = doc.createElement("xy");
@@ -116,6 +117,12 @@ public class BoardParser {
             SPlayer sp = new SPlayer(token, null);
             board.addSPlayer(sp);
         }
+        return board;
+    }
+
+    public Board fromNode(Node boardNode) throws Exception {
+        Document boardDoc = Parser.fromNodeToDoc(boardNode, db);
+        Board board = fromXML(boardDoc);
         return board;
     }
 }
