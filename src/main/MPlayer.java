@@ -90,7 +90,10 @@ public abstract class MPlayer extends APlayer {
         return new int[] {x, y, indexOnTile};
     }
 
-    public List<Tile> findLegalMoves(Board b, List<Tile> hand, int tilesLeft) throws Exception {
+    /**
+     * Find all legal moves based on current board and MPlayer's hand
+     */
+    public List<Tile> findLegalMoves(Board b, List<Tile> hand) throws Exception {
         List<Tile> legalMoves = new ArrayList<>();
         for (Tile t : hand) {
             Tile copy = t.copyTile();

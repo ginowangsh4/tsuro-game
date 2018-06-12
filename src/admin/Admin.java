@@ -31,13 +31,13 @@ public class Admin {
         if (args[2].equals("M")) {
             switch (args[3]) {
                 case "R":
-                    player = new RandomMPlayer(args[1]);
+                    player = new MPlayerRandom(args[1]);
                     break;
                 case "LS":
-                    player = new LeastSymMPlayer(args[1]);
+                    player = new MPlayerLeastSym(args[1]);
                     break;
                 case "MS":
-                    player = new MostSymMPlayer(args[1]);
+                    player = new MPlayerMostSym(args[1]);
                     break;
                 default:
                     throw new IllegalArgumentException("Entered invalid strategy for MPlayer!");
@@ -82,7 +82,6 @@ public class Admin {
 
     private static void processInitialize(Node node) throws Exception {
         Node colorNode = node.getFirstChild();
-
         int color = Token.getColorInt(colorNode.getTextContent());
 
         Node colorsNode = colorNode.getNextSibling();

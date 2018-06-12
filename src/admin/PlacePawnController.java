@@ -22,8 +22,6 @@ public class PlacePawnController {
     private Button submitButton;
 
     private enum Side { TOP, LEFT, RIGHT, BOTTOM }
-    private Side startSide;
-    private Integer startIndex;
 
     @FXML
     public void initialize() throws FileNotFoundException {
@@ -40,8 +38,8 @@ public class PlacePawnController {
 
     private void handleSubmitButton() {
         System.out.println("Submit button clicked");
-        startSide = sideDropdown.getValue();
-        startIndex = indexDropdown.getValue();
+        Side startSide = sideDropdown.getValue();
+        Integer startIndex = indexDropdown.getValue();
         if (startSide != null && startIndex != null) {
             System.out.println("Submitted side = " + startSide);
             System.out.println("Submitted index = " + startIndex);

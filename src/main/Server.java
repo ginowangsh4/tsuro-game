@@ -280,7 +280,7 @@ public class Server {
 
     private void replaceWithMPlayer(SPlayer p) throws Exception {
         System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
-        MPlayer newPlayer = new RandomMPlayer(p.getPlayer().getName());
+        MPlayer newPlayer = new MPlayerRandom(p.getPlayer().getName());
         newPlayer.initialize(p.getToken().getColor(), colors);
         p.linkPlayer(newPlayer);
     }
@@ -413,9 +413,8 @@ public class Server {
     /**
      * Get the current colors of the game
      * @return a list of winner colors
-     * @throws Exception
      */
-    public List<Integer> getCurrentColors() throws Exception {
+    public List<Integer> getCurrentColors() {
         List<Integer> colors = new ArrayList<>();
         for (SPlayer sPlayer : inSPlayers) {
             colors.add(sPlayer.getToken().getColor());
@@ -425,7 +424,6 @@ public class Server {
 
     /**
      * Start a tournament over the network with a remote player
-     * @throws Exception
      */
     public void startGame(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym, int numRemotePlayer)
             throws Exception {
@@ -471,7 +469,9 @@ public class Server {
             throw new IllegalArgumentException("Invalid number of players");
         }
     }
-    private List<APlayer> initializeAllPlayers(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym, int numRemotePlayer, ServerSocket socketListener)
+    
+    private List<APlayer> initializeAllPlayers(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym,
+                                               int numRemotePlayer, ServerSocket socketListener)
             throws Exception {
         List<APlayer> allPlayers = new ArrayList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

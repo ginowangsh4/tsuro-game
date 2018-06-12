@@ -14,7 +14,6 @@ public class AdminSocket {
     private PrintWriter out;
 
     public AdminSocket(String hostName, int postNum) throws IOException {
-
         this.socket = new Socket(InetAddress.getByName(hostName), postNum);
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new PrintWriter(socket.getOutputStream(), true);

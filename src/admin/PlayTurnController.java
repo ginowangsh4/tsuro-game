@@ -9,7 +9,6 @@ import tsuro.Pair;
 
 import java.io.*;
 
-// WORK IN PROGRESS
 public class PlayTurnController {
     @FXML
     private ImageView boardImage;
@@ -59,7 +58,7 @@ public class PlayTurnController {
         });
     }
 
-    private void updateBoardImage(){
+    private void updateBoardImage() {
         try {
             boardImage.setImage(new Image(new FileInputStream("image/board/" + currTileButton.second[0] + "/" +
                     currTileButton.second[1] + ".png")));

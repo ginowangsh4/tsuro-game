@@ -19,7 +19,7 @@ public class MPlayerTest {
         Board b = new Board();
         colors.addAll(Arrays.asList(0,1,2,3,4,5,6));
         for (int i = 0; i < 7; i++){
-            MPlayer p = new RandomMPlayer("");
+            MPlayer p = new MPlayerRandom("");
             p.initialize(i, colors);
             Token t = p.placePawn(b);
             SPlayer sp = new SPlayer(t, null);
@@ -128,7 +128,7 @@ public class MPlayerTest {
 
         server.setState(b, inSPlayer, outSPlayer, winners, deck);
 
-        MPlayer mPlayer = new LeastSymMPlayer("");
+        MPlayer mPlayer = new MPlayerLeastSym("");
         colors.add(1);
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLAY;
@@ -175,7 +175,7 @@ public class MPlayerTest {
 
         server.setState(b, inSPlayer, outSPlayer, winners, deck);
 
-        MPlayer mPlayer = new LeastSymMPlayer("");
+        MPlayer mPlayer = new MPlayerLeastSym("");
         colors.add(1);
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLAY;
@@ -222,7 +222,7 @@ public class MPlayerTest {
 
         server.setState(b, inSPlayer, outSPlayer, winners, deck);
 
-        MPlayer mPlayer = new MostSymMPlayer("");
+        MPlayer mPlayer = new MPlayerMostSym("");
         colors.add(1);
         mPlayer.initialize(1, colors);
         mPlayer.state = MPlayer.State.PLAY;

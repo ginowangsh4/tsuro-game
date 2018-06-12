@@ -11,10 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class EndGameController {
-
     @FXML
     private ImageView boardImageView;
-
     @FXML
     private Label winnerList;
 

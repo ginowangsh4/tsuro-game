@@ -17,9 +17,9 @@ public class PlayATurnAdapter {
         Parser parser = new Parser(db);
 
         while (true) {
-            // ***************************************************
+            // ********************************
             // Parse input XMLs to game objects
-            // ***************************************************
+            // ********************************
             // input from stdin
             String deckStr = br.readLine();
             if (deckStr == null) break;
@@ -48,17 +48,17 @@ public class PlayATurnAdapter {
             List<Tile> tileList = parser.fromTileSetXML(parser.stringToDocument(deckStr));
             Deck deck = new Deck(tileList);
 
-            // ***************************************************
+            // ********************
             // Now call play a turn
-            // ***************************************************
+            // ********************
             Server server = Server.getInstance();
             server.setState(board, inSPlayer, outSPlayer, new ArrayList<>(), deck);
             server.giveDragon(dragonOwner);
             List<SPlayer> winners = server.playATurn(tileToPlay);
 
-            // ***************************************************
+            // **************************************
             // Parse game objects back to output XMLs
-            // ***************************************************
+            // **************************************
             // build deck/draw pile XML
             Document tileRes = parser.buildTileListXML(server.drawPile.getPile());
 
@@ -80,7 +80,7 @@ public class PlayATurnAdapter {
     }
 
     private static void printResult(Parser parser, Document tileRes, Document inPlayerRes,
-                                    Document outPlayerRes, Document boardRes, Document winnersRes) throws Exception {
+            Document outPlayerRes, Document boardRes, Document winnersRes) throws Exception {
         System.out.println(parser.documentToString(tileRes));
         System.out.println(parser.documentToString(inPlayerRes));
         System.out.println(parser.documentToString(outPlayerRes));

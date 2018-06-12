@@ -75,6 +75,9 @@ public class HPlayer extends APlayer {
         out.println(winnerList.toString());
     }
 
+    /**
+     * Find the token of this HPlayer on a given board
+     */
     private Token findMyToken(Board b) {
         for (SPlayer sp : b.getSPlayerList()) {
             if (sp.getToken().getColor() == color) {
@@ -84,6 +87,14 @@ public class HPlayer extends APlayer {
         throw new IllegalArgumentException("Cannot find token on board");
     }
 
+    /**
+     * Generate a token given inputs from UI
+     * @param colorIndex color of this token
+     * @param side input from UI - top, left, bottom or right
+     * @param index input from UI - an integer from 0 - 12
+     * @return a new token after place pawn
+     * @throws Exception
+     */
     public static Token generateTokenFromSideAndIndex(int colorIndex, String side, int index) throws Exception {
         if (index < 0 || index > 11) {
             throw new Exception("Index is not valid");
@@ -115,6 +126,9 @@ public class HPlayer extends APlayer {
         return new Token(colorIndex, pos, indexOnTile);
     }
 
+    /**
+     * Get a tile from HPlayer's hand given index of tile on hand and rotation needed
+     */
     private Tile getTile(List<Tile> hand, int handIndex, int rotationIndex) {
         Tile move = hand.get(handIndex).copyTile();
         for (int i = 0; i < rotationIndex; i++) {
@@ -123,6 +137,9 @@ public class HPlayer extends APlayer {
         return move;
     }
 
+    /**
+     * Generate board and tile images given a board and hand
+     */
     private void generateBoardAndTileImages(Board b, List<Tile> hand) throws Exception {
         Document boardXML = parser.boardParser.buildXML(b);
         generateBoardImage(boardXML, -1, -1);
