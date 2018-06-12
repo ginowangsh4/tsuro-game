@@ -26,7 +26,7 @@ Run in IntelliJ IDEA:
 ## GUI
 
 - Compile and run all unit tests with `make`. 
-- Run `java -cp bin/ tsuro.Tsuro 10086 1 7 0`, which starts a local tournament with 1 HPlayer and 7 MPlayers, the number, e.g. `10086`, is the port number any remote players can connect to should you want to add any to the tournament.
+- Run `java -cp bin/ tsuro.Tsuro 10086 1 3 2 2 0`, which starts a local tournament with 1 HPlayer, 3 MPlayerRandom, 2 MPlayerMostSym, and 2 MPlayerLeastSym, the number, e.g. `10086`, is the port number any remote players can connect to should you want to add any to the tournament.
 - In a new terminal, run `java -cp bin/ tsuro.admin.App` to join the tournament as the HPlayer. This should fire up the GUI.
 
 We still need to implement the case when a HPlayer tries to place pawn at an illegal starting position or to commit an illegal move.

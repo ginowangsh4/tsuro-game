@@ -427,12 +427,14 @@ public class Server {
      * Start a tournament over the network with a remote player
      * @throws Exception
      */
-    public void startGame(int numHPlayer, int numMPlayer, int numRemotePlayer) throws Exception {
-        checkValidPlayerNumber(numHPlayer, numMPlayer, numRemotePlayer);
+    public void startGame(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym, int numRemotePlayer)
+            throws Exception {
+        checkValidPlayerNumber(numHPlayer, numMPlayerRandom, numMPlayerMSym, numMPlayerLSym, numRemotePlayer);
 
         ServerSocket socketListener = new ServerSocket(PORT_NUM);
 
-        List<APlayer> allPlayers = initializeAllPlayers(numHPlayer, numMPlayer, numRemotePlayer, socketListener);
+        List<APlayer> allPlayers = initializeAllPlayers(numHPlayer, numMPlayerRandom, numMPlayerMSym,
+                numMPlayerLSym, numRemotePlayer, socketListener);
 
         placePawnAllPlayers(allPlayers);
 
@@ -458,17 +460,18 @@ public class Server {
 
     }
 
-    private void checkValidPlayerNumber(int numHPlayer, int numMPlayer, int numRemotePlayer){
-        if (numHPlayer < 0 || numMPlayer < 0|| numRemotePlayer < 0) {
+    private void checkValidPlayerNumber(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym,
+                                        int numRemotePlayer){
+        if (numHPlayer < 0 || numMPlayerRandom < 0|| numMPlayerMSym < 0|| numMPlayerLSym < 0||numRemotePlayer < 0) {
             throw new IllegalArgumentException("Entered negative number of player");
         }
 
-        int totalNum = numHPlayer + numMPlayer + numRemotePlayer;
+        int totalNum = numHPlayer + numMPlayerRandom + numMPlayerMSym + numMPlayerLSym + numRemotePlayer;
         if (totalNum > 8 || totalNum < 2) {
             throw new IllegalArgumentException("Invalid number of players");
         }
     }
-    private List<APlayer> initializeAllPlayers(int numHPlayer, int numMPlayer, int numRemotePlayer, ServerSocket socketListener)
+    private List<APlayer> initializeAllPlayers(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym, int numRemotePlayer, ServerSocket socketListener)
             throws Exception {
         List<APlayer> allPlayers = new ArrayList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -480,9 +483,21 @@ public class Server {
             allPlayers.add(remotePlayer);
         }
 
-        for (int i = 0; i < numMPlayer; i++) {
-            String name = "MPlayer"+ Integer.toString(i);
-            APlayer mPlayer = new RandomMPlayer(name);
+        for (int i = 0; i < numMPlayerRandom; i++) {
+            String name = "RandomMPlayer"+ Integer.toString(i);
+            APlayer mPlayer = new MPlayerRandom(name);
+            allPlayers.add(mPlayer);
+        }
+
+        for (int i = 0; i < numMPlayerMSym; i++) {
+            String name = "MSymMPlayer"+ Integer.toString(i);
+            APlayer mPlayer = new MPlayerMostSym(name);
+            allPlayers.add(mPlayer);
+        }
+
+        for (int i = 0; i < numMPlayerLSym; i++) {
+            String name = "LSymMPlayer"+ Integer.toString(i);
+            APlayer mPlayer = new MPlayerLeastSym(name);
             allPlayers.add(mPlayer);
         }
 
@@ -498,6 +513,10 @@ public class Server {
 
         for (int i = 0; i < allPlayers.size(); i++) {
             allPlayers.get(i).initialize(i,colors);
+        }
+
+        if (allPlayers.size() != numHPlayer + numMPlayerRandom + numMPlayerLSym + numMPlayerMSym + numRemotePlayer){
+            throw new Exception("Total number of players generated is not equal to total expected");
         }
         return allPlayers;
     }
