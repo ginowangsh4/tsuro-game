@@ -31,13 +31,13 @@ public class Admin {
         if (args[2].equals("M")) {
             switch (args[3]) {
                 case "R":
-                    player = new MPlayer(MPlayer.Strategy.R, args[1]);
+                    player = new RandomMPlayer(args[1]);
                     break;
                 case "LS":
-                    player = new MPlayer(MPlayer.Strategy.LS, args[1]);
+                    player = new LeastSymMPlayer(args[1]);
                     break;
                 case "MS":
-                    player = new MPlayer(MPlayer.Strategy.MS, args[1]);
+                    player = new MostSymMPlayer(args[1]);
                     break;
                 default:
                     throw new IllegalArgumentException("Entered invalid strategy for MPlayer!");

@@ -32,9 +32,9 @@ public class ServerTest {
             colors = new ArrayList<>();
             server.setState(board, inSPlayer, outSPlayer, winners, colors, deck);
 
-            MPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "Player 1");
-            MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "Player 2");
-            MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "Player 3");
+            MPlayer mP1 = new RandomMPlayer("Player 1");
+            MPlayer mP2 = new LeastSymMPlayer("Player 2");
+            MPlayer mP3 = new MostSymMPlayer("Player 3");
             colors.add(1);
             colors.add(2);
             colors.add(3);
@@ -60,8 +60,8 @@ public class ServerTest {
             }
 
             for (SPlayer p: winners) {
-                if (p.getMPlayer().strategy.equals(MPlayer.Strategy.R)) winR ++;
-                else if (p.getMPlayer().strategy.equals(MPlayer.Strategy.LS)) winLS ++;
+                if (p.getMPlayer() instanceof RandomMPlayer) winR ++;
+                else if (p.getMPlayer() instanceof LeastSymMPlayer) winLS ++;
                 else winMS++;
             }
         }
@@ -87,9 +87,9 @@ public class ServerTest {
 
         server.setState(board, inSPlayer, outSPlayer, winners, colors, deck);
 
-        MPlayer mP1 = new MPlayer(MPlayer.Strategy.R, "Player 1");
-        MPlayer mP2 = new MPlayer(MPlayer.Strategy.LS, "Player 2");
-        MPlayer mP3 = new MPlayer(MPlayer.Strategy.MS, "Player 3");
+        MPlayer mP1 = new RandomMPlayer("Player 1");
+        MPlayer mP2 = new LeastSymMPlayer("Player 2");
+        MPlayer mP3 = new MostSymMPlayer("Player 3");
         colors.add(1);
         colors.add(2);
         colors.add(3);
@@ -112,18 +112,18 @@ public class ServerTest {
         }
 
         for (SPlayer sp : inSPlayer) {
-            assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Player's cheating is not caught");
+            assertTrue(sp.getMPlayer() instanceof RandomMPlayer, "Player's cheating is not caught");
         }
         for (SPlayer sp : outSPlayer) {
-            assertEquals(MPlayer.Strategy.R, sp.getMPlayer().strategy, "Player's cheating is not caught");
+            assertTrue(sp.getMPlayer() instanceof RandomMPlayer, "Player's cheating is not caught");
         }
         assertEquals(true, server.isGameOver());
     }
 
     @Test   // chooses a position which already has a token
     public void cheatIllegalStartingPosnTest2() throws Exception {
-        MPlayer playerOne = new MPlayer(MPlayer.Strategy.LS, "Player 1");
-        MPlayer playerTwo = new MPlayer(MPlayer.Strategy.LS, "Player 2");
+        MPlayer playerOne = new LeastSymMPlayer("Player 1");
+        MPlayer playerTwo = new LeastSymMPlayer("Player 2");
 
         board = new Board();
         inSPlayer = new ArrayList<>();
@@ -142,8 +142,8 @@ public class ServerTest {
         Token tokenTwo = new Token(1, new int[]{0, 6}, 0);
         server.registerPlayer(playerTwo, tokenTwo);
 
-        assertEquals(MPlayer.Strategy.LS, server.inSPlayers.get(0).getMPlayer().strategy, "Player 1's strategy changed");
-        assertEquals(MPlayer.Strategy.R, server.inSPlayers.get(1).getMPlayer().strategy, "Player 2's strategy didn't change to R");
+        assertTrue(server.inSPlayers.get(0).getMPlayer() instanceof LeastSymMPlayer, "Player 1's strategy changed");
+        assertTrue(server.inSPlayers.get(1).getMPlayer() instanceof RandomMPlayer, "Player 2's strategy didn't change to R");
         assertFalse(server.inSPlayers.get(1).getToken().getIndex() == 0 && server.inSPlayers.get(1).getToken().getPosition()[0] == 0
                         && server.inSPlayers.get(1).getToken().getPosition()[1] == 6, "Player 2's starting position wasn't updated");
     }
@@ -164,7 +164,7 @@ public class ServerTest {
 
         server.setState(board, inSPlayer, outSPlayer, winners, colors, deck);
 
-        MPlayer mP = new MPlayer(MPlayer.Strategy.LS, "Player 1");
+        MPlayer mP = new LeastSymMPlayer("Player 1");
         colors.add(1);
         mP.initialize(1, colors);
         Token token = mP.placePawn(board);
@@ -175,7 +175,7 @@ public class ServerTest {
         currentP.deal(tileToPlay);
         server.playATurn(tileToPlay);
 
-        assertEquals(MPlayer.Strategy.R, currentP.getMPlayer().strategy, "Player's cheating is not caught");
+        assertTrue(currentP.getMPlayer() instanceof RandomMPlayer, "Player's cheating is not caught");
         assertEquals(true, server.isGameOver());
     }
 }

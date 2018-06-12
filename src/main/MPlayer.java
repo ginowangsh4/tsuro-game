@@ -3,18 +3,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MPlayer extends APlayer {
+public abstract class MPlayer extends APlayer {
 
     private String name;
     private int color;
     private List<Integer> colors;
 
-    public Strategy strategy;
-    public enum Strategy { R, MS, LS }
-
-    public MPlayer(Strategy strategy, String name) {
+    public MPlayer(String name) {
         this.name = name;
-        this.strategy = strategy;
     }
 
     public String getName() {
@@ -45,41 +41,6 @@ public class MPlayer extends APlayer {
             }
         }
         return new Token(color, new int[]{pos[0], pos[1]}, pos[2]);
-    }
-
-    public Tile playTurn(Board b, List<Tile> hand, int tilesLeft) throws Exception {
-        checkState("play-turn");
-        List<Tile> legalMoves = new ArrayList<>();
-        for (Tile t : hand) {
-            Tile copy = t.copyTile();
-            for (int i = 0; i < 4; i++) {
-                SPlayer tempPlayer = new SPlayer(b.getSPlayer(color).getToken(), hand);
-                tempPlayer.linkPlayer(this);
-                if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
-                    legalMoves.add(copy.copyTile());
-                }
-                copy.rotateTile();
-            }
-        }
-        Tile tileToPlay = null;
-        switch (strategy) {
-            case R: {
-                Random rand = new Random();
-                tileToPlay = legalMoves.get(rand.nextInt(legalMoves.size()));
-                break;
-            }
-            case MS: {
-                legalMoves.sort(new Tile.SymmetricComparator());
-                tileToPlay = legalMoves.get(0);
-                break;
-            }
-            case LS: {
-                legalMoves.sort(new Tile.SymmetricComparator());
-                tileToPlay = legalMoves.get(legalMoves.size() - 1);
-                break;
-            }
-        }
-        return tileToPlay;
     }
 
     public void endGame(Board b, List<Integer> colors) {
@@ -127,5 +88,21 @@ public class MPlayer extends APlayer {
             }
         }
         return new int[] {x, y, indexOnTile};
+    }
+
+    public List<Tile> findLegalMoves(Board b, List<Tile> hand, int tilesLeft) throws Exception {
+        List<Tile> legalMoves = new ArrayList<>();
+        for (Tile t : hand) {
+            Tile copy = t.copyTile();
+            for (int i = 0; i < 4; i++) {
+                SPlayer tempPlayer = new SPlayer(b.getSPlayer(color).getToken(), hand);
+                tempPlayer.linkPlayer(this);
+                if (Server.getInstance().legalPlay(tempPlayer, b, copy)) {
+                    legalMoves.add(copy.copyTile());
+                }
+                copy.rotateTile();
+            }
+        }
+        return legalMoves;
     }
 }

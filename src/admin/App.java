@@ -45,7 +45,7 @@ public class App extends Application {
 
     public static void generateAlert(Alert.AlertType type, String msg) {
         Alert alert = new Alert(type);
-        alert.setTitle("Tsuro Game Dialog");
+        alert.setTitle("Tsuro Game Dialogue");
         alert.setContentText(msg);
         alert.showAndWait();
     }

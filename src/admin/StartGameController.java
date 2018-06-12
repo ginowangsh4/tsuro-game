@@ -14,6 +14,7 @@ public class StartGameController {
     private Button startGameButton;
     @FXML
     private ImageView logoImage;
+
     @FXML
     public void initialize() throws FileNotFoundException {
         logoImage.setImage(new Image(new FileInputStream("image/dragon.png")));
@@ -35,6 +36,4 @@ public class StartGameController {
         }
         App.changeScene(startGameButton, "PlacePawn.fxml");
     }
-
-
 }

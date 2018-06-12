@@ -32,6 +32,7 @@ public class RemotePlayer extends APlayer {
         // from socket
         Document outDoc = parser.stringToDocument(in.readLine());
         String name = parser.fromGetNameXML(outDoc);
+
         System.out.println("Remote: getName complete - player name is " + name);
         return name;
     }
@@ -48,6 +49,7 @@ public class RemotePlayer extends APlayer {
         if (!outDoc.getFirstChild().getNodeName().equals("void")) {
             throw new IllegalArgumentException("Response is not void!");
         }
+
         this.color = color;
         this.colors = colors;
         System.out.println("Remote: initialize complete");

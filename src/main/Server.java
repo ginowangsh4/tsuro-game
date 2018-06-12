@@ -280,7 +280,7 @@ public class Server {
 
     private void replaceWithMPlayer(SPlayer p) throws Exception {
         System.out.println("Player " + p.getPlayer().getName() + " cheated and is replaced by a random machine player");
-        MPlayer newPlayer = new MPlayer(MPlayer.Strategy.R, p.getPlayer().getName());
+        MPlayer newPlayer = new RandomMPlayer(p.getPlayer().getName());
         newPlayer.initialize(p.getToken().getColor(), colors);
         p.linkPlayer(newPlayer);
     }
@@ -482,7 +482,7 @@ public class Server {
 
         for (int i = 0; i < numMPlayer; i++) {
             String name = "MPlayer"+ Integer.toString(i);
-            APlayer mPlayer = new MPlayer(MPlayer.Strategy.R, name);
+            APlayer mPlayer = new RandomMPlayer(name);
             allPlayers.add(mPlayer);
         }
 

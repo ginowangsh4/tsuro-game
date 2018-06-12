@@ -25,6 +25,7 @@ public class PlacePawnController {
     private Side startSide;
     private Integer startIndex;
 
+    @FXML
     public void initialize() throws FileNotFoundException {
         boardImageView.setImage(new Image(new FileInputStream("image/board/board.png")));
         sideDropdown.getItems().addAll(Side.TOP, Side.BOTTOM, Side.LEFT, Side.RIGHT);
