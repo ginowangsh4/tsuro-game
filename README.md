@@ -35,10 +35,10 @@ We still need to implement the case when a HPlayer tries to place pawn at an ill
 
 Start a network client: 
 - Make sure that the server is already running, either a local or remote host. 
-- In `./`, run `java -cp bin/ tsuro.admin.Admin Port_Number Player_Name Player_Type(H/M) Strategy(R/MS/LS)` - only add Strategy if `Player_Type = M` - to connect with the host to join the tournament. 
+- In `./`, run `java -cp bin/ tsuro.admin.Admin Port_Number Player_Name Player_Type(H/M) Strategy(R/MS/LS)` - only add Strategy if `Player_Type = M` - to connect with the host to join the tournament.
 
 Start a server to run tournament:  
-- Run `java -cp bin/ tsuro.Tsuro Port_Number Number_of_HPlayer Number_of_MPlayer Number_of_RemotePlayer` to start a local server which starts a tournament with number and type of players as specified.
+- Run `java -cp bin/ tsuro.Tsuro Port_Number Number_of_HPlayer Number_of_MPlayerRandom Number_of_MPlayerMostSym Number_of_MPlayerLeastSym Number_of_RemotePlayer` to start a local server which starts a tournament with number and type of players as specified.
 
 ## Launch from command line 
 
