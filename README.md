@@ -6,14 +6,6 @@ Implementation of board game Tsuro with Java
 - Jennifer Liu - jenniferliu2018@u.northwestern.edu 
 - Jin Han - jinhan2019@u.northwestern.edu
 
-## GUI and HPlayer
-
-- Compile and run all unit tests with `make`. 
-- Run `java -cp bin/ tsuro.Tsuro 10086 1 7 0`, which starts a local tournament with 1 HPlayer and 7 MPlayers, the number, e.g. `10086`, is the port number any remote players can connect to should you want to add any to the tournament.
-- In a new terminal, run `java -cp bin/ tsuro.admin.App` to join the tournament as the HPlayer. This should fire up the GUI.
-
-We still need to implement the case when a HPlayer tries to place pawn at an illegal starting position or to commit an illegal move.
-
 ## Test
 
 Run all unit tests: 
@@ -31,6 +23,14 @@ Run a unit test suite:
 Run in IntelliJ IDEA: 
 - Open project with IntelliJ -> Right click on the folder `test/` -> Click "Run All Test".
 
+## GUI
+
+- Compile and run all unit tests with `make`. 
+- Run `java -cp bin/ tsuro.Tsuro 10086 1 7 0`, which starts a local tournament with 1 HPlayer and 7 MPlayers, the number, e.g. `10086`, is the port number any remote players can connect to should you want to add any to the tournament.
+- In a new terminal, run `java -cp bin/ tsuro.admin.App` to join the tournament as the HPlayer. This should fire up the GUI.
+
+We still need to implement the case when a HPlayer tries to place pawn at an illegal starting position or to commit an illegal move.
+
 ## Tournament over network
 
 Start a network client: 
@@ -40,7 +40,7 @@ Start a network client:
 Start a server to run tournament:  
 - Run `java -cp bin/ tsuro.Tsuro Port_Number Number_of_HPlayer Number_of_MPlayer Number_of_RemotePlayer` to start a local server which starts a tournament with number and type of players as specified.
 
-## Run from command line 
+## Launch from command line 
 
 Best to compile everything first with `make`.
 
