@@ -146,22 +146,8 @@ public class Server {
         board.placeTile(t, location[0], location[1]);
         // move all remaining active SPlayers
         List<SPlayer> deadP = new ArrayList<>();
-        for (int i = 0; i < inSPlayers.size(); i++) {
-            SPlayer player = inSPlayers.get(i);
-            Token token = board.simulateMove(player.getToken());
-            player.updateToken(token);
-            if (token.isOffBoard()) {
-                deadP.add(player);
-            }
-            // current SPlayer draw or get dragon
-            if (i == 0 && player.isSameSPlayer(currentP)){
-                if (!drawPile.isEmpty()) {
-                    player.draw(drawPile.pop());
-                }
-                else {
-                    giveDragon(player);
-                }
-            }
+        for (SPlayer player : inSPlayers) {
+            moveSPlayer(currentP, player, deadP);
         }
         // move the current SPlayer
         inSPlayers.remove(0);
@@ -184,11 +170,33 @@ public class Server {
     }
 
     /**
+     * Move a SPlayer on the board
+     * @param currentP SPLayer for current turn
+     * @param player SPlayer to be moved
+     * @param deadP list of dead SPlayers for current turn
+     */
+    private void moveSPlayer(SPlayer currentP, SPlayer player, List<SPlayer> deadP) {
+        Token token = board.simulateMove(player.getToken());
+        player.updateToken(token);
+        if (token.isOffBoard()) {
+            deadP.add(player);
+        }
+        // current SPlayer draw or get dragon
+        if (player.isSameSPlayer(currentP)){
+            if (!drawPile.isEmpty()) {
+                player.draw(drawPile.pop());
+            }
+            else {
+                giveDragon(player);
+            }
+        }
+    }
+
+    /**
      * Handle three server SPlayer lists at the end of a turn
      * @param deadP SPlayers that are out of board after this turn
-     * @throws Exception
      */
-    public void findWinners(List<SPlayer> deadP) throws Exception {
+    private void findWinners(List<SPlayer> deadP) throws Exception {
         // game over if board is full
         if (board.isFull()) {
             gameOver = true;
@@ -423,7 +431,7 @@ public class Server {
     }
 
     /**
-     * Start a tournament over the network with a remote player
+     * Start a tournament over the network
      */
     public void startGame(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym, int numRemotePlayer)
             throws Exception {
@@ -455,7 +463,6 @@ public class Server {
 
         // close connection
         socketListener.close();
-
     }
 
     private void checkValidPlayerNumber(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym,
@@ -469,7 +476,7 @@ public class Server {
             throw new IllegalArgumentException("Invalid number of players");
         }
     }
-    
+
     private List<APlayer> initializeAllPlayers(int numHPlayer, int numMPlayerRandom, int numMPlayerMSym, int numMPlayerLSym,
                                                int numRemotePlayer, ServerSocket socketListener)
             throws Exception {
