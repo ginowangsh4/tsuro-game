@@ -168,6 +168,18 @@ public class Board {
     }
 
     /**
+     * Find the token of a APlayer on a given board
+     */
+    public Token findMyToken(int color) {
+        for (SPlayer sp : getSPlayerList()) {
+            if (sp.getToken().getColor() == color) {
+                return sp.getToken();
+            }
+        }
+        throw new IllegalArgumentException("Cannot find token on board");
+    }
+
+    /**
      * Simulate the path taken by a token given a board
      * @param token token that attempts making the move
      * @return a copy of the original token with new position and index

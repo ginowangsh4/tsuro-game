@@ -12,7 +12,7 @@ import java.util.List;
 // Localhost IP: "127.0.0.1"
 // Richie IP: "10.105.75.35"
 // Jin IP: "10.105.16.16"
-
+// Jennifer IP: "10.105.35.58"
 public class Admin {
     private static DocumentBuilder db;
     private static AdminSocket socket;
@@ -27,7 +27,7 @@ public class Admin {
     public static void main(String[] args) throws Exception {
         db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         parser = new Parser(db);
-        socket = new AdminSocket("127.0.0.1", Integer.parseInt(args[0]));
+        socket = new AdminSocket("localhost", Integer.parseInt(args[0]));
         if (args[2].equals("M")) {
             switch (args[3]) {
                 case "R":

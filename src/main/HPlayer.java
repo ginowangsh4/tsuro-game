@@ -76,18 +76,6 @@ public class HPlayer extends APlayer {
     }
 
     /**
-     * Find the token of this HPlayer on a given board
-     */
-    private Token findMyToken(Board b) {
-        for (SPlayer sp : b.getSPlayerList()) {
-            if (sp.getToken().getColor() == color) {
-                return sp.getToken();
-            }
-        }
-        throw new IllegalArgumentException("Cannot find token on board");
-    }
-
-    /**
      * Generate a token given inputs from UI
      * @param colorIndex color of this token
      * @param side input from UI - top, left, bottom or right
@@ -143,7 +131,7 @@ public class HPlayer extends APlayer {
     private void generateBoardAndTileImages(Board b, List<Tile> hand) throws Exception {
         Document boardXML = parser.boardParser.buildXML(b);
         generateBoardImage(boardXML, -1, -1);
-        Token token = findMyToken(b);
+        Token token = b.findMyToken(color);
         int[] location = Board.getAdjacentLocation(token);
         for (int i = 0; i < hand.size(); i++) {
             Tile copy = hand.get(i).copyTile();
